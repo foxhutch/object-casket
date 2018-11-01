@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.fuchss.objectcasket.impl.SessionImpl;
@@ -49,7 +50,7 @@ public class Many2OneFieldInfo extends FieldInfo {
 	private void columnNameAndFlags() {
 		Column column = this.field.getAnnotation(Column.class);
 		this.columnName = FieldInfo.fkColumnName(this.field, this.foreignTableName, column == null ? null : column.name());
-		if (column != null && !column.nullable()) {
+		if ((column != null) && !column.nullable()) {
 			this.addFlag(SqlPrototype.Flag.NOT_NULL);
 		}
 	}
@@ -66,7 +67,7 @@ public class Many2OneFieldInfo extends FieldInfo {
 			return;
 		}
 		List<Field> possibleO2MFields = new ArrayList<>();
-		FieldInfo.findPossibleFields(this.foreignClass, possibleO2MFields, ManyToMany.class);
+		FieldInfo.findPossibleFields(this.foreignClass, possibleO2MFields, OneToMany.class);
 		for (Field possibleField : possibleO2MFields) {
 			if (this.checkAndSetForeignO2MField(possibleField)) {
 				break;
@@ -96,7 +97,7 @@ public class Many2OneFieldInfo extends FieldInfo {
 		if (this.columnName.equals(remoteFkColumnName)) {
 			possibleField.setAccessible(true);
 			this.foreignField = possibleField;
-			this.kind = FieldInfo.Kind.ONE2MANY;
+			this.foreignFieldKind = FieldInfo.Kind.ONE2MANY;
 			return true;
 		}
 		return false;

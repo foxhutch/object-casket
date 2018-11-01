@@ -71,7 +71,7 @@ public class One2ManyFieldInfo extends FieldInfo {
 	}
 
 	private boolean checkAndSetFkField(Field possibleField) {
-		if (!this.getEntityClass().equals(possibleField.getClass())) {
+		if (!this.getEntityClass().equals(possibleField.getType())) {
 			return false;
 		}
 		Column column = possibleField.getAnnotation(Column.class);
