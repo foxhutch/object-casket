@@ -75,7 +75,7 @@ public class One2ManyFieldInfo extends FieldInfo {
 			return false;
 		}
 		Column column = possibleField.getAnnotation(Column.class);
-		String col = FieldInfo.fkColumnName(this.field, this.tableName, column == null ? null : column.name());
+		String col = FieldInfo.fkColumnName(possibleField, this.tableName, column == null ? null : column.name());
 		if (!this.remoteFkColumnName.equals(col)) {
 			return false;
 		}

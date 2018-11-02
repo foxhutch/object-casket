@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.sql.Driver;
 
-import org.fuchss.objectcasket.ObjectCasketFactory;
 import org.fuchss.objectcasket.port.Configuration;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.ObjectCasketPort;
@@ -23,6 +22,7 @@ public abstract class TestBase {
 		this.storePort = ObjectCasketFactory.FACTORY.ObjectCasketPort();
 		this.dbFile = File.createTempFile("TestsDB" + this.getClass().getSimpleName(), ".db");
 		Files.deleteIfExists(this.dbFile.toPath());
+		System.out.println("DB is " + this.dbFile.getPath());
 	}
 
 	protected Configuration config() throws ObjectCasketException {
