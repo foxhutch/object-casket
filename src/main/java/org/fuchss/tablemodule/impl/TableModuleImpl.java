@@ -2,6 +2,7 @@ package org.fuchss.tablemodule.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -39,7 +40,7 @@ public class TableModuleImpl implements TableModule {
 	@Override
 	public TablePrototypeImpl mkTablePrototype(String tableName) throws TableModuleException {
 		if (!this.database.wellformedTableName(tableName)) {
-			TableFactoryException.Error.MalformedTableName.build(tableName);
+			TableFactoryException.Error.MalformedTableName.build(tableName, Arrays.toString(this.database.acceptedCharactersForTableName()));
 		}
 
 		TablePrototypeImpl tablePrototype;
@@ -183,7 +184,7 @@ public class TableModuleImpl implements TableModule {
 
 		static enum Error {
 
-			MalformedTableName("Non proper table name %s."), //
+			MalformedTableName("Non proper table name %s. expected characters are: %s"), //
 			UnknownTable("Unknown table %s."), //
 			NoPrimaryKey("To install a table one needs a primary key."), //
 			NoModification("Modification of existing tables is not supported yet."), //

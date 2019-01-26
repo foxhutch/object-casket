@@ -308,8 +308,26 @@ public class SqlDatabaseImpl implements SqlDatabase {
 		if (tableName == null) {
 			return false;
 		}
-		String acceptedName = tableName.replaceAll("[^\\x23\\x57\\x30-\\x39\\x41-\\x5a\\x61-\\x7a]", "");
+		String acceptedName = tableName.replaceAll("[^\\x23\\x5F\\x30-\\x39\\x41-\\x5a\\x61-\\x7a]", ""); // # _ 0..9 A..Z a..z
 		return tableName.equals(acceptedName);
+	}
+
+	@Override
+	public char[] acceptedCharactersForTableName() {
+		List<Character> acceptedChars = new ArrayList<>();
+		acceptedChars.add((char) 0x23);
+		acceptedChars.add((char) 0x5F);
+		for (int i = 0x30; i <= 0x39; i++)
+			acceptedChars.add((char) i);
+		for (int i = 0x41; i <= 0x5a; i++)
+			acceptedChars.add((char) i);
+		for (int i = 0x61; i <= 0x7a; i++)
+			acceptedChars.add((char) i);
+		char[] res = new char[acceptedChars.size()];
+		int count = 0;
+		for (Character x : acceptedChars)
+			res[count++] = x;
+		return res;
 	}
 
 	@Override
