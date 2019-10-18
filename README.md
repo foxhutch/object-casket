@@ -17,7 +17,7 @@ If you want to use maven or some similar tool add the following code to your pom
   <dependency>
     <groupId>org.fuchss</groupId>
     <artifactId>object-casket</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```

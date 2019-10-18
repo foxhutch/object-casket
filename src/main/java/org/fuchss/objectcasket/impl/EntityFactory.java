@@ -162,7 +162,7 @@ public class EntityFactory {
 		try {
 			RowPrototype rowPrototype = this.table.mkRowPrototype();
 			for (String fieldName : cmps.keySet()) {
-				this.setPrototype(rowPrototype, prototype, this.clazz.getField(fieldName), cmps);
+				this.setPrototype(rowPrototype, prototype, this.clazz.getDeclaredField(fieldName), cmps);
 			}
 			List<Row> rows = this.table.allRowsByPrototype(rowPrototype);
 			for (Row row : rows) {
