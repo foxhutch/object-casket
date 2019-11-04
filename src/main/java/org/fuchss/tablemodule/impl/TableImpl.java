@@ -231,6 +231,7 @@ public class TableImpl implements Table {
 			SqlObject pkObj = row.getObject(this.pkName);
 			this.primaryKeyToRowMap.put(pkObj, row);
 			this.rowToPrimaryKeyMap.put(row, pkObj);
+			this.rowMap.put(row, row);
 		}
 		return rows;
 	}
