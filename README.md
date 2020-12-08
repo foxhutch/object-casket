@@ -11,7 +11,7 @@ If you want to use maven or some similar tool add the following code to your pom
 ```xml
 <repositories>
 	<repository>
-		<id>github</id>
+		<id>gh-fuchss</id>
 		<name>GitHub Maven Packages</name>
 		<url>https://nexus.fuchss.org/repository/github/</url>
 	</repository>
