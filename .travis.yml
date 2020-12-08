@@ -1,6 +1,0 @@
-language: java
-jdk:
-        - oraclejdk9
-
-after_success:
-        - bash <(curl -s https://raw.githubusercontent.com/foxhutch/maven/releases/travis/decrypt.sh) && cd $TRAVIS_BUILD_DIR && mvn deploy

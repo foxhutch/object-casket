@@ -9,15 +9,16 @@ If you want to use maven or some similar tool add the following code to your pom
 ```xml
 <repositories>
 	<repository>
-		<id>maven-foxhutch</id>
-		<url>https://raw.githubusercontent.com/foxhutch/maven/releases</url>
+		<id>github</id>
+		<name>GitHub Maven Packages</name>
+		<url>https://nexus.fuchss.org/repository/github/</url>
 	</repository>
 </repositories>
 <dependencies>
   <dependency>
     <groupId>org.fuchss</groupId>
     <artifactId>object-casket</artifactId>
-    <version>0.9.2-SNAPSHOT</version>
+    <version>develop-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```

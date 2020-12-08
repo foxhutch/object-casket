@@ -4,36 +4,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fuchss</groupId>
 	<artifactId>object-casket</artifactId>
-	<version>0.9.2-SNAPSHOT</version>
+	<version>develop-SNAPSHOT</version>
 	<name>object casket - A simple object mapper</name>
 	<prerequisites>
 		<maven>3.0.4</maven>
 	</prerequisites>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>9</maven.compiler.source>
-		<maven.compiler.target>9</maven.compiler.target>
+		<maven.compiler.source>14</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
 	</properties>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>synergian-repo</id>
-			<url>https://raw.github.com/synergian/wagon-git/releases</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<distributionManagement>
 		<repository>
-			<id>github</id>
-			<url>git:releases://git@github.com:foxhutch/maven.git</url>
+			<id>gh-releases</id>
+			<name>git.fuchss.org Releases</name>
+			<url>https://nexus.fuchss.org/repository/github-releases/</url>
 		</repository>
+		<snapshotRepository>
+			<id>gh-snapshots</id>
+			<name>git.fuchss.org Snapshots</name>
+			<url>https://nexus.fuchss.org/repository/github-snapshots/</url>
+		</snapshotRepository>
 	</distributionManagement>
 	<build>
-		<extensions>
-			<extension>
-				<groupId>ar.com.synergian</groupId>
-				<artifactId>wagon-git</artifactId>
-				<version>0.2.5</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -44,7 +37,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -57,7 +49,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
