@@ -28,11 +28,11 @@ public class ValueFieldInfo extends FieldInfo {
 		Column column = this.field.getAnnotation(Column.class);
 		this.columnName = ((column == null) || (this.columnName = column.name()).isEmpty()) ? this.field.getName() : this.columnName;
 		String columnDefinition = ((column == null) || (columnDefinition = column.columnDefinition()).isEmpty()) ? null : columnDefinition.toUpperCase();
-		this.columnSqlType = (columnDefinition == null) ? SqlObject.Type.getDefaultType(this.columnType) : SqlObject.Type.valueOf(columnDefinition);
+		this.setFlags(column);
+		this.columnSqlType = (columnDefinition == null) ? SqlObject.Type.getDefaultType(this.columnType, this.isPrimaryKey) : SqlObject.Type.valueOf(columnDefinition);
 		if (this.columnSqlType == null) {
 			FieldInfo.FieldException.Error.WrongValueField.build(fieldName, entityClassName);
 		}
-		this.setFlags(column);
 		if (!this.checkPrimaryKey()) {
 			FieldInfo.FieldException.Error.IllegalPrimaryKey.build(fieldName, entityClassName, ValueFieldInfo.pkClasses(), ValueFieldInfo.autoincremtenClasses());
 		}

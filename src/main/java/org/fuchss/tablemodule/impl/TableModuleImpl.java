@@ -92,7 +92,7 @@ public class TableModuleImpl implements TableModule {
 	private Map<String, SqlPrototype> mkColumnPrototypes(TablePrototypeImpl tablePrototypeImpl) throws TableModuleException {
 		Map<String, SqlPrototype> prototypes = new HashMap<>();
 		for (String name : tablePrototypeImpl.getColumnNames()) {
-			prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory));
+			prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory, name.equals(tablePrototypeImpl.getPrimeryKey())));
 		}
 		return prototypes;
 

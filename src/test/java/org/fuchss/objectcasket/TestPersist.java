@@ -3,7 +3,6 @@ package org.fuchss.objectcasket;
 import java.io.File;
 import java.sql.Driver;
 
-import org.fuchss.objectcasket.ObjectCasketFactory;
 import org.fuchss.objectcasket.justDoNotCrash.types.A;
 import org.fuchss.objectcasket.justDoNotCrash.types.AB;
 import org.fuchss.objectcasket.justDoNotCrash.types.ABC;

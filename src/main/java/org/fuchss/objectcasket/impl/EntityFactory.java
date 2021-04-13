@@ -21,12 +21,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.fuchss.objectcasket.impl.field.FieldInfo;
+import org.fuchss.objectcasket.impl.field.FieldInfo.Kind;
 import org.fuchss.objectcasket.impl.field.Many2ManyFieldInfo;
 import org.fuchss.objectcasket.impl.field.Many2OneFieldInfo;
 import org.fuchss.objectcasket.impl.field.One2ManyFieldInfo;
 import org.fuchss.objectcasket.impl.field.One2OneFieldInfo;
 import org.fuchss.objectcasket.impl.field.ValueFieldInfo;
-import org.fuchss.objectcasket.impl.field.FieldInfo.Kind;
 import org.fuchss.objectcasket.port.ObjectCasketCMP;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.sqlconnector.port.SqlArg;
@@ -64,7 +64,7 @@ public class EntityFactory {
 	private TableModuleException tableModuleException;
 	private Constructor<?> defaultConstructor;
 
-	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<ObjectCasketCMP, SqlArg.CMP>() {
+	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<>() {
 		private static final long serialVersionUID = 1L;
 
 		{
@@ -175,7 +175,7 @@ public class EntityFactory {
 	}
 
 	private void setPrototype(RowPrototype rowPrototype, Object prototype, Field field, Map<String, ObjectCasketCMP> cmps) throws TableModuleException, ObjectCasketException, IllegalArgumentException, IllegalAccessException {
-		if (!this.valueFields.contains(field) && !Objects.equals(this.pkField , field)) {
+		if (!this.valueFields.contains(field) && !Objects.equals(this.pkField, field)) {
 			EntityFactoryException.Error.KISSLoad.build(field.getName());
 		}
 		field.setAccessible(true);
@@ -451,7 +451,8 @@ public class EntityFactory {
 	}
 
 	private void mkValueField(Field field, String tableName) throws ObjectCasketException {
-		if (field.isAnnotationPresent(Transient.class) || field.isAnnotationPresent(OneToOne.class) || field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class)) {
+		if (field.isAnnotationPresent(Transient.class) || field.isAnnotationPresent(OneToOne.class) || field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToMany.class)
+				|| field.isAnnotationPresent(ManyToMany.class)) {
 			return;
 		}
 		field.setAccessible(true);
@@ -535,6 +536,7 @@ public class EntityFactory {
 			NonUniquePK("The pk object %s is not unique or unknown in table %s. The database is corruped!"), //
 			KISSLoad("Impossible to use non value field %s for protoyping."), //
 			UnknownField("The field %s is not a stored value field of class %s!"); //
+
 			private String str;
 
 			private Error(String str) {

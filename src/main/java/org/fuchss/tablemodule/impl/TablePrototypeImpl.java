@@ -41,7 +41,7 @@ public class TablePrototypeImpl implements TablePrototype {
 	@Override
 	public <T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<SqlPrototype.Flag> flags, T defaultVal) throws TableModuleException {
 		this.checkColumnName(columnName);
-		SqlObject.Type calculatedSqlType = this.checkType(type, sqlType);
+		SqlObject.Type calculatedSqlType = this.checkType(type, sqlType, (flags == null ? false : flags.contains(SqlPrototype.Flag.PRIMARY_KEY)));
 		Set<SqlPrototype.Flag> calculatedFlags = this.checkFlags(flags, calculatedSqlType);
 		ColumnImpl<T> col = new ColumnImpl<>(columnName, type, sqlType, calculatedFlags, defaultVal);
 		if (calculatedFlags.contains(SqlPrototype.Flag.PRIMARY_KEY)) {
@@ -82,8 +82,8 @@ public class TablePrototypeImpl implements TablePrototype {
 		}
 	}
 
-	private <T> SqlObject.Type checkType(Class<T> type, SqlObject.Type sqlType) throws TableModuleException {
-		SqlObject.Type columnType = ((sqlType == null) || (type == null)) ? SqlObject.Type.getDefaultType(type) : sqlType;
+	private <T> SqlObject.Type checkType(Class<T> type, SqlObject.Type sqlType, boolean isPk) throws TableModuleException {
+		SqlObject.Type columnType = ((sqlType == null) || (type == null)) ? SqlObject.Type.getDefaultType(type, isPk) : sqlType;
 		if (columnType == null) {
 			TablePrototypeException.Error.NoDefaultTypeFound.build((type == null) ? "null" : type.getSimpleName());
 		}

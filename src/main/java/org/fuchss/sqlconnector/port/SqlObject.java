@@ -38,7 +38,7 @@ public interface SqlObject {
 		DATE(DynamicCast.DATE, Date.class), //
 		TIMESTAMP(DynamicCast.TIMESTAMP);
 
-		public static final Set<SqlObject.Type> PK_TYPES = new HashSet<SqlObject.Type>() {
+		public static final Set<SqlObject.Type> PK_TYPES = new HashSet<>() {
 			private static final long serialVersionUID = 1L;
 			{
 				this.add(SqlObject.Type.INTEGER);
@@ -46,7 +46,7 @@ public interface SqlObject {
 			}
 		};
 
-		public static final Set<SqlObject.Type> AUTOINCREMENT_TYPES = new HashSet<SqlObject.Type>() {
+		public static final Set<SqlObject.Type> AUTOINCREMENT_TYPES = new HashSet<>() {
 			private static final long serialVersionUID = 1L;
 			{
 				this.add(SqlObject.Type.INTEGER);
@@ -70,8 +70,9 @@ public interface SqlObject {
 			}
 		}
 
-		public static Type getDefaultType(Class<?> clazz) {
-			return Type.typeMap.get(clazz);
+		public static Type getDefaultType(Class<?> clazz, boolean isPrimaryKey) {
+			Type type = Type.typeMap.get(clazz);
+			return (isPrimaryKey && (type == Type.VARCHAR)) ? Type.TEXT : type;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -88,7 +89,7 @@ public interface SqlObject {
 
 		private static class DynamicCast {
 
-			private static final Map<Class<?>, Function<Object, Object>> INTEGER = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> INTEGER = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -103,7 +104,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> BOOL = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> BOOL = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -112,7 +113,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> DOUBLE = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> DOUBLE = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -121,7 +122,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> FLOAT = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> FLOAT = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -130,7 +131,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> CHAR = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> CHAR = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -139,7 +140,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> VARCHAR = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> VARCHAR = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
@@ -147,7 +148,7 @@ public interface SqlObject {
 				}
 			};
 
-			private static final Map<Class<?>, Function<Object, Object>> DATE = new HashMap<Class<?>, Function<Object, Object>>() {
+			private static final Map<Class<?>, Function<Object, Object>> DATE = new HashMap<>() {
 
 				private static final long serialVersionUID = 1L;
 				{
