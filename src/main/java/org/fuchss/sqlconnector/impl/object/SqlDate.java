@@ -12,7 +12,7 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlDate extends SqlObjectImpl {
 
-	private static final DateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
+	private static DateFormat DefaultFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	SqlDate(Object obj) throws ConnectorException {
 		super(obj, SqlObject.Type.DATE);
@@ -27,12 +27,12 @@ public class SqlDate extends SqlObjectImpl {
 
 	@Override
 	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
+		return this.val == null ? null : ("" + this.getDATE().getTime());
 	}
 
 	private Date getDATE() {
 		try {
-			return (this.val == null) ? null : SqlDate.FORMATTER.parse(this.val);
+			return (this.val == null) ? null : SqlDate.DefaultFormatter.parse(this.val);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -83,11 +83,11 @@ public class SqlDate extends SqlObjectImpl {
 				x = (String) obj;
 			}
 			if (obj instanceof Date) {
-				x = SqlDate.FORMATTER.format((Date) obj);
+				x = SqlDate.DefaultFormatter.format((Date) obj);
 				x = (x == null) ? null : "'" + x + "'";
 			}
 			if (obj instanceof Long) {
-				x = SqlDate.FORMATTER.format(new Date((Long) obj));
+				x = SqlDate.DefaultFormatter.format(new Date((Long) obj));
 				x = (x == null) ? null : "'" + x + "'";
 			}
 
@@ -109,7 +109,7 @@ public class SqlDate extends SqlObjectImpl {
 	}
 
 	private void setDateVal(Date ddate) {
-		this.val = SqlDate.FORMATTER.format(ddate);
+		this.val = SqlDate.DefaultFormatter.format(ddate);
 	}
 
 	static class SqlBuilder implements SqlObjectBuilder {
