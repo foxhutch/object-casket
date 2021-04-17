@@ -12,7 +12,7 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlTimestamp extends SqlObjectImpl {
 
-	private static final DateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
 	SqlTimestamp(Object obj) throws ConnectorException {
 		super(obj, SqlObject.Type.TIMESTAMP);
@@ -28,7 +28,7 @@ public class SqlTimestamp extends SqlObjectImpl {
 
 	@Override
 	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
+		return this.val == null ? null : ("" + this.getTIMESTAMP().getTime());
 	}
 
 	private Date getTIMESTAMP() {
