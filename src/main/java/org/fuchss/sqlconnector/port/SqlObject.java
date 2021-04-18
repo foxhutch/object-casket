@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 public interface SqlObject {
 
-	String toSqlString();
-
 	void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException;
 
 	<T> T get(Class<T> type) throws UnsupportedOperationException;

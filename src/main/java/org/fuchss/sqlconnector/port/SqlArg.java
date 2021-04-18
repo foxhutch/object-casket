@@ -1,11 +1,14 @@
 package org.fuchss.sqlconnector.port;
 
+import java.util.Locale;
+
 public final class SqlArg {
 
 	private String column;
 	private CMP cmp;
 	private SqlObject obj;
 
+	// private static String clause = "%s \"%s\" %s ?"; // and "column" < ?
 	private static String clause = "%s \"%s\" %s ?"; // and "column" < ?
 
 	public SqlArg(String column, CMP cmp, SqlObject obj) {
@@ -15,14 +18,12 @@ public final class SqlArg {
 	}
 
 	public String sqlClausePart(String op) {
-
-		return String.format(SqlArg.clause, op, this.column, this.cmp.getSymbol(), this.obj.toSqlString());
+		return String.format(Locale.ENGLISH, SqlArg.clause, op, this.column, this.cmp.getSymbol());
 
 	}
 
 	public String sqlClausePart() {
-
-		return String.format(SqlArg.clause, "", this.column, this.cmp.getSymbol(), this.obj.toSqlString());
+		return String.format(Locale.ENGLISH, SqlArg.clause, "", this.column, this.cmp.getSymbol());
 
 	}
 

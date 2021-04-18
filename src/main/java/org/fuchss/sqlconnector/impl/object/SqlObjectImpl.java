@@ -7,11 +7,6 @@ public abstract class SqlObjectImpl implements SqlObject {
 
 	protected SqlObject.Type sqlType;
 
-	@Override
-	public String toSqlString() {
-		return this.toString();
-	}
-
 	protected SqlObjectImpl(Object obj, SqlObject.Type sqlType) throws ConnectorException {
 		this.sqlType = sqlType;
 		this.setVal(obj);

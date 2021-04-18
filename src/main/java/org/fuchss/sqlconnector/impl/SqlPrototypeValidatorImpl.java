@@ -29,7 +29,7 @@ public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 	}
 
 	@Override
-	public void set(SqlPrototypeImpl sqlPrototypeImpl) {
+	public void setPrototypeAndValidate(SqlPrototypeImpl sqlPrototypeImpl) {
 		this.sqlPrototypeImpl = sqlPrototypeImpl;
 		this.checkFlags();
 		this.checkType();
@@ -99,13 +99,13 @@ public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 
 	private void checkType() {
 		if (this.type == SqlObject.Type.TIMESTAMP) {
-			this.isValid &= this.sqlPrototypeImpl.getType() == this.type || this.sqlPrototypeImpl.getType() == SqlObject.Type.DATE;
+			this.isValid &= (this.sqlPrototypeImpl.getType() == this.type) || (this.sqlPrototypeImpl.getType() == SqlObject.Type.DATE);
 		} else {
 			this.isValid &= this.sqlPrototypeImpl.getType() == this.type;
 		}
 	}
 
-	public static final Map<String, SqlObject.Type> sqliteStringToTypeMap = new HashMap<String, SqlObject.Type>() {
+	public static final Map<String, SqlObject.Type> sqliteStringToTypeMap = new HashMap<>() {
 		private static final long serialVersionUID = 1L;
 		{
 			this.put("INTEGER", SqlObject.Type.INTEGER);

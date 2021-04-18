@@ -72,26 +72,26 @@ public class TestCreateTable {
 		flags.add(SqlPrototype.Flag.UNIQUE);
 
 		Set<SqlPrototype.Flag> flags1 = new HashSet<>();
-		tab.addColumn("id_tab", Integer.class, null, flags, null);
-		tab.addColumn("id_tab1", Short.class, null, flags1, (short) 1);
-		tab.addColumn("id_tab2", Long.class, null, flags1, 2L);
-		tab.addColumn("id_tab3", Integer.TYPE, null, flags1, 3);
-		tab.addColumn("id_tab4", Boolean.class, null, flags1, true);
-		tab.addColumn("id_tab5", Boolean.TYPE, null, flags1, false);
-		tab.addColumn("id_tab6", Double.class, null, flags1, 1.2);
-		tab.addColumn("id_tab7", Double.TYPE, null, flags1, 2.3);
-		tab.addColumn("id_tab8", Float.class, null, flags1, 3.4f);
-		tab.addColumn("id_tab9", Float.TYPE, null, flags1, 4.5f);
-		tab.addColumn("id_tab10", Byte.class, null, flags1, (byte) 126);
-		tab.addColumn("id_tab11", Byte.TYPE, null, flags1, (byte) 127);
-		tab.addColumn("id_tab12", Character.class, null, flags1, 'a');
-		tab.addColumn("id_tab13", Character.TYPE, null, flags1, 'b');
-		tab.addColumn("id_tab14", String.class, null, flags1, "abc");
-		tab.addColumn("id_tab15", Date.class, null, flags1, null);
-		tab.addColumn("id_tab16", Double.class, SqlObject.Type.REAL, flags1, (double) 12);
-		tab.addColumn("id_tab17", String.class, SqlObject.Type.TEXT, flags1, "Text");
-		tab.addColumn("id_tab18", Double.class, SqlObject.Type.NUMERIC, flags1, 1.23);
-		tab.addColumn("id_tab19", Date.class, SqlObject.Type.TIMESTAMP, flags1, null);
+		tab.addColumn("id_tab", Integer.class, null, flags);
+		tab.addColumn("id_tab1", Short.class, null, flags1);
+		tab.addColumn("id_tab2", Long.class, null, flags1);
+		tab.addColumn("id_tab3", Integer.TYPE, null, flags1);
+		tab.addColumn("id_tab4", Boolean.class, null, flags1);
+		tab.addColumn("id_tab5", Boolean.TYPE, null, flags1);
+		tab.addColumn("id_tab6", Double.class, null, flags1);
+		tab.addColumn("id_tab7", Double.TYPE, null, flags1);
+		tab.addColumn("id_tab8", Float.class, null, flags1);
+		tab.addColumn("id_tab9", Float.TYPE, null, flags1);
+		tab.addColumn("id_tab10", Byte.class, null, flags1);
+		tab.addColumn("id_tab11", Byte.TYPE, null, flags1);
+		tab.addColumn("id_tab12", Character.class, null, flags1);
+		tab.addColumn("id_tab13", Character.TYPE, null, flags1);
+		tab.addColumn("id_tab14", String.class, null, flags1);
+		tab.addColumn("id_tab15", Date.class, null, flags1);
+		tab.addColumn("id_tab16", Double.class, SqlObject.Type.REAL, flags1);
+		tab.addColumn("id_tab17", String.class, SqlObject.Type.TEXT, flags1);
+		tab.addColumn("id_tab18", Double.class, SqlObject.Type.NUMERIC, flags1);
+		tab.addColumn("id_tab19", Date.class, SqlObject.Type.TIMESTAMP, flags1);
 
 		Table table = this.module.assignOrCreateTable(tab, null);
 

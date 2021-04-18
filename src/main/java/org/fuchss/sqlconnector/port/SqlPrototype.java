@@ -6,8 +6,6 @@ public interface SqlPrototype {
 
 	void resetFlag(Flag flag);
 
-	void setDefault(SqlObject val);
-
 	void setType(SqlObject.Type type);
 
 	SqlObject.Type getType();

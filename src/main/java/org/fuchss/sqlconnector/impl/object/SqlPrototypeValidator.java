@@ -9,7 +9,7 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public interface SqlPrototypeValidator {
 
-	void set(SqlPrototypeImpl sqlPrototypeImpl);
+	void setPrototypeAndValidate(SqlPrototypeImpl sqlPrototypeImpl);
 
 	boolean validateByInt(SqlObject sqlObj);
 

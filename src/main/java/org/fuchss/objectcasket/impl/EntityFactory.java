@@ -344,7 +344,7 @@ public class EntityFactory {
 	private void mkColumn(ValueFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), info.getColumnSqlType(), info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), info.getColumnSqlType(), info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -354,7 +354,7 @@ public class EntityFactory {
 	private void mkColumn(Many2OneFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -365,7 +365,7 @@ public class EntityFactory {
 	private void mkColumn(One2OneFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -380,22 +380,22 @@ public class EntityFactory {
 			}
 			if (info.getKind() == Kind.ONE2ONE) {
 				One2OneFieldInfo o2oInfo = (One2OneFieldInfo) info;
-				this.tablePrototype.addColumn(o2oInfo.getRemoteFkColumnName(), o2oInfo.getMyPkType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(o2oInfo.getRemoteFkColumnName(), o2oInfo.getMyPkType(), null, info.getFlags());
 				this.columnNameFkFieldInfoMap.put(o2oInfo.getRemoteFkColumnName(), o2oInfo);
 			}
 			if (info.getKind() == Kind.ONE2MANY) {
 				One2ManyFieldInfo o2mInfo = (One2ManyFieldInfo) info;
-				this.tablePrototype.addColumn(o2mInfo.getRemoteFkColumnName(), o2mInfo.getMyPkType(), null, o2mInfo.getFlags(), null);
+				this.tablePrototype.addColumn(o2mInfo.getRemoteFkColumnName(), o2mInfo.getMyPkType(), null, o2mInfo.getFlags());
 				this.columnNameFkFieldInfoMap.put(o2mInfo.getRemoteFkColumnName(), o2mInfo);
 			}
 			if (info.getKind() == Kind.MANY2MANY) {
 				Many2ManyFieldInfo m2mInfo = (Many2ManyFieldInfo) info;
 				if (m2mInfo.isAnonymousRemoteFK() && !this.tablePrototype.getColumnNames().contains(m2mInfo.getRemoteFKColumnName())) {
-					this.tablePrototype.addColumn(m2mInfo.getRemoteFKColumnName(), m2mInfo.getRemotePkType(), null, m2mInfo.getFlags(), null);
+					this.tablePrototype.addColumn(m2mInfo.getRemoteFKColumnName(), m2mInfo.getRemotePkType(), null, m2mInfo.getFlags());
 					this.columnNameFkFieldInfoMap.put(m2mInfo.getRemoteFKColumnName(), m2mInfo);
 				}
 				if (m2mInfo.isAnonymousOwnFK() && !this.tablePrototype.getColumnNames().contains(m2mInfo.getOwnFKColumnName())) {
-					this.tablePrototype.addColumn(m2mInfo.getOwnFKColumnName(), m2mInfo.getMyPkType(), null, m2mInfo.getFlags(), null);
+					this.tablePrototype.addColumn(m2mInfo.getOwnFKColumnName(), m2mInfo.getMyPkType(), null, m2mInfo.getFlags());
 					this.columnNameFkFieldInfoMap.put(m2mInfo.getOwnFKColumnName(), m2mInfo);
 				}
 			}

@@ -20,11 +20,6 @@ public class SqlText extends SqlObjectImpl {
 	}
 
 	@Override
-	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
-	}
-
-	@Override
 	public Object get() {
 		return this.val;
 	}
@@ -46,7 +41,7 @@ public class SqlText extends SqlObjectImpl {
 				return this.val == null ? 0 : 1;
 			}
 			String x = (String) obj;
-			return (this.val == null) ? -1 : this.toSqlString().compareTo(x);
+			return (this.val == null) ? -1 : this.val.compareTo(x);
 
 		} catch (ClassCastException e) {
 			ObjectException.Error.Incompatible.build();

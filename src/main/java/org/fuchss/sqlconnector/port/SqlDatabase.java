@@ -36,7 +36,7 @@ public interface SqlDatabase {
 
 	List<String> allTables() throws ConnectorException;
 
-	ResultSet getMaxPK(String tableName, String pkColumnName) throws ConnectorException;
+	int getMaxPK(String tableName, String pkColumnName) throws ConnectorException;
 
 	boolean wellformedTableName(String tableName);
 

@@ -28,11 +28,6 @@ public class SqlPrototypeImpl implements SqlPrototype {
 	}
 
 	@Override
-	public void setDefault(SqlObject val) {
-		this.defaultValue = val;
-	}
-
-	@Override
 	public void setType(SqlObject.Type type) {
 		this.type = type;
 	}
@@ -58,7 +53,7 @@ public class SqlPrototypeImpl implements SqlPrototype {
 		return this.flags.contains(Flag.NOT_NULL);
 	}
 
-	public String toSqlSubString(String columnName, List<SqlObject> defaultVal) {
+	public String toSqlSubString(String columnName) {
 		String sql = "\"" + columnName + "\"";
 		sql += " " + this.type.name();
 
@@ -77,15 +72,11 @@ public class SqlPrototypeImpl implements SqlPrototype {
 				sql += " " + flag.name().replace("_", " ");
 			}
 		}
-		if (this.defaultValue != null) {
-			sql += " DEFAULT (?)";
-			defaultVal.add(this.defaultValue);
-		}
 		return sql;
 	}
 
 	public void validate(SqlPrototypeValidator validator) throws SQLException {
-		validator.set(this);
+		validator.setPrototypeAndValidate(this);
 		if (this.defaultValue == null) {
 			return;
 		}

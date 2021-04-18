@@ -11,9 +11,6 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlDate extends SqlObjectImpl {
 
-	// private static DateFormat DefaultFormatter = new SimpleDateFormat("yyyy-MM-dd
-	// HH:mm:ss");
-
 	SqlDate(Object obj) throws ConnectorException {
 		super(obj, SqlObject.Type.DATE);
 	}
@@ -27,11 +24,6 @@ public class SqlDate extends SqlObjectImpl {
 		DateFormat defaultFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date(this.val);
 		return defaultFormatter.format(date);
-	}
-
-	@Override
-	public String toSqlString() {
-		return (this.val == null) ? "" : ("" + this.val);
 	}
 
 	private Date getDATE() {

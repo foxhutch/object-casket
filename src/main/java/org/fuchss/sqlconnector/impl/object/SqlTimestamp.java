@@ -30,11 +30,6 @@ public class SqlTimestamp extends SqlObjectImpl {
 		return defaultFormatter.format(date);
 	}
 
-	@Override
-	public String toSqlString() {
-		return (this.val == null) ? "" : ("" + this.val);
-	}
-
 	private Date getTIMESTAMP() {
 		return (this.val == null) ? null : new Date(this.val);
 	}

@@ -20,11 +20,6 @@ public class SqlChar extends SqlObjectImpl {
 	}
 
 	@Override
-	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
-	}
-
-	@Override
 	public Object get() {
 		return this.val == null ? null : this.val.charAt(0);
 	}
@@ -45,8 +40,8 @@ public class SqlChar extends SqlObjectImpl {
 			if (obj == null) {
 				return this.val == null ? 0 : 1;
 			}
-			String x = (obj instanceof Character) ? "'" + Character.toString((Character) obj) + "'" : obj.toString();
-			return (this.val == null) ? -1 : this.toSqlString().compareTo(x);
+			String x = (obj instanceof Character) ? Character.toString((Character) obj) : obj.toString();
+			return (this.val == null) ? -1 : this.val.compareTo(x);
 		} catch (ClassCastException e) {
 			ObjectException.Error.Incompatible.build();
 		}

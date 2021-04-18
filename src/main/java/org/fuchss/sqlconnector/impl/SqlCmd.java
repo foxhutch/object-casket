@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.fuchss.sqlconnector.impl.object.SqlPrototypeImpl;
 import org.fuchss.sqlconnector.port.SqlArg;
-import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlCmd {
 
@@ -14,7 +13,7 @@ public class SqlCmd {
 		String val = "";
 		for (String column : columns) {
 			attr += ((attr.equals("")) ? "\"" : ", \"") + column + "\"";
-			val += ((val.equals("")) ? "" : ", ") + "?" + "";
+			val += ((val.equals("")) ? "" : ", ") + "?";
 		}
 		if (attr.isEmpty()) {
 			return "INSERT INTO \"" + table + "\" DEFAULT VALUES";
@@ -27,8 +26,8 @@ public class SqlCmd {
 		return "DELETE FROM \"" + table + "\" WHERE \"" + column + "\" = ?";
 	}
 
-	static String selectAll(String table) {
-		return "SELECT * FROM \"" + table + "\"";
+	static String selectAll(String tableName) {
+		return "SELECT * FROM \"" + tableName + "\"";
 	}
 
 	static String select(String table, String column) {
@@ -64,10 +63,10 @@ public class SqlCmd {
 		return "SELECT name FROM " + masterTable + " WHERE type='table' ORDER BY name;";
 	}
 
-	static String createTable(String table, Map<String, SqlPrototypeImpl> cols, List<SqlObject> defaultVal) {
+	static String createTable(String table, Map<String, SqlPrototypeImpl> cols) {
 		String columnInfo = "";
 		for (String column : cols.keySet()) {
-			columnInfo += ((columnInfo.equals("")) ? "" : ",") + cols.get(column).toSqlSubString(column, defaultVal);
+			columnInfo += ((columnInfo.equals("")) ? "" : ",") + cols.get(column).toSqlSubString(column);
 		}
 		return "CREATE TABLE \"" + table + "\" (" + columnInfo + ")";
 	}

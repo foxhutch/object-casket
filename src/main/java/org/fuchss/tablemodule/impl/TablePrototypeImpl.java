@@ -39,11 +39,11 @@ public class TablePrototypeImpl implements TablePrototype {
 	}
 
 	@Override
-	public <T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<SqlPrototype.Flag> flags, T defaultVal) throws TableModuleException {
+	public <T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<SqlPrototype.Flag> flags) throws TableModuleException {
 		this.checkColumnName(columnName);
 		SqlObject.Type calculatedSqlType = this.checkType(type, sqlType);
 		Set<SqlPrototype.Flag> calculatedFlags = this.checkFlags(flags, calculatedSqlType);
-		ColumnImpl<T> col = new ColumnImpl<>(columnName, type, sqlType, calculatedFlags, defaultVal);
+		ColumnImpl<T> col = new ColumnImpl<>(columnName, type, sqlType, calculatedFlags);
 		if (calculatedFlags.contains(SqlPrototype.Flag.PRIMARY_KEY)) {
 			this.pk = col;
 		}

@@ -1,7 +1,5 @@
 package org.fuchss.tablemodule.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +54,7 @@ public class TableModuleImpl implements TableModule {
 		TablePrototypeImpl tablePrototypeImpl = this.checkPrototype(tablePrototype);
 
 		Map<String, SqlPrototype> prototypes = null;
-		int sequenzNumber = 0;
+		int sequenceNumber = 0;
 		try {
 			prototypes = this.mkColumnPrototypes(tablePrototypeImpl);
 			this.database.beginTransaction();
@@ -68,25 +66,13 @@ public class TableModuleImpl implements TableModule {
 			} else {
 				this.database.createTable(tablePrototypeImpl.getTableName(), prototypes);
 			}
-			sequenzNumber = this.getSequenzNumber(tablePrototypeImpl.getTableName());
+			String tableName = tablePrototypeImpl.getTableName();
+			sequenceNumber = this.database.getMaxPK(tableName, this.tablePrototypeNameMap.get(tableName).getPrimeryKey());
 			this.database.endTransaction();
-		} catch (ConnectorException | SQLException e) {
+		} catch (ConnectorException e) {
 			TableModuleException.build(e);
 		}
-		return this.mkTable(tablePrototypeImpl, prototypes, sequenzNumber);
-	}
-
-	private int getSequenzNumber(String tableName) throws ConnectorException, SQLException {
-		ResultSet rs = this.database.getMaxPK(tableName, this.tablePrototypeNameMap.get(tableName).getPrimeryKey());
-
-		try {
-			while (rs.next()) {
-				return rs.getInt(1);
-			}
-			return 0;
-		} finally {
-			rs.close();
-		}
+		return this.mkTable(tablePrototypeImpl, prototypes, sequenceNumber);
 	}
 
 	private Map<String, SqlPrototype> mkColumnPrototypes(TablePrototypeImpl tablePrototypeImpl) throws TableModuleException {
