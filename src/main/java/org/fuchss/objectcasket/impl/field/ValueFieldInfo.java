@@ -29,12 +29,12 @@ public class ValueFieldInfo extends FieldInfo {
 		this.columnName = ((column == null) || (this.columnName = column.name()).isEmpty()) ? this.field.getName() : this.columnName;
 		String columnDefinition = ((column == null) || (columnDefinition = column.columnDefinition()).isEmpty()) ? null : columnDefinition.toUpperCase();
 		this.setFlags(column);
-		this.columnSqlType = (columnDefinition == null) ? SqlObject.Type.getDefaultType(this.columnType, this.isPrimaryKey) : SqlObject.Type.valueOf(columnDefinition);
+		this.columnSqlType = (columnDefinition == null) ? SqlObject.Type.getDefaultType(this.columnType) : SqlObject.Type.valueOf(columnDefinition);
 		if (this.columnSqlType == null) {
 			FieldInfo.FieldException.Error.WrongValueField.build(fieldName, entityClassName);
 		}
 		if (!this.checkPrimaryKey()) {
-			FieldInfo.FieldException.Error.IllegalPrimaryKey.build(fieldName, entityClassName, ValueFieldInfo.pkClasses(), ValueFieldInfo.autoincremtenClasses());
+			FieldInfo.FieldException.Error.IllegalPrimaryKey.build(fieldName, entityClassName, ValueFieldInfo.pkClasses(), ValueFieldInfo.autoincremtenClasses(), ValueFieldInfo.pkSqlTypes());
 		}
 	}
 
@@ -55,26 +55,36 @@ public class ValueFieldInfo extends FieldInfo {
 
 	private boolean checkPrimaryKey() {
 		if (this.flags.contains(SqlPrototype.Flag.AUTOINCREMENT)) {
-			return (this.flags.contains(SqlPrototype.Flag.PRIMARY_KEY)) ? SqlObject.Type.AUTOINCREMENT_TYPES.contains(this.columnSqlType) : false;
+			return this.flags.contains(SqlPrototype.Flag.PRIMARY_KEY) ? SqlObject.Type.AUTOINCREMENT_JAVA_TYPES.contains(this.columnType) : false;
 		}
 		if (this.flags.contains(SqlPrototype.Flag.PRIMARY_KEY)) {
-			return SqlObject.Type.PK_TYPES.contains(this.columnSqlType);
+			return SqlObject.Type.PK_SQL_TYPES.contains(this.columnSqlType);
 		}
 		return true;
 	}
 
 	private static String pkClasses() {
+
 		String res = "";
-		for (SqlObject.Type pkClass : SqlObject.Type.PK_TYPES) {
-			res += ((res.equals("")) ? "[" : ", ") + pkClass.name();
+		for (Class<?> pkClass : SqlObject.Type.PK_JAVA_TYPES) {
+			res += ((res.equals("")) ? "[" : ", ") + pkClass.getSimpleName();
+		}
+		return res + "]";
+	}
+
+	private static String pkSqlTypes() {
+
+		String res = "";
+		for (SqlObject.Type type : SqlObject.Type.PK_SQL_TYPES) {
+			res += ((res.equals("")) ? "[" : ", ") + type.name();
 		}
 		return res + "]";
 	}
 
 	private static String autoincremtenClasses() {
 		String res = "";
-		for (SqlObject.Type aiClass : SqlObject.Type.AUTOINCREMENT_TYPES) {
-			res += ((res.equals("")) ? "[" : ", ") + aiClass.name();
+		for (Class<?> aiClass : SqlObject.Type.AUTOINCREMENT_JAVA_TYPES) {
+			res += ((res.equals("")) ? "[" : ", ") + aiClass.getSimpleName();
 		}
 		return res + "]";
 	}

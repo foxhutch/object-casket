@@ -16,7 +16,7 @@ public class SqlDouble extends SqlObjectImpl {
 
 	@Override
 	public String toString() {
-		return "" + this.val;
+		return (this.val == null) ? null : ("" + this.val);
 	}
 
 	@Override

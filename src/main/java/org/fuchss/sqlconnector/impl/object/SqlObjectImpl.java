@@ -1,17 +1,11 @@
 package org.fuchss.sqlconnector.impl.object;
 
-import java.sql.PreparedStatement;
-
 import org.fuchss.sqlconnector.port.ConnectorException;
 import org.fuchss.sqlconnector.port.SqlObject;
 
 public abstract class SqlObjectImpl implements SqlObject {
 
 	protected SqlObject.Type sqlType;
-
-	@Override
-	public void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException {
-	};
 
 	@Override
 	public String toSqlString() {

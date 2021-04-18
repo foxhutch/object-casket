@@ -12,7 +12,9 @@ public class SqlNumeric extends SqlObjectImpl {
 		super(obj, SqlObject.Type.NUMERIC);
 	}
 
-	protected Double val;
+	// protected Double val;
+	@SuppressWarnings("rawtypes")
+	protected Comparable val;
 
 	@Override
 	public String toString() {
@@ -24,15 +26,18 @@ public class SqlNumeric extends SqlObjectImpl {
 		return this.val;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void setVal(Object obj) throws ConnectorException {
 		try {
-			this.val = (Double) obj;
+			this.val = (Comparable) obj;
+			// this.val = ((Number) obj).doubleValue();
 		} catch (ClassCastException e) {
 			ObjectException.Error.Incompatible.build();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
 

@@ -109,11 +109,12 @@ public class SqlDatabaseImpl implements SqlDatabase {
 	@Override
 	public void updateRow(String table, List<SqlArg> args, String pkColumnName, SqlObject pk) throws ConnectorException {
 		try {
-			PreparedStatement prepStmt = this.connection.prepareStatement(SqlCmd.update(table, args, pkColumnName, pk));
+			PreparedStatement prepStmt = this.connection.prepareStatement(SqlCmd.update(table, args, pkColumnName));
 			int idx = 1;
 			for (SqlArg arg : args) {
 				arg.getSqlObj().prepareStatement(idx++, prepStmt);
 			}
+			pk.prepareStatement(idx, prepStmt);
 			prepStmt.executeUpdate();
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
@@ -124,8 +125,9 @@ public class SqlDatabaseImpl implements SqlDatabase {
 	public ResultSet query(SqlObject pk, String table, String column) throws ConnectorException {
 		try {
 			ResultSet resultSet = null;
-			Statement stmt = this.connection.createStatement();
-			resultSet = stmt.executeQuery(SqlCmd.select(table, column, pk));
+			PreparedStatement stmt = this.connection.prepareStatement(SqlCmd.select(table, column));
+			pk.prepareStatement(1, stmt);
+			resultSet = stmt.executeQuery();
 			return resultSet;
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
@@ -136,32 +138,32 @@ public class SqlDatabaseImpl implements SqlDatabase {
 	@Override
 	public void deleteRow(String table, String pkColumnName, SqlObject pk) throws ConnectorException {
 		try {
-			Statement stmt = this.connection.createStatement();
-			stmt.execute(SqlCmd.delete(table, pkColumnName, pk));
+			PreparedStatement stmt = this.connection.prepareStatement(SqlCmd.delete(table, pkColumnName));
+			pk.prepareStatement(1, stmt);
+			stmt.executeUpdate();
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}
 	}
+
+	/*
+	 * public ResultSet query(SqlObject pk, String table, String column) throws
+	 * ConnectorException { try { ResultSet resultSet = null; Statement stmt =
+	 * this.connection.createStatement(); resultSet =
+	 * stmt.executeQuery(SqlCmd.select(table, column, pk)); return resultSet; }
+	 * catch (SQLException exc) { ConnectorException.build(exc); } return null; }
+	 *
+	 * @Override public void deleteRow(String table, String pkColumnName, SqlObject
+	 * pk) throws ConnectorException { try { Statement stmt =
+	 * this.connection.createStatement(); stmt.execute(SqlCmd.delete(table,
+	 * pkColumnName, pk)); } catch (SQLException exc) {
+	 * ConnectorException.build(exc); } }
+	 */
 
 	@Override
 	public void deleteRows(String tableName, List<SqlArg> args) throws ConnectorException {
 		try {
 			PreparedStatement prepStmt = this.connection.prepareStatement(SqlCmd.delete(tableName, args));
-			int idx = 1;
-			for (SqlArg arg : args) {
-				arg.getSqlObj().prepareStatement(idx++, prepStmt);
-			}
-			prepStmt.executeUpdate();
-		} catch (SQLException exc) {
-			ConnectorException.build(exc);
-		}
-
-	}
-
-	@Override
-	public void updateRow(String table, List<SqlArg> args, String pkColumnName, int pk) throws ConnectorException {
-		try {
-			PreparedStatement prepStmt = this.connection.prepareStatement(SqlCmd.update(table, args, pkColumnName, pk));
 			int idx = 1;
 			for (SqlArg arg : args) {
 				arg.getSqlObj().prepareStatement(idx++, prepStmt);
@@ -203,19 +205,6 @@ public class SqlDatabaseImpl implements SqlDatabase {
 	}
 
 	@Override
-	public ResultSet query(int pk, String table, String column) throws ConnectorException {
-		try {
-			ResultSet resultSet = null;
-			Statement stmt = this.connection.createStatement();
-			resultSet = stmt.executeQuery(SqlCmd.select(table, column, pk));
-			return resultSet;
-		} catch (SQLException exc) {
-			ConnectorException.build(exc);
-		}
-		return null;
-	}
-
-	@Override
 	public List<String> allTables() throws ConnectorException {
 		try {
 			List<String> tableNames = new ArrayList<>();
@@ -239,10 +228,21 @@ public class SqlDatabaseImpl implements SqlDatabase {
 		try {
 			Map<String, SqlPrototypeImpl> columnsImpl = new HashMap<>();
 			columns.forEach((name, prototype) -> columnsImpl.put(name, (SqlPrototypeImpl) prototype));
-			Statement stmt = this.connection.createStatement();
-			String statStr = SqlCmd.createTable(tableName, columnsImpl);
-			stmt.executeUpdate(statStr);
-			stmt.close();
+			List<SqlObject> defaultValues = new ArrayList<>();
+			String statStr = SqlCmd.createTable(tableName, columnsImpl, defaultValues);
+			if (defaultValues.isEmpty()) {
+				Statement stmt = this.connection.createStatement();
+				stmt.executeUpdate(statStr);
+				stmt.close();
+			} else {
+				PreparedStatement prepStmt = this.connection.prepareStatement(statStr);
+				int idx = 1;
+
+				for (SqlObject val : defaultValues) {
+					val.prepareStatement(idx++, prepStmt);
+				}
+				prepStmt.executeUpdate();
+			}
 			this.connection.commit();
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);

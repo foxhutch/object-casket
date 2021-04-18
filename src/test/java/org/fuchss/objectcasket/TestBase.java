@@ -38,6 +38,7 @@ public abstract class TestBase {
 	@After
 	public void cleanup() throws Exception {
 		this.dbFile.delete();
+		System.out.println("DB " + this.dbFile.getPath() + " deleted");
 	}
 
 }

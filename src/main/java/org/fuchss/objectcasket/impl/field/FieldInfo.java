@@ -74,7 +74,7 @@ public class FieldInfo {
 	}
 
 	protected static String fkColumnName(Field field, String tableName, String columnName) {
-		String name = (columnName == null || columnName.isEmpty()) ? String.format(FieldInfo.DEFAULT_FK_FORMAT, tableName, field.getName()) : columnName;
+		String name = ((columnName == null) || columnName.isEmpty()) ? String.format(FieldInfo.DEFAULT_FK_FORMAT, tableName, field.getName()) : columnName;
 		return name;
 	}
 
@@ -87,7 +87,7 @@ public class FieldInfo {
 	protected static void findPossibleFields(Class<?> foreignSuperClass, List<Field> possibleFields, Class<? extends Annotation> annotation) {
 		possibleFields.addAll(Arrays.asList(foreignSuperClass.getDeclaredFields()).stream().filter(field -> field.isAnnotationPresent(annotation)).collect(Collectors.toList()));
 		Class<?> nextSuperClass = foreignSuperClass.getSuperclass();
-		if (nextSuperClass == null || nextSuperClass.equals(Object.class)) {
+		if ((nextSuperClass == null) || nextSuperClass.equals(Object.class)) {
 			return;
 		}
 		FieldInfo.findPossibleFields(nextSuperClass, possibleFields, annotation);
@@ -112,7 +112,7 @@ public class FieldInfo {
 			IncompatibleMany2ManyEntity("%s in %s and %s in %s are incompatible many-to-many field definitions, no matiching join and or inversejoin column."), //
 
 			WrongValueField("%s isn't a proper value field in %s. Impossible to determin the sql type."), //
-			IllegalPrimaryKey("%s isn't a proper primary key field in %s. Only %s are supported classe and only %s with autoincrement."), //
+			IllegalPrimaryKey("%s isn't a proper primary key field in %s. Only %s are supported classes or types, only %s with autoincrement and only %s are supported sql types."), //
 
 			MissingProperOneToManyAnnotation(""//
 					+ "Missing or wrong @JoinColumn annotation for field %s in %s.\n" //

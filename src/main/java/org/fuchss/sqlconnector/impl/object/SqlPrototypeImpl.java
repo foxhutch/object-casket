@@ -44,7 +44,7 @@ public class SqlPrototypeImpl implements SqlPrototype {
 
 	@Override
 	public boolean isAutoIncrementedPrimaryKey() {
-		boolean res = SqlObject.Type.AUTOINCREMENT_TYPES.contains(this.type);
+		boolean res = SqlObject.Type.AUTOINCREMENT_SQL_TYPES.contains(this.type);
 		res &= this.flags.contains(Flag.AUTOINCREMENT);
 		res &= this.flags.contains(Flag.PRIMARY_KEY);
 		return res;
@@ -58,7 +58,7 @@ public class SqlPrototypeImpl implements SqlPrototype {
 		return this.flags.contains(Flag.NOT_NULL);
 	}
 
-	public String toSqlSubString(String columnName) {
+	public String toSqlSubString(String columnName, List<SqlObject> defaultVal) {
 		String sql = "\"" + columnName + "\"";
 		sql += " " + this.type.name();
 
@@ -73,12 +73,13 @@ public class SqlPrototypeImpl implements SqlPrototype {
 		}
 
 		for (Flag flag : this.flags) {
-			if (flag != Flag.PRIMARY_KEY && flag != Flag.AUTOINCREMENT && flag != Flag.UNIQUE) {
+			if ((flag != Flag.PRIMARY_KEY) && (flag != Flag.AUTOINCREMENT) && (flag != Flag.UNIQUE)) {
 				sql += " " + flag.name().replace("_", " ");
 			}
 		}
 		if (this.defaultValue != null) {
-			sql += " DEFAULT  (" + this.defaultValue.toSqlString() + ")";
+			sql += " DEFAULT (?)";
+			defaultVal.add(this.defaultValue);
 		}
 		return sql;
 	}

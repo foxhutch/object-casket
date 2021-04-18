@@ -3,7 +3,6 @@ package org.fuchss.sqlconnector.impl.object;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,32 +11,32 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlTimestamp extends SqlObjectImpl {
 
-	private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+	// private static final DateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd
+	// HH:mm:ss:SSS");
 
 	SqlTimestamp(Object obj) throws ConnectorException {
 		super(obj, SqlObject.Type.TIMESTAMP);
 
 	}
 
-	protected String val;
+	protected Long val;
 
 	@Override
 	public String toString() {
-		return this.val;
+		if (this.val == null)
+			return null;
+		DateFormat defaultFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Date date = new Date(this.val);
+		return defaultFormatter.format(date);
 	}
 
 	@Override
 	public String toSqlString() {
-		return this.val == null ? null : ("" + this.getTIMESTAMP().getTime());
+		return (this.val == null) ? "" : ("" + this.val);
 	}
 
 	private Date getTIMESTAMP() {
-		try {
-			return (this.val == null) ? null : SqlTimestamp.FORMATTER.parse(this.val);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return (this.val == null) ? null : new Date(this.val);
 	}
 
 	@Override
@@ -51,16 +50,12 @@ public class SqlTimestamp extends SqlObjectImpl {
 			if (obj == null) {
 				this.val = null;
 			} else {
-				if (obj instanceof String) {
-					this.setStringVal((String) obj);
-					return;
-				}
 				if (obj instanceof Date) {
-					this.setDateVal((Date) obj);
+					this.val = ((Date) obj).getTime();
 					return;
 				}
 				if (obj instanceof Long) {
-					this.setLongVal((Long) obj);
+					this.val = ((Long) obj).longValue();
 					return;
 				}
 				ObjectException.Error.Incompatible.build();
@@ -77,39 +72,19 @@ public class SqlTimestamp extends SqlObjectImpl {
 			if (obj == null) {
 				return this.val == null ? 0 : 1;
 			}
-			String x = null;
-
-			if (obj instanceof String) {
-				x = (String) obj;
-			}
 			if (obj instanceof Date) {
-				x = SqlTimestamp.FORMATTER.format((Date) obj);
-				x = (x == null) ? null : "'" + x + "'";
+				return this.val == null ? 1 : Long.compare(this.val, ((Date) obj).getTime());
 			}
 			if (obj instanceof Long) {
-				x = SqlTimestamp.FORMATTER.format(new Date((Long) obj));
-				x = (x == null) ? null : "'" + x + "'";
+				return this.val == null ? 1 : Long.compare(this.val, ((Date) obj).getTime());
 			}
 
-			return (this.val == null) ? -1 : this.toSqlString().compareTo(x);
+			ObjectException.Error.Incompatible.build();
 
 		} catch (ClassCastException e) {
 			ObjectException.Error.Incompatible.build();
 		}
 		return 0;
-	}
-
-	private void setStringVal(String date) {
-		this.val = "" + date;
-	}
-
-	private void setLongVal(Long ldate) {
-		Date date = new Date(ldate);
-		this.setDateVal(date);
-	}
-
-	private void setDateVal(Date ddate) {
-		this.val = SqlTimestamp.FORMATTER.format(ddate);
 	}
 
 	static class SqlBuilder implements SqlObjectBuilder {
@@ -127,7 +102,7 @@ public class SqlTimestamp extends SqlObjectImpl {
 			if (this.val == null) {
 				preparedStatement.setNull(pos, java.sql.Types.TIMESTAMP);
 			} else {
-				preparedStatement.setDate(pos, new java.sql.Date(this.getTIMESTAMP().getTime()));
+				preparedStatement.setDate(pos, new java.sql.Date(this.val));
 			}
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);

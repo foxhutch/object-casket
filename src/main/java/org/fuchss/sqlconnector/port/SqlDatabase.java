@@ -20,19 +20,15 @@ public interface SqlDatabase {
 
 	void deleteRow(String table, String pkColumnName, SqlObject pk) throws ConnectorException;
 
-	//
-
 	void deleteRows(String tableName, List<SqlArg> newArgs) throws ConnectorException;
 
-	void updateRow(String table, List<SqlArg> args, String pkColumnName, int pk) throws ConnectorException;
+	//
 
 	void beginTransaction() throws ConnectorException;
 
 	void endTransaction() throws ConnectorException;
 
 	void rollback() throws ConnectorException;
-
-	ResultSet query(int pk, String table, String column) throws ConnectorException;
 
 	void closeStatement(ResultSet rs) throws ConnectorException;
 

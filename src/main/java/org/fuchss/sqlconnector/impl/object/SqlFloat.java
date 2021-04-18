@@ -16,7 +16,7 @@ public class SqlFloat extends SqlObjectImpl {
 
 	@Override
 	public String toString() {
-		return (this.val == null) ? null : ("" + this.val);
+		return (this.val == null) ? null : ("" + this.val.floatValue());
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class SqlFloat extends SqlObjectImpl {
 				this.val = null;
 			} else {
 				if (obj instanceof Double) {
-					this.val = this.mkFload((Double) obj);
+					this.val = this.mkFloat((Double) obj);
 				} else {
 					this.val = (Float) obj;
 				}
@@ -48,7 +48,7 @@ public class SqlFloat extends SqlObjectImpl {
 			if (obj == null) {
 				return this.val == null ? 0 : 1;
 			}
-			Float x = (obj instanceof Double) ? this.mkFload((Double) obj) : (Float) obj;
+			Float x = (obj instanceof Double) ? this.mkFloat((Double) obj) : (Float) obj;
 			return (this.val == null) ? x.compareTo(0.0f) : this.val.compareTo(x);
 
 		} catch (ClassCastException e) {
@@ -57,7 +57,7 @@ public class SqlFloat extends SqlObjectImpl {
 		return 0;
 	}
 
-	private Float mkFload(Double d) {
+	private Float mkFloat(Double d) {
 		double dd = d.doubleValue();
 		return (float) dd;
 	}

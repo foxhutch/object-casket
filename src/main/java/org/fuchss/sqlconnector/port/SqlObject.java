@@ -28,28 +28,58 @@ public interface SqlObject {
 
 		INTEGER(DynamicCast.INTEGER, Long.class, Integer.class, Short.class, Byte.class, Long.TYPE, Integer.TYPE, Short.TYPE, Byte.TYPE), //
 		BOOL(DynamicCast.BOOL, Boolean.class, Boolean.TYPE), //
-		REAL(DynamicCast.REAL), //
 		DOUBLE(DynamicCast.DOUBLE, Double.class, Double.TYPE), //
 		FLOAT(DynamicCast.FLOAT, Float.class, Float.TYPE), //
 		CHAR(DynamicCast.CHAR, Character.class, Character.TYPE), //
-		TEXT(DynamicCast.TEXT), //
 		VARCHAR(DynamicCast.VARCHAR, String.class), //
-		NUMERIC(DynamicCast.NUMERIC), //
 		DATE(DynamicCast.DATE, Date.class), //
+		TEXT(DynamicCast.TEXT), //
+		REAL(DynamicCast.REAL), //
+		NUMERIC(DynamicCast.NUMERIC), //
 		TIMESTAMP(DynamicCast.TIMESTAMP);
 
-		public static final Set<SqlObject.Type> PK_TYPES = new HashSet<>() {
+		public static final Set<SqlObject.Type> PK_SQL_TYPES = new HashSet<>() {
 			private static final long serialVersionUID = 1L;
 			{
 				this.add(SqlObject.Type.INTEGER);
+				this.add(SqlObject.Type.BOOL);
+				this.add(SqlObject.Type.DOUBLE);
+				this.add(SqlObject.Type.NUMERIC);
+				this.add(SqlObject.Type.FLOAT);
+				this.add(SqlObject.Type.CHAR);
+				this.add(SqlObject.Type.VARCHAR);
 				this.add(SqlObject.Type.TEXT);
+				this.add(SqlObject.Type.DATE);
+				this.add(SqlObject.Type.TIMESTAMP);
+
+				// unused types
+				// this.add(SqlObject.Type.REAL);
+
 			}
 		};
 
-		public static final Set<SqlObject.Type> AUTOINCREMENT_TYPES = new HashSet<>() {
+		public static final Set<Class<?>> PK_JAVA_TYPES = new HashSet<>() {
+			private static final long serialVersionUID = 1L;
+			{
+				PK_SQL_TYPES.forEach(t -> t.types.forEach(this::add));
+			}
+		};
+
+		public static final Set<SqlObject.Type> AUTOINCREMENT_SQL_TYPES = new HashSet<>() {
 			private static final long serialVersionUID = 1L;
 			{
 				this.add(SqlObject.Type.INTEGER);
+			}
+		};
+
+		public static final Set<Class<?>> AUTOINCREMENT_JAVA_TYPES = new HashSet<>() {
+			private static final long serialVersionUID = 1L;
+			{
+				for (SqlObject.Type sqlType : AUTOINCREMENT_SQL_TYPES) {
+					for (Class<?> clazz : sqlType.types)
+						if (!clazz.isPrimitive())
+							this.add(clazz);
+				}
 			}
 		};
 
@@ -61,7 +91,10 @@ public interface SqlObject {
 		private Type(Map<Class<?>, Function<Object, Object>> casts, Class<?>... classes) {
 			this.types = Arrays.asList(classes);
 			this.casts = casts;
+		}
 
+		public List<? extends Class<?>> mapedTypes() {
+			return this.types;
 		}
 
 		static {
@@ -70,9 +103,8 @@ public interface SqlObject {
 			}
 		}
 
-		public static Type getDefaultType(Class<?> clazz, boolean isPrimaryKey) {
-			Type type = Type.typeMap.get(clazz);
-			return (isPrimaryKey && (type == Type.VARCHAR)) ? Type.TEXT : type;
+		public static Type getDefaultType(Class<?> clazz) {
+			return Type.typeMap.get(clazz);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -93,11 +125,11 @@ public interface SqlObject {
 
 				private static final long serialVersionUID = 1L;
 				{
-					this.put(Long.class, n -> n);
+					this.put(Long.class, n -> n == null ? null : ((Number) n).longValue());
 					this.put(Integer.class, n -> n == null ? null : ((Number) n).intValue());
 					this.put(Short.class, n -> n == null ? null : ((Number) n).shortValue());
 					this.put(Byte.class, n -> n == null ? null : ((Number) n).byteValue());
-					this.put(Long.TYPE, n -> n);
+					this.put(Long.TYPE, n -> n == null ? null : ((Number) n).longValue());
 					this.put(Integer.TYPE, n -> n == null ? null : ((Number) n).intValue());
 					this.put(Short.TYPE, n -> n == null ? null : ((Number) n).shortValue());
 					this.put(Byte.TYPE, n -> n == null ? null : ((Number) n).byteValue());
@@ -156,9 +188,27 @@ public interface SqlObject {
 				}
 			};
 
+			private static final Map<Class<?>, Function<Object, Object>> NUMERIC = new HashMap<>() {
+
+				private static final long serialVersionUID = 1L;
+				{
+					this.put(Long.class, n -> n == null ? null : ((Number) n).longValue());
+					this.put(Integer.class, n -> n == null ? null : ((Number) n).intValue());
+					this.put(Short.class, n -> n == null ? null : ((Number) n).shortValue());
+					this.put(Byte.class, n -> n == null ? null : ((Number) n).byteValue());
+					this.put(Long.TYPE, n -> n == null ? null : ((Number) n).longValue());
+					this.put(Integer.TYPE, n -> n == null ? null : ((Number) n).intValue());
+					this.put(Short.TYPE, n -> n == null ? null : ((Number) n).shortValue());
+					this.put(Byte.TYPE, n -> n == null ? null : ((Number) n).byteValue());
+					this.put(Double.class, n -> n == null ? null : ((Number) n).doubleValue());
+					this.put(Double.TYPE, n -> n == null ? null : ((Number) n).doubleValue());
+					this.put(Float.class, n -> n == null ? null : ((Number) n).floatValue());
+					this.put(Float.TYPE, n -> n == null ? null : ((Number) n).floatValue());
+				}
+			};
+
 			private static final Map<Class<?>, Function<Object, Object>> REAL = DynamicCast.DOUBLE;
 			private static final Map<Class<?>, Function<Object, Object>> TEXT = DynamicCast.VARCHAR;
-			private static final Map<Class<?>, Function<Object, Object>> NUMERIC = DynamicCast.DOUBLE;
 			private static final Map<Class<?>, Function<Object, Object>> TIMESTAMP = DynamicCast.DATE;
 
 		}

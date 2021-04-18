@@ -86,7 +86,9 @@ public class EntityFactory {
 			this.defaultConstructor.setAccessible(true);
 			this.session.register(clazz, this);
 			this.mkValueFieldInfo();
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
+			EntityFactoryException.Error.MissingDefaultConstructor.build(this.clazz.getName());
+		} catch (SecurityException e) {
 			ObjectCasketException.build(e);
 		}
 
@@ -535,7 +537,8 @@ public class EntityFactory {
 			KISSJoinTable("Impossible to delete join table entity directly. Remove over many-to-many association."), //
 			NonUniquePK("The pk object %s is not unique or unknown in table %s. The database is corruped!"), //
 			KISSLoad("Impossible to use non value field %s for protoyping."), //
-			UnknownField("The field %s is not a stored value field of class %s!"); //
+			UnknownField("The field %s is not a stored value field of class %s!"), //
+			MissingDefaultConstructor("There is no default constructor for class %s!"); //
 
 			private String str;
 

@@ -92,7 +92,7 @@ public class TableModuleImpl implements TableModule {
 	private Map<String, SqlPrototype> mkColumnPrototypes(TablePrototypeImpl tablePrototypeImpl) throws TableModuleException {
 		Map<String, SqlPrototype> prototypes = new HashMap<>();
 		for (String name : tablePrototypeImpl.getColumnNames()) {
-			prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory, name.equals(tablePrototypeImpl.getPrimeryKey())));
+			prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory));
 		}
 		return prototypes;
 
@@ -154,7 +154,13 @@ public class TableModuleImpl implements TableModule {
 
 	@Override
 	public void rollback(Transaction transaction) throws TableModuleException {
-		TransactionImpl trans = this.checkTransactionForCommitOrRollback(transaction);
+		TransactionImpl trans = null;
+		try {
+			trans = this.checkTransactionForCommitOrRollback(transaction);
+		} catch (TableModuleException e) {
+		}
+		if (trans == null)
+			return;
 		trans.rollback();
 		this.transaction.unlock();
 		this.mkTransaction.release();
