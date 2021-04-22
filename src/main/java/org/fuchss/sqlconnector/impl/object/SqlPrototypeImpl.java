@@ -10,6 +10,8 @@ import org.fuchss.sqlconnector.port.SqlPrototype;
 public class SqlPrototypeImpl implements SqlPrototype {
 
 	private SqlObject.Type type;
+	private Class<?> javaType;
+
 	private List<Flag> flags = new ArrayList<>();
 	private SqlObject defaultValue;
 
@@ -28,8 +30,9 @@ public class SqlPrototypeImpl implements SqlPrototype {
 	}
 
 	@Override
-	public void setType(SqlObject.Type type) {
+	public void setType(SqlObject.Type type, Class<?> javaType) {
 		this.type = type;
+		this.javaType = javaType;
 	}
 
 	@Override
@@ -81,6 +84,11 @@ public class SqlPrototypeImpl implements SqlPrototype {
 			return;
 		}
 		SqlPrototypeValidator.validationMap.get(this.type).apply(validator, this.defaultValue);
+	}
+
+	@Override
+	public Class<?> getJavaType() {
+		return this.javaType;
 	}
 
 }

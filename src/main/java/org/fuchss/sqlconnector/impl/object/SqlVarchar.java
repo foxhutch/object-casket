@@ -8,11 +8,19 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlVarchar extends SqlObjectImpl {
 
-	SqlVarchar(Object obj) throws ConnectorException {
-		super(obj, SqlObject.Type.VARCHAR);
+	protected String val;
+
+	SqlVarchar(String obj, SqlObject.Type type) throws ConnectorException {
+		super(type);
+		this.val = obj;
 	}
 
-	protected String val;
+	@Override
+	public <T> T get(Class<T> type) {
+		if (type == String.class)
+			return type.cast(this.val);
+		return null;
+	}
 
 	@Override
 	public String toString() {
@@ -20,41 +28,13 @@ public class SqlVarchar extends SqlObjectImpl {
 	}
 
 	@Override
-	public Object get() {
-		return this.val;
-	}
-
-	@Override
-	public void setVal(Object obj) throws ConnectorException {
-		try {
-			this.val = (String) obj;
-		} catch (ClassCastException e) {
-			ObjectException.Error.Incompatible.build();
-		}
-	}
-
-	@Override
 	public int compareTo(Object obj) throws ConnectorException {
-
-		try {
-			if (obj == null) {
-				return this.val == null ? 0 : 1;
-			}
-			String x = (String) obj;
-			return (this.val == null) ? -1 : this.val.compareTo(x);
-
-		} catch (ClassCastException e) {
+		String y = null;
+		if (obj instanceof String)
+			y = (String) obj;
+		if (y == null)
 			ObjectException.Error.Incompatible.build();
-		}
-		return 0;
-	}
-
-	static class SqlBuilder implements SqlObjectBuilder {
-
-		@Override
-		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			return new SqlVarchar(obj);
-		}
+		return (this.val == null) ? -1 : this.val.compareTo(y);
 
 	}
 
@@ -64,11 +44,25 @@ public class SqlVarchar extends SqlObjectImpl {
 			if (this.val == null) {
 				preparedStatement.setNull(pos, java.sql.Types.VARCHAR);
 			} else {
-				preparedStatement.setString(pos, this.val);
+				preparedStatement.setObject(pos, this.val, java.sql.Types.VARCHAR);
 			}
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}
+	}
+
+	static class SqlBuilder implements SqlObjectBuilder {
+
+		@Override
+		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
+			if (obj == null)
+				return new SqlVarchar(null, SqlObject.Type.VARCHAR);
+			if (obj instanceof String)
+				return new SqlVarchar((String) obj, SqlObject.Type.VARCHAR);
+			ObjectException.Error.Incompatible.build();
+			return null;
+		}
+
 	}
 
 }

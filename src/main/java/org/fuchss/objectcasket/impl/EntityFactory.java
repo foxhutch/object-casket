@@ -64,17 +64,14 @@ public class EntityFactory {
 	private TableModuleException tableModuleException;
 	private Constructor<?> defaultConstructor;
 
-	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<>() {
-		private static final long serialVersionUID = 1L;
-
-		{
-			this.put(ObjectCasketCMP.EQUAL, SqlArg.CMP.EQUAL);
-			this.put(ObjectCasketCMP.GREATER, SqlArg.CMP.GREATER);
-			this.put(ObjectCasketCMP.LESS, SqlArg.CMP.LESS);
-			this.put(ObjectCasketCMP.GREATEREQ, SqlArg.CMP.GREATEREQ);
-			this.put(ObjectCasketCMP.LESSEQ, SqlArg.CMP.LESSEQ);
-		}
-	};
+	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<>();
+	static {
+		compareMap.put(ObjectCasketCMP.EQUAL, SqlArg.CMP.EQUAL);
+		compareMap.put(ObjectCasketCMP.GREATER, SqlArg.CMP.GREATER);
+		compareMap.put(ObjectCasketCMP.LESS, SqlArg.CMP.LESS);
+		compareMap.put(ObjectCasketCMP.GREATEREQ, SqlArg.CMP.GREATEREQ);
+		compareMap.put(ObjectCasketCMP.LESSEQ, SqlArg.CMP.LESSEQ);
+	}
 
 	public EntityFactory(String tableName, Class<?> clazz, SessionImpl session) throws ObjectCasketException {
 

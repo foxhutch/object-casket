@@ -13,23 +13,23 @@ final class PK_TIMESTAMP implements PK__Object<PK_TIMESTAMP> {
 
 	@Id
 	@Column(columnDefinition = "TIMESTAMP")
-	Date cDate;
+	Date cTIMESTAMP;
 
 	PK_TIMESTAMP() {
 	}
 
 	PK_TIMESTAMP(Date x) {
-		this.cDate = x;
+		this.cTIMESTAMP = x;
 	}
 
 	@Override
 	public boolean sameAs(PK_TIMESTAMP x, PK_TIMESTAMP y) {
-		return (x == y) || ((x != null) && (y != null) && (x.cDate.compareTo(y.cDate) == 0));
+		return (x == y) || ((x != null) && (y != null) && (x.cTIMESTAMP.compareTo(y.cTIMESTAMP) == 0));
 	}
 
 	@Override
 	public String toString() {
-		return "PK_TIMESTAMP cDate " + (this.cDate == null ? "NULL" : ("" + this.cDate.toString()));
+		return "PK_TIMESTAMP cTIMESTAMP " + (this.cTIMESTAMP == null ? "NULL" : ("" + this.cTIMESTAMP.toString()));
 	}
 
 }

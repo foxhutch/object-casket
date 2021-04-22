@@ -23,7 +23,7 @@ public class ColumnImpl<T> {
 
 	public SqlPrototype mkPrototype(SqlObjectFactory sqlObjectFactory) throws TableModuleException {
 		SqlPrototype prototype = sqlObjectFactory.mkPrototype();
-		prototype.setType((this.sqlType == null) ? Type.getDefaultType(this.type) : this.sqlType);
+		prototype.setType(((this.sqlType == null) ? Type.getDefaultType(this.type) : this.sqlType), this.type);
 		this.flags.forEach(prototype::setFlag);
 		return prototype;
 	}

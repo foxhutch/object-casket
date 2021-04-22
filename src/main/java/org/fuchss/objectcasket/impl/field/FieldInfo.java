@@ -74,8 +74,7 @@ public class FieldInfo {
 	}
 
 	protected static String fkColumnName(Field field, String tableName, String columnName) {
-		String name = ((columnName == null) || columnName.isEmpty()) ? String.format(FieldInfo.DEFAULT_FK_FORMAT, tableName, field.getName()) : columnName;
-		return name;
+		return ((columnName == null) || columnName.isEmpty()) ? String.format(FieldInfo.DEFAULT_FK_FORMAT, tableName, field.getName()) : columnName;
 	}
 
 	protected static final String DEFAULT_FK_FORMAT = "id_%s_%s";

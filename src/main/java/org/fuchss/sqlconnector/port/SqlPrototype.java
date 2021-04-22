@@ -6,9 +6,11 @@ public interface SqlPrototype {
 
 	void resetFlag(Flag flag);
 
-	void setType(SqlObject.Type type);
+	void setType(SqlObject.Type type, Class<?> javaType);
 
 	SqlObject.Type getType();
+
+	Class<?> getJavaType();
 
 	boolean isAutoIncrementedPrimaryKey();
 

@@ -7,16 +7,8 @@ public abstract class SqlObjectImpl implements SqlObject {
 
 	protected SqlObject.Type sqlType;
 
-	protected SqlObjectImpl(Object obj, SqlObject.Type sqlType) throws ConnectorException {
+	protected SqlObjectImpl(SqlObject.Type sqlType) throws ConnectorException {
 		this.sqlType = sqlType;
-		this.setVal(obj);
-	}
-
-	protected abstract void setVal(Object obj) throws ConnectorException;
-
-	@Override
-	public <T> T get(Class<T> type) {
-		return this.sqlType.get(this, type);
 	}
 
 	protected static class ObjectException extends ConnectorException {
