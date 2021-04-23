@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.o2m;
+package org.fuchss.objectcasket.o2m.fundamentals;
 
 import java.util.Date;
 
@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.fuchss.objectcasket.o2m.common.O2M__S_Object;
 
 @Entity()
 @Table(name = "O2M_S_TIMESTAMP")

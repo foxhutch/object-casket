@@ -110,7 +110,7 @@ public class FieldInfo {
 
 			IncompatibleMany2ManyEntity("%s in %s and %s in %s are incompatible many-to-many field definitions, no matiching join and or inversejoin column."), //
 
-			WrongValueField("%s isn't a proper value field in %s. Impossible to determin the sql type."), //
+			WrongValueField("%s isn't a proper value field in %s. Impossible to determin the sql type. If the type of %1$s is serializable than you can store it as a BLOB by anotating @Column(columnDefinition = \"BLOB\") "), //
 			IllegalPrimaryKey("%s isn't a proper primary key field in %s. Only %s are supported classes or types, only %s with autoincrement and only %s are supported sql types."), //
 
 			MissingProperOneToManyAnnotation(""//

@@ -10,7 +10,7 @@ public class SqlTimestamp extends SqlObjectImpl {
 
 	private static final String TIMESTAMP_FORMAT_STR = "yyyy-MM-dd HH:mm:ss:SSS";
 
-	static class SqlBuilder implements SqlObjectBuilder {
+	static class SqlBuilder extends SqlObjectBuilderImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {

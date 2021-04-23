@@ -1,5 +1,6 @@
-package org.fuchss.objectcasket.o2m;
+package org.fuchss.objectcasket.o2m.common;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface O2M__C_Object<T> {
@@ -20,7 +21,7 @@ public interface O2M__C_Object<T> {
 		return true;
 	}
 
-	default <X extends O2M__S_Object<X>> boolean check_Supplier(Set<X> x, Set<X> y) {
+	default <X extends O2M__S_Object<X>> boolean check_Supplier(Collection<X> x, Collection<X> y) {
 		if (x.isEmpty() && y.isEmpty())
 			return true;
 		if (x.size() != y.size())

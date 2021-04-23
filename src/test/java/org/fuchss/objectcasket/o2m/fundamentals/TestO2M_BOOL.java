@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.o2m;
+package org.fuchss.objectcasket.o2m.fundamentals;
 
 import java.util.Calendar;
 import java.util.Date;

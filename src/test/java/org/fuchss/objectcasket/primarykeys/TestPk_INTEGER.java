@@ -46,10 +46,10 @@ public class TestPk_INTEGER extends TestBase {
 			PK_INTEGER8 sql8_obj = null;
 
 			for (byte i = 0; i < ROWS; i++) {
-				session.persist(sql1_obj = new PK_INTEGER1());
-				session.persist(sql2_obj = new PK_INTEGER2());
-				session.persist(sql3_obj = new PK_INTEGER3());
-				session.persist(sql4_obj = new PK_INTEGER4());
+				session.persist(sql1_obj = new PK_INTEGER1((long) (i + 1)));
+				session.persist(sql2_obj = new PK_INTEGER2(i + 1));
+				session.persist(sql3_obj = new PK_INTEGER3((short) (i + 1)));
+				session.persist(sql4_obj = new PK_INTEGER4((byte) (i + 1)));
 				session.persist(sql5_obj = new PK_INTEGER5(i + 1));
 				session.persist(sql6_obj = new PK_INTEGER6(i + 1));
 				session.persist(sql7_obj = new PK_INTEGER7((short) (i + 1)));
@@ -87,14 +87,22 @@ public class TestPk_INTEGER extends TestBase {
 			Set<PK_INTEGER7> sql_7 = session.getAllObjects(PK_INTEGER7.class);
 			Set<PK_INTEGER8> sql_8 = session.getAllObjects(PK_INTEGER8.class);
 
-			for (PK_INTEGER1 cc : sql_1)	System.out.println(cc);
-			for (PK_INTEGER2 cc : sql_2)	System.out.println(cc);
-			for (PK_INTEGER3 cc : sql_3)	System.out.println(cc);
-			for (PK_INTEGER4 cc : sql_4)	System.out.println(cc);
-			for (PK_INTEGER5 cc : sql_5)	System.out.println(cc);
-			for (PK_INTEGER6 cc : sql_6)	System.out.println(cc);
-			for (PK_INTEGER7 cc : sql_7)	System.out.println(cc);
-			for (PK_INTEGER8 cc : sql_8)	System.out.println(cc);
+			for (PK_INTEGER1 cc : sql_1)
+				System.out.println(cc);
+			for (PK_INTEGER2 cc : sql_2)
+				System.out.println(cc);
+			for (PK_INTEGER3 cc : sql_3)
+				System.out.println(cc);
+			for (PK_INTEGER4 cc : sql_4)
+				System.out.println(cc);
+			for (PK_INTEGER5 cc : sql_5)
+				System.out.println(cc);
+			for (PK_INTEGER6 cc : sql_6)
+				System.out.println(cc);
+			for (PK_INTEGER7 cc : sql_7)
+				System.out.println(cc);
+			for (PK_INTEGER8 cc : sql_8)
+				System.out.println(cc);
 
 			Assert.assertTrue(sql1_obj.check(sql1, sql_1));
 			Assert.assertTrue(sql2_obj.check(sql2, sql_2));

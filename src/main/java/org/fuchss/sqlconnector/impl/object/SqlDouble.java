@@ -69,7 +69,7 @@ public class SqlDouble extends SqlObjectImpl {
 		}
 	}
 
-	static class SqlBuilder implements SqlObjectBuilder {
+	static class SqlBuilder extends SqlObjectBuilderImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {

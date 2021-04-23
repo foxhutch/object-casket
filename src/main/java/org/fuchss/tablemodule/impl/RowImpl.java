@@ -68,7 +68,7 @@ public class RowImpl implements Row {
 		if ((column == this.pkName) && (this.pk != null)) {
 			RowException.Error.DoNotChangePK.build();
 		}
-		this.transactionalValueMap.put(column, this.table.createSqlObject(column, obj));
+		this.transactionalValueMap.put(column, this.table.createSqlObject(column, obj, false));
 	}
 
 	private <T> T getPK(Class<T> type) throws TableModuleException {
@@ -104,9 +104,9 @@ public class RowImpl implements Row {
 		return this.transactionalValueMap;
 	}
 
-	void setUnsave(String column, Object obj) {
+	void setUnsave(String column, Object obj, boolean fromSql) {
 		try {
-			this.transactionalValueMap.put(column, this.table.createSqlObject(column, obj));
+			this.transactionalValueMap.put(column, this.table.createSqlObject(column, obj, fromSql)); // FromSQL
 		} catch (TableModuleException e) {
 			e.printStackTrace();
 		}

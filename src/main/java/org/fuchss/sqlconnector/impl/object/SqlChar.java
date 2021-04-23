@@ -51,7 +51,7 @@ public class SqlChar extends SqlObjectImpl {
 		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
-	static class SqlBuilder implements SqlObjectBuilder {
+	static class SqlBuilder extends SqlObjectBuilderImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {

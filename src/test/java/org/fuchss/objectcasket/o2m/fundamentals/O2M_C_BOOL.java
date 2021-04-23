@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.o2m;
+package org.fuchss.objectcasket.o2m.fundamentals;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.fuchss.objectcasket.o2m.common.O2M__C_Object;
 
 //
 // ------ 1              n -----

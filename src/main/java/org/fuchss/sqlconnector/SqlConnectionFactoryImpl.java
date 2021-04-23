@@ -63,4 +63,9 @@ class SqlConnectionFactoryImpl implements SqlConnectionFactory, SqlPort, SqlData
 		return this.sqlObjectFactory.mkSqlObject(type, obj);
 	}
 
+	@Override
+	public SqlObject mkSqlObjectFromSQL(SqlObject.Type type, Object obj) throws ConnectorException {
+		return this.sqlObjectFactory.mkSqlObjectFromSQL(type, obj);
+	}
+
 }

@@ -26,6 +26,7 @@ public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 		sqliteStringToTypeMap.put("DATE", SqlObject.Type.DATE);
 		sqliteStringToTypeMap.put("TIMESTAMP", SqlObject.Type.TIMESTAMP);
 		sqliteStringToTypeMap.put("DATETIME", SqlObject.Type.TIMESTAMP);
+		sqliteStringToTypeMap.put("BLOB", SqlObject.Type.BLOB);
 	}
 
 	private ResultSet resultSet;

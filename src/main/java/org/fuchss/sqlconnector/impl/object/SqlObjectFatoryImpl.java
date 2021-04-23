@@ -23,12 +23,19 @@ public class SqlObjectFatoryImpl implements SqlObjectFactory {
 		typeToBuilderMap.put(SqlObject.Type.NUMERIC, new SqlNumeric.SqlBuilder());
 		typeToBuilderMap.put(SqlObject.Type.DATE, new SqlDate.SqlBuilder());
 		typeToBuilderMap.put(SqlObject.Type.TIMESTAMP, new SqlTimestamp.SqlBuilder());
+		typeToBuilderMap.put(SqlObject.Type.BLOB, new SqlBlob.SqlBuilder());
 	}
 
 	@Override
 	public SqlObjectImpl mkSqlObject(SqlObject.Type type, Object obj) throws ConnectorException {
 
-		return SqlObjectFatoryImpl.typeToBuilderMap.get(type).mkSqlObject(obj);
+		return SqlObjectFatoryImpl.typeToBuilderMap.get(type).mkSqlObjectFromJava(obj);
+	}
+
+	@Override
+	public SqlObjectImpl mkSqlObjectFromSQL(SqlObject.Type type, Object obj) throws ConnectorException {
+
+		return SqlObjectFatoryImpl.typeToBuilderMap.get(type).mkSqlObjectFromSQL(obj);
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class TestPk_NUMERIC extends TestBase {
 			PK_NUMERIC12 sql12_obj = null;
 
 			for (byte i = 0; i < ROWS; i++) {
-				session.persist(sql1_obj = new PK_NUMERIC1(i + 1));
+				session.persist(sql1_obj = new PK_NUMERIC1((long) (i + 1)));
 				session.persist(sql2_obj = new PK_NUMERIC2(i + 1));
 				session.persist(sql3_obj = new PK_NUMERIC3((short) (i + 1)));
 				session.persist(sql4_obj = new PK_NUMERIC4((byte) (i + 1)));
@@ -115,23 +115,31 @@ public class TestPk_NUMERIC extends TestBase {
 			Set<PK_NUMERIC11> sql_11 = session.getAllObjects(PK_NUMERIC11.class);
 			Set<PK_NUMERIC12> sql_12 = session.getAllObjects(PK_NUMERIC12.class);
 
-			
-			
-			
-			for (PK_NUMERIC1 cc : sql_1)	System.out.println(cc);
-			for (PK_NUMERIC2 cc : sql_2)	System.out.println(cc);
-			for (PK_NUMERIC3 cc : sql_3)	System.out.println(cc);
-			for (PK_NUMERIC4 cc : sql_4)	System.out.println(cc);
-			for (PK_NUMERIC5 cc : sql_5)	System.out.println(cc);
-			for (PK_NUMERIC6 cc : sql_6)	System.out.println(cc);
-			for (PK_NUMERIC7 cc : sql_7)	System.out.println(cc);
-			for (PK_NUMERIC8 cc : sql_8)	System.out.println(cc);
-			for (PK_NUMERIC9 cc : sql_9)	System.out.println(cc);
-			for (PK_NUMERIC10 cc : sql_10)	System.out.println(cc);
-			for (PK_NUMERIC11 cc : sql_11)	System.out.println(cc);
-			for (PK_NUMERIC12 cc : sql_12)	System.out.println(cc);
-			
-			
+			for (PK_NUMERIC1 cc : sql_1)
+				System.out.println(cc);
+			for (PK_NUMERIC2 cc : sql_2)
+				System.out.println(cc);
+			for (PK_NUMERIC3 cc : sql_3)
+				System.out.println(cc);
+			for (PK_NUMERIC4 cc : sql_4)
+				System.out.println(cc);
+			for (PK_NUMERIC5 cc : sql_5)
+				System.out.println(cc);
+			for (PK_NUMERIC6 cc : sql_6)
+				System.out.println(cc);
+			for (PK_NUMERIC7 cc : sql_7)
+				System.out.println(cc);
+			for (PK_NUMERIC8 cc : sql_8)
+				System.out.println(cc);
+			for (PK_NUMERIC9 cc : sql_9)
+				System.out.println(cc);
+			for (PK_NUMERIC10 cc : sql_10)
+				System.out.println(cc);
+			for (PK_NUMERIC11 cc : sql_11)
+				System.out.println(cc);
+			for (PK_NUMERIC12 cc : sql_12)
+				System.out.println(cc);
+
 			Assert.assertTrue(sql1_obj.check(sql1, sql_1));
 			Assert.assertTrue(sql2_obj.check(sql2, sql_2));
 			Assert.assertTrue(sql3_obj.check(sql3, sql_3));

@@ -31,7 +31,10 @@ public interface SqlObject {
 	//
 
 	enum Type {
-		INTEGER(Long.class, Integer.class, Short.class, Byte.class, Long.TYPE, Integer.TYPE, Short.TYPE, Byte.TYPE), //
+		INTEGER(Long.class, Long.TYPE, //
+				Integer.class, Integer.TYPE, //
+				Short.class, Short.TYPE, //
+				Byte.class, Byte.TYPE), //
 		BOOL(Boolean.class, Boolean.TYPE), //
 		DOUBLE(Double.class, Double.TYPE), //
 		FLOAT(Float.class, Float.TYPE), //
@@ -39,6 +42,7 @@ public interface SqlObject {
 		VARCHAR(String.class), //
 		DATE(Date.class), //
 		// The following types aren't default types.
+		BLOB(), //
 		TEXT(), //
 		REAL(), //
 		NUMERIC(), //

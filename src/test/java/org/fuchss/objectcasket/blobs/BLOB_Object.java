@@ -1,8 +1,8 @@
-package org.fuchss.objectcasket.o2m;
+package org.fuchss.objectcasket.blobs;
 
 import java.util.Set;
 
-public interface O2M__S_Object<T> {
+public interface BLOB_Object<T> {
 
 	boolean sameAs(T x, T y);
 
@@ -17,5 +17,4 @@ public interface O2M__S_Object<T> {
 		}
 		return true;
 	}
-
 }
