@@ -1,5 +1,6 @@
 # Object Casket
 ![Maven Deploy (Dev)](https://github.com/foxhutch/object-casket/workflows/Maven%20Deploy%20(Dev)/badge.svg)
+[![Latest Release](https://img.shields.io/github/release/foxhutch/object-casket.svg)](https://github.com/foxhutch/object-casket/releases/latest)
 
 Object Casket is a simple O/R mapper that can be used together with the [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/api/javax/persistence/package-summary.html).
 
