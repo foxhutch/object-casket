@@ -157,7 +157,7 @@ public class TableImpl implements Table {
 		for (String name : this.protoTypes.keySet()) {
 			Object obj = resultSet.getObject(name);
 			if (obj != null) {
-				row.setUnsave(name, obj);
+				row.setUnsave(name, obj, true);
 			}
 		}
 	}
@@ -189,14 +189,17 @@ public class TableImpl implements Table {
 		}
 	}
 
-	SqlObject createSqlObject(String column, Object obj) throws TableModuleException {
+	SqlObject createSqlObject(String column, Object obj, boolean fromSQL) throws TableModuleException {
 		SqlPrototype prototype = this.protoTypes.get(column);
 		if (prototype == null) {
 			TableException.Error.UnknownColulmnName.build(column, this.name);
 		}
 		SqlObject sqlObj = null;
 		try {
-			sqlObj = this.sqlObjectFactory.mkSqlObject(prototype.getType(), obj);
+			if (fromSQL)
+				sqlObj = this.sqlObjectFactory.mkSqlObjectFromSQL(prototype.getType(), obj);
+			else
+				sqlObj = this.sqlObjectFactory.mkSqlObject(prototype.getType(), obj); //////////// from java
 		} catch (ConnectorException e) {
 			TableModuleException.build(e);
 		}
@@ -258,7 +261,7 @@ public class TableImpl implements Table {
 
 	private RowImpl rowExists(ResultSet resultSet) throws SQLException, TableModuleException {
 		Object obj = resultSet.getObject(this.pkName);
-		SqlObject pkObj = this.createSqlObject(this.pkName, obj);
+		SqlObject pkObj = this.createSqlObject(this.pkName, obj, true);
 		return this.primaryKeyToRowMap.get(pkObj);
 	}
 

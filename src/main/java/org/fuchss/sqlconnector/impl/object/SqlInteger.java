@@ -2,61 +2,56 @@ package org.fuchss.sqlconnector.impl.object;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
 import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlInteger extends SqlObjectImpl {
 
-	SqlInteger(Object obj) throws ConnectorException {
-		super(obj, SqlObject.Type.INTEGER);
+	private static final Map<Class<?>, Function<Object, Object>> CAST = new HashMap<>();
+	static {
+		CAST.put(Long.class, n -> n);
+		CAST.put(Integer.class, n -> n == null ? null : ((Number) n).intValue());
+		CAST.put(Short.class, n -> n == null ? null : ((Number) n).shortValue());
+		CAST.put(Byte.class, n -> n == null ? null : ((Number) n).byteValue());
+		CAST.put(Long.TYPE, n -> n == null ? ((long) 0) : ((Number) n).longValue());
+		CAST.put(Integer.TYPE, n -> n == null ? ((int) 0) : ((Number) n).intValue());
+		CAST.put(Short.TYPE, n -> n == null ? ((short) 0) : ((Number) n).shortValue());
+		CAST.put(Byte.TYPE, n -> n == null ? ((byte) 0) : ((Number) n).byteValue());
 	}
 
 	protected Long val;
 
-	@Override
-	public String toString() {
-		return (this.val == null) ? null : ("" + this.val);
+	SqlInteger(Long obj) throws ConnectorException {
+		super(SqlObject.Type.INTEGER);
+		this.val = obj;
 	}
 
 	@Override
-	public void setVal(Object obj) throws ConnectorException {
-		try {
-			Number tmp = (Number) obj;
-			this.val = (obj == null) ? null : tmp.longValue();
-		} catch (ClassCastException e) {
-			ObjectException.Error.Incompatible.build();
-		}
+	public String toString() {
+		return (this.val == null) ? null : "" + this.val;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(Class<T> type) {
+		Function<Object, Object> cast = CAST.get(type);
+		if (cast == null)
+			return null;
+		return (T) CAST.get(type).apply(this.val);
 	}
 
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
-
-		try {
-			if (obj == null) {
-				return this.val == null ? 0 : 1;
-			}
-			Long x = ((Number) obj).longValue();
-			return (this.val == null) ? x.compareTo(0L) : this.val.compareTo(x);
-
-		} catch (ClassCastException e) {
+		Long y = null;
+		if ((obj instanceof Long) || (obj instanceof Integer) || (obj instanceof Short) || (obj instanceof Byte))
+			y = ((Number) obj).longValue();
+		if (y == null)
 			ObjectException.Error.Incompatible.build();
-		}
-		return 0;
-	}
-
-	@Override
-	public Object get() {
-		return this.val;
-	}
-
-	static class SqlBuilder implements SqlObjectBuilder {
-
-		@Override
-		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			return new SqlInteger(obj);
-		}
-
+		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
 	@Override
@@ -64,12 +59,26 @@ public class SqlInteger extends SqlObjectImpl {
 		try {
 			if (this.val == null) {
 				preparedStatement.setNull(pos, java.sql.Types.INTEGER);
-			} else {
-				preparedStatement.setLong(pos, this.val);
-			}
+			} else
+				preparedStatement.setObject(pos, this.val, java.sql.Types.INTEGER);
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}
+	}
+
+	static class SqlBuilder extends SqlObjectBuilderImpl {
+
+		@Override
+		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
+			if (obj == null) {
+				return new SqlInteger(null);
+			}
+			if ((obj instanceof Long) || (obj instanceof Integer) || (obj instanceof Short) || (obj instanceof Byte))
+				return new SqlInteger(((Number) obj).longValue());
+			ObjectException.Error.Incompatible.build();
+			return null;
+		}
+
 	}
 
 }

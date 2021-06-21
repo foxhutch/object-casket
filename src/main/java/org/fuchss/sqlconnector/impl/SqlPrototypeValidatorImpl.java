@@ -12,6 +12,23 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 
+	public static final Map<String, SqlObject.Type> sqliteStringToTypeMap = new HashMap<>();
+	static {
+		sqliteStringToTypeMap.put("INTEGER", SqlObject.Type.INTEGER);
+		sqliteStringToTypeMap.put("BOOL", SqlObject.Type.BOOL);
+		sqliteStringToTypeMap.put("REAL", SqlObject.Type.REAL);
+		sqliteStringToTypeMap.put("DOUBLE", SqlObject.Type.DOUBLE);
+		sqliteStringToTypeMap.put("FLOAT", SqlObject.Type.FLOAT);
+		sqliteStringToTypeMap.put("CHAR", SqlObject.Type.CHAR);
+		sqliteStringToTypeMap.put("TEXT", SqlObject.Type.TEXT);
+		sqliteStringToTypeMap.put("VARCHAR", SqlObject.Type.VARCHAR);
+		sqliteStringToTypeMap.put("NUMERIC", SqlObject.Type.NUMERIC);
+		sqliteStringToTypeMap.put("DATE", SqlObject.Type.DATE);
+		sqliteStringToTypeMap.put("TIMESTAMP", SqlObject.Type.TIMESTAMP);
+		sqliteStringToTypeMap.put("DATETIME", SqlObject.Type.TIMESTAMP);
+		sqliteStringToTypeMap.put("BLOB", SqlObject.Type.BLOB);
+	}
+
 	private ResultSet resultSet;
 	private boolean isPk;
 	private boolean isNotNull;
@@ -29,7 +46,7 @@ public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 	}
 
 	@Override
-	public void set(SqlPrototypeImpl sqlPrototypeImpl) {
+	public void setPrototypeAndValidate(SqlPrototypeImpl sqlPrototypeImpl) {
 		this.sqlPrototypeImpl = sqlPrototypeImpl;
 		this.checkFlags();
 		this.checkType();
@@ -99,28 +116,10 @@ public class SqlPrototypeValidatorImpl implements SqlPrototypeValidator {
 
 	private void checkType() {
 		if (this.type == SqlObject.Type.TIMESTAMP) {
-			this.isValid &= this.sqlPrototypeImpl.getType() == this.type || this.sqlPrototypeImpl.getType() == SqlObject.Type.DATE;
+			this.isValid &= (this.sqlPrototypeImpl.getType() == this.type) || (this.sqlPrototypeImpl.getType() == SqlObject.Type.DATE);
 		} else {
 			this.isValid &= this.sqlPrototypeImpl.getType() == this.type;
 		}
 	}
-
-	public static final Map<String, SqlObject.Type> sqliteStringToTypeMap = new HashMap<String, SqlObject.Type>() {
-		private static final long serialVersionUID = 1L;
-		{
-			this.put("INTEGER", SqlObject.Type.INTEGER);
-			this.put("BOOL", SqlObject.Type.BOOL);
-			this.put("REAL", SqlObject.Type.REAL);
-			this.put("DOUBLE", SqlObject.Type.DOUBLE);
-			this.put("FLOAT", SqlObject.Type.FLOAT);
-			this.put("CHAR", SqlObject.Type.CHAR);
-			this.put("TEXT", SqlObject.Type.TEXT);
-			this.put("VARCHAR", SqlObject.Type.VARCHAR);
-			this.put("NUMERIC", SqlObject.Type.NUMERIC);
-			this.put("DATE", SqlObject.Type.DATE);
-			this.put("TIMESTAMP", SqlObject.Type.TIMESTAMP);
-			this.put("DATETIME", SqlObject.Type.TIMESTAMP);
-		}
-	};
 
 }

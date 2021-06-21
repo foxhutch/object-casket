@@ -14,16 +14,8 @@ import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.tablemodule.port.Transaction;
 
 public class AnonymousClearer {
-	private Map<FieldInfo.Kind, FieldFunction> clearAnonymousFieldMap = new HashMap<FieldInfo.Kind, FieldFunction>() {
-		private static final long serialVersionUID = 1L;
 
-		{ // stored FieldInfos are inverse informations
-			this.put(FieldInfo.Kind.ONE2ONE, AnonymousClearer.this::clearO2O);
-			this.put(FieldInfo.Kind.ONE2MANY, AnonymousClearer.this::clearM2O);
-			this.put(FieldInfo.Kind.MANY2MANY, AnonymousClearer.this::clearM2M);
-
-		}
-	};
+	private Map<FieldInfo.Kind, FieldFunction> clearAnonymousFieldMap = new HashMap<>();
 
 	private FieldInfo info;
 	private Transaction transaction;
@@ -35,6 +27,10 @@ public class AnonymousClearer {
 		this.transaction = transaction;
 		this.entity = entity;
 		this.session = session;
+
+		this.clearAnonymousFieldMap.put(FieldInfo.Kind.ONE2ONE, AnonymousClearer.this::clearO2O);
+		this.clearAnonymousFieldMap.put(FieldInfo.Kind.ONE2MANY, AnonymousClearer.this::clearM2O);
+		this.clearAnonymousFieldMap.put(FieldInfo.Kind.MANY2MANY, AnonymousClearer.this::clearM2M);
 	}
 
 	public void clear() throws ObjectCasketException {

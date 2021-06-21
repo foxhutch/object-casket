@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.fuchss.sqlconnector.impl.object.SqlPrototypeImpl;
 import org.fuchss.sqlconnector.port.SqlArg;
-import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlCmd {
 
@@ -14,7 +13,7 @@ public class SqlCmd {
 		String val = "";
 		for (String column : columns) {
 			attr += ((attr.equals("")) ? "\"" : ", \"") + column + "\"";
-			val += ((val.equals("")) ? "" : ", ") + "?" + "";
+			val += ((val.equals("")) ? "" : ", ") + "?";
 		}
 		if (attr.isEmpty()) {
 			return "INSERT INTO \"" + table + "\" DEFAULT VALUES";
@@ -23,20 +22,16 @@ public class SqlCmd {
 		}
 	}
 
-	static String delete(String table, String column, SqlObject pkObj) {
-		return "DELETE FROM \"" + table + "\" WHERE \"" + column + "\" = " + pkObj.toSqlString();
+	static String delete(String table, String column) {
+		return "DELETE FROM \"" + table + "\" WHERE \"" + column + "\" = ?";
 	}
 
-	static String selectAll(String table) {
-		return "SELECT * FROM \"" + table + "\"";
+	static String selectAll(String tableName) {
+		return "SELECT * FROM \"" + tableName + "\"";
 	}
 
-	static String select(String table, String column, int pk) {
-		return "SELECT * FROM \"" + table + "\" WHERE \"" + column + "\" = " + pk;
-	}
-
-	static String select(String table, String column, SqlObject pkObj) {
-		return "SELECT * FROM \"" + table + "\" WHERE \"" + column + "\" = " + pkObj.toSqlString();
+	static String select(String table, String column) {
+		return "SELECT * FROM \"" + table + "\" WHERE \"" + column + "\" = ?";
 	}
 
 	public static String select(String table, List<SqlArg> args) {
@@ -55,22 +50,13 @@ public class SqlCmd {
 		return "DELETE FROM \"" + table + "\" WHERE " + keyValuePairs;
 	}
 
-	static String update(String table, List<SqlArg> args, String pkColumnName, int pk) {
+	static String update(String table, List<SqlArg> args, String pkColumnName) {
 		String keyValuePairs = "";
 		for (SqlArg column : args) {
 			keyValuePairs += (keyValuePairs.equals("")) ? column.sqlClausePart() : column.sqlClausePart(",");
 		}
 
-		return "UPDATE \"" + table + "\" SET " + keyValuePairs + " WHERE \"" + pkColumnName + "\" = " + pk;
-	}
-
-	static String update(String table, List<SqlArg> args, String pkColumnName, SqlObject pkObj) {
-		String keyValuePairs = "";
-		for (SqlArg column : args) {
-			keyValuePairs += (keyValuePairs.equals("")) ? column.sqlClausePart() : column.sqlClausePart(",");
-		}
-
-		return "UPDATE \"" + table + "\" SET " + keyValuePairs + " WHERE \"" + pkColumnName + "\" = " + pkObj.toSqlString();
+		return "UPDATE \"" + table + "\" SET " + keyValuePairs + " WHERE \"" + pkColumnName + "\" = ?";
 	}
 
 	static String findTableNames(String masterTable) {

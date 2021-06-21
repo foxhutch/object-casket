@@ -9,7 +9,7 @@ import org.fuchss.sqlconnector.port.SqlObject;
 
 public interface SqlPrototypeValidator {
 
-	void set(SqlPrototypeImpl sqlPrototypeImpl);
+	void setPrototypeAndValidate(SqlPrototypeImpl sqlPrototypeImpl);
 
 	boolean validateByInt(SqlObject sqlObj);
 
@@ -21,7 +21,7 @@ public interface SqlPrototypeValidator {
 
 	boolean isValid() throws ConnectorException;
 
-	public static final Map<SqlObject.Type, BiFunction<SqlPrototypeValidator, SqlObject, Boolean>> validationMap = new HashMap<SqlObject.Type, BiFunction<SqlPrototypeValidator, SqlObject, Boolean>>() {
+	public static final Map<SqlObject.Type, BiFunction<SqlPrototypeValidator, SqlObject, Boolean>> validationMap = new HashMap<>() {
 		private static final long serialVersionUID = 1L;
 		{
 			this.put(SqlObject.Type.INTEGER, (validator, sqlObj) -> validator.validateByInt(sqlObj));

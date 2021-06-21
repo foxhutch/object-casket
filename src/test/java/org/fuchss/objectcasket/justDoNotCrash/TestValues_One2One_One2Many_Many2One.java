@@ -12,17 +12,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.fuchss.objectcasket.TestBase;
+import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestValues_One2One_One2Many_Many2One extends TestBase {
 	@Test
 	public void test() throws IOException, ObjectCasketException {
 		Session session = this.storePort.sessionManager().session(this.config());
-		session.declareClass(MValue.class);
-		session.declareClass(Value.class, FValue.class);
+		session.declareClass(MValue.class, Value.class);
+		session.declareClass(FValue.class);
 		session.open();
 
 		Value x = new Value();
@@ -63,11 +64,7 @@ public class TestValues_One2One_One2Many_Many2One extends TestBase {
 		f2.isomorphicValue = y;
 		session.persist(f2);
 
-		if (f1.isomorphicValue == null) {
-			System.out.println("Right");
-		} else {
-			System.out.println("Wrong");
-		}
+		Assert.assertTrue(f1.isomorphicValue == null);
 
 		f3.megamorphicValue = f1;
 		session.persist(f3);

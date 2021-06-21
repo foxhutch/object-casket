@@ -39,11 +39,11 @@ public class TablePrototypeImpl implements TablePrototype {
 	}
 
 	@Override
-	public <T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<SqlPrototype.Flag> flags, T defaultVal) throws TableModuleException {
+	public <T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<SqlPrototype.Flag> flags) throws TableModuleException {
 		this.checkColumnName(columnName);
 		SqlObject.Type calculatedSqlType = this.checkType(type, sqlType);
 		Set<SqlPrototype.Flag> calculatedFlags = this.checkFlags(flags, calculatedSqlType);
-		ColumnImpl<T> col = new ColumnImpl<>(columnName, type, sqlType, calculatedFlags, defaultVal);
+		ColumnImpl<T> col = new ColumnImpl<>(columnName, type, sqlType, calculatedFlags);
 		if (calculatedFlags.contains(SqlPrototype.Flag.PRIMARY_KEY)) {
 			this.pk = col;
 		}
@@ -74,10 +74,10 @@ public class TablePrototypeImpl implements TablePrototype {
 	}
 
 	private void properPrimaryKey(Set<SqlPrototype.Flag> flags, SqlObject.Type sqlType) throws TableModuleException {
-		if (!SqlObject.Type.PK_TYPES.contains(sqlType)) {
+		if (!SqlObject.Type.PK_SQL_TYPES.contains(sqlType)) {
 			TablePrototypeException.Error.WrongPrimaryKeyType.build(sqlType.toString());
 		}
-		if (flags.contains(SqlPrototype.Flag.AUTOINCREMENT) && !SqlObject.Type.AUTOINCREMENT_TYPES.contains(sqlType)) {
+		if (flags.contains(SqlPrototype.Flag.AUTOINCREMENT) && !SqlObject.Type.AUTOINCREMENT_SQL_TYPES.contains(sqlType)) {
 			TablePrototypeException.Error.WrongPrimaryKeyTypeWithAutoIncrement.build(sqlType.toString());
 		}
 	}

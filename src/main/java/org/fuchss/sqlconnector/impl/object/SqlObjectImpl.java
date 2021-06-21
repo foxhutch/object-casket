@@ -1,7 +1,5 @@
 package org.fuchss.sqlconnector.impl.object;
 
-import java.sql.PreparedStatement;
-
 import org.fuchss.sqlconnector.port.ConnectorException;
 import org.fuchss.sqlconnector.port.SqlObject;
 
@@ -9,25 +7,8 @@ public abstract class SqlObjectImpl implements SqlObject {
 
 	protected SqlObject.Type sqlType;
 
-	@Override
-	public void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException {
-	};
-
-	@Override
-	public String toSqlString() {
-		return this.toString();
-	}
-
-	protected SqlObjectImpl(Object obj, SqlObject.Type sqlType) throws ConnectorException {
+	protected SqlObjectImpl(SqlObject.Type sqlType) throws ConnectorException {
 		this.sqlType = sqlType;
-		this.setVal(obj);
-	}
-
-	protected abstract void setVal(Object obj) throws ConnectorException;
-
-	@Override
-	public <T> T get(Class<T> type) {
-		return this.sqlType.get(this, type);
 	}
 
 	protected static class ObjectException extends ConnectorException {

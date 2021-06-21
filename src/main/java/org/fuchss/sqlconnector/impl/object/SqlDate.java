@@ -3,135 +3,93 @@ package org.fuchss.sqlconnector.impl.object;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
 import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlDate extends SqlObjectImpl {
 
-	private static final DateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
-
-	SqlDate(Object obj) throws ConnectorException {
-		super(obj, SqlObject.Type.DATE);
+	private static final Map<Class<?>, Function<Object, Object>> CAST = new HashMap<>();
+	static {
+		CAST.put(Date.class, n -> (n == null) ? null : new Date((Long) n));
+		CAST.put(Long.class, n -> n);
+		CAST.put(Long.TYPE, n -> (n == null) ? 0 : n);
 	}
 
-	protected String val;
+	private static final Map<SqlObject.Type, Integer> TARGET = new HashMap<>();
+	static {
+		TARGET.put(SqlObject.Type.DATE, java.sql.Types.DATE);
+		TARGET.put(SqlObject.Type.TIMESTAMP, java.sql.Types.TIMESTAMP);
+	}
+
+	private static final String DATE_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
+
+	protected Long val;
+	protected DateFormat defaultFormatter;
+
+	SqlDate(Long obj, SqlObject.Type type, String formatStr) throws ConnectorException {
+		super(type);
+		this.defaultFormatter = new SimpleDateFormat(formatStr);
+		this.val = obj;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(Class<T> type) {
+		Function<Object, Object> cast = CAST.get(type);
+		if (cast == null)
+			return null;
+		return (T) CAST.get(type).apply(this.val);
+	}
 
 	@Override
 	public String toString() {
-		return this.val;
-	}
-
-	@Override
-	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
-	}
-
-	private Date getDATE() {
-		try {
-			return (this.val == null) ? null : SqlDate.FORMATTER.parse(this.val);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public Object get() {
-		return this.getDATE();
-	}
-
-	@Override
-	public void setVal(Object obj) throws ConnectorException {
-		try {
-			if (obj == null) {
-				this.val = null;
-			} else {
-				if (obj instanceof String) {
-					this.setStringVal((String) obj);
-					return;
-				}
-				if (obj instanceof Date) {
-					this.setDateVal((Date) obj);
-					return;
-				}
-				if (obj instanceof Long) {
-					this.setLongVal((Long) obj);
-					return;
-				}
-				ObjectException.Error.Incompatible.build();
-			}
-
-		} catch (ClassCastException e) {
-			ObjectException.Error.Incompatible.build();
-		}
+		return (this.val == null) ? null : this.defaultFormatter.format(new Date(this.val));
 	}
 
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
-
-		try {
-			if (obj == null) {
-				return this.val == null ? 0 : 1;
-			}
-			String x = null;
-
-			if (obj instanceof String) {
-				x = (String) obj;
-			}
-			if (obj instanceof Date) {
-				x = SqlDate.FORMATTER.format((Date) obj);
-				x = (x == null) ? null : "'" + x + "'";
-			}
-			if (obj instanceof Long) {
-				x = SqlDate.FORMATTER.format(new Date((Long) obj));
-				x = (x == null) ? null : "'" + x + "'";
-			}
-
-			return (this.val == null) ? -1 : this.toSqlString().compareTo(x);
-
-		} catch (ClassCastException e) {
+		Long y = null;
+		if (obj instanceof Date)
+			y = ((Date) obj).getTime();
+		if (obj instanceof Long)
+			y = (Long) obj;
+		if (y == null)
 			ObjectException.Error.Incompatible.build();
-		}
-		return 0;
-	}
-
-	private void setStringVal(String date) {
-		this.val = "" + date;
-	}
-
-	private void setLongVal(Long ldate) {
-		Date date = new Date(ldate);
-		this.setDateVal(date);
-	}
-
-	private void setDateVal(Date ddate) {
-		this.val = SqlDate.FORMATTER.format(ddate);
-	}
-
-	static class SqlBuilder implements SqlObjectBuilder {
-
-		@Override
-		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			return new SqlDate(obj);
-		}
-
+		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
 	@Override
 	public void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException {
 		try {
 			if (this.val == null) {
-				preparedStatement.setNull(pos, java.sql.Types.TIMESTAMP);
-			} else {
-				preparedStatement.setDate(pos, new java.sql.Date(this.getDATE().getTime()));
-			}
+				preparedStatement.setNull(pos, TARGET.get(this.sqlType));
+			} else
+				preparedStatement.setObject(pos, this.val, TARGET.get(this.sqlType));
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}
+	}
+
+	static class SqlBuilder extends SqlObjectBuilderImpl {
+
+		@Override
+		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
+			if (obj == null)
+				return new SqlDate(null, SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
+			if (obj instanceof Date)
+				return new SqlDate(((Date) obj).getTime(), SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
+			if (obj instanceof Long)
+				return new SqlDate((Long) obj, SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
+			ObjectException.Error.Incompatible.build();
+			return null;
+		}
+
 	}
 
 }

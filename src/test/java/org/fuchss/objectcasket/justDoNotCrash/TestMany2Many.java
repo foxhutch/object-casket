@@ -14,10 +14,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.fuchss.objectcasket.TestBase;
+import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketCMP;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestMany2Many extends TestBase {
@@ -86,23 +87,14 @@ public class TestMany2Many extends TestBase {
 		Map<String, ObjectCasketCMP> selectMap = new HashMap<>();
 		selectMap.put("valueSL", ObjectCasketCMP.EQUAL);
 		Set<LeftSide> leftSides = session.getObjectsByPrototype(lx, selectMap);
-
-		for (LeftSide ls : leftSides) {
-			System.out.println(ls.valueSL + " " + ls.id);
-		}
+		Assert.assertTrue(leftSides.size() == 3);
 
 		RightSide rx = new RightSide();
 		rx.valueSR = "r2";
 		selectMap = new HashMap<>();
 		selectMap.put("valueSR", ObjectCasketCMP.EQUAL);
 		Set<RightSide> rightSides = session.getObjectsByPrototype(rx, selectMap);
-
-		for (RightSide rs : rightSides) {
-			System.out.println(rs.valueSR + " " + rs.id);
-			for (LeftSide ls : rs.left) {
-				System.out.println(ls.valueSL + " " + ls.id);
-			}
-		}
+		Assert.assertTrue(rightSides.size() == 3);
 
 		this.storePort.sessionManager().terminate(session);
 	}

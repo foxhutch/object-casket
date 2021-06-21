@@ -20,11 +20,9 @@ public interface SqlDatabase {
 
 	void deleteRow(String table, String pkColumnName, SqlObject pk) throws ConnectorException;
 
-	//
-
 	void deleteRows(String tableName, List<SqlArg> newArgs) throws ConnectorException;
 
-	void updateRow(String table, List<SqlArg> args, String pkColumnName, int pk) throws ConnectorException;
+	//
 
 	void beginTransaction() throws ConnectorException;
 
@@ -32,15 +30,13 @@ public interface SqlDatabase {
 
 	void rollback() throws ConnectorException;
 
-	ResultSet query(int pk, String table, String column) throws ConnectorException;
-
 	void closeStatement(ResultSet rs) throws ConnectorException;
 
 	// Managing the Database
 
 	List<String> allTables() throws ConnectorException;
 
-	ResultSet getMaxPK(String tableName, String pkColumnName) throws ConnectorException;
+	int getMaxPK(String tableName, String pkColumnName) throws ConnectorException;
 
 	boolean wellformedTableName(String tableName);
 

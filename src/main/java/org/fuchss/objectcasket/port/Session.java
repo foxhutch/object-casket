@@ -69,7 +69,9 @@ public interface Session {
 	 * @throws ObjectCasketException
 	 *             if not possible
 	 */
-	Object joinTableEntity(Object me, Object remote, String joinTableName) throws ObjectCasketException;
+	// Object joinTableEntity(Object me, Object remote, String joinTableName) throws
+	// ObjectCasketException;
+	<T> T joinTableEntity(Object me, Object remote, Class<T> joinTableClass) throws ObjectCasketException;
 
 	/**
 	 * Persist / Save an object.

@@ -24,7 +24,7 @@ public class RowPrototypeImpl implements RowPrototype {
 	@Override
 	public void set(String column, Object value, SqlArg.CMP cmp) throws TableModuleException {
 		this.columnCmpMap.put(column, cmp);
-		this.columnNameValueMap.put(column, this.table.createSqlObject(column, value));
+		this.columnNameValueMap.put(column, this.table.createSqlObject(column, value, false));
 	}
 
 	public List<SqlArg> mkArgs() {

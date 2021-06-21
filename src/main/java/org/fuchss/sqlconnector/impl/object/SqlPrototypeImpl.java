@@ -10,6 +10,8 @@ import org.fuchss.sqlconnector.port.SqlPrototype;
 public class SqlPrototypeImpl implements SqlPrototype {
 
 	private SqlObject.Type type;
+	private Class<?> javaType;
+
 	private List<Flag> flags = new ArrayList<>();
 	private SqlObject defaultValue;
 
@@ -28,13 +30,9 @@ public class SqlPrototypeImpl implements SqlPrototype {
 	}
 
 	@Override
-	public void setDefault(SqlObject val) {
-		this.defaultValue = val;
-	}
-
-	@Override
-	public void setType(SqlObject.Type type) {
+	public void setType(SqlObject.Type type, Class<?> javaType) {
 		this.type = type;
+		this.javaType = javaType;
 	}
 
 	@Override
@@ -44,7 +42,7 @@ public class SqlPrototypeImpl implements SqlPrototype {
 
 	@Override
 	public boolean isAutoIncrementedPrimaryKey() {
-		boolean res = SqlObject.Type.AUTOINCREMENT_TYPES.contains(this.type);
+		boolean res = SqlObject.Type.AUTOINCREMENT_SQL_TYPES.contains(this.type);
 		res &= this.flags.contains(Flag.AUTOINCREMENT);
 		res &= this.flags.contains(Flag.PRIMARY_KEY);
 		return res;
@@ -73,22 +71,24 @@ public class SqlPrototypeImpl implements SqlPrototype {
 		}
 
 		for (Flag flag : this.flags) {
-			if (flag != Flag.PRIMARY_KEY && flag != Flag.AUTOINCREMENT && flag != Flag.UNIQUE) {
+			if ((flag != Flag.PRIMARY_KEY) && (flag != Flag.AUTOINCREMENT) && (flag != Flag.UNIQUE)) {
 				sql += " " + flag.name().replace("_", " ");
 			}
-		}
-		if (this.defaultValue != null) {
-			sql += " DEFAULT  (" + this.defaultValue.toSqlString() + ")";
 		}
 		return sql;
 	}
 
 	public void validate(SqlPrototypeValidator validator) throws SQLException {
-		validator.set(this);
+		validator.setPrototypeAndValidate(this);
 		if (this.defaultValue == null) {
 			return;
 		}
 		SqlPrototypeValidator.validationMap.get(this.type).apply(validator, this.defaultValue);
+	}
+
+	@Override
+	public Class<?> getJavaType() {
+		return this.javaType;
 	}
 
 }

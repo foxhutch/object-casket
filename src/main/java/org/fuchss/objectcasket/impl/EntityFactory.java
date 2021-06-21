@@ -21,12 +21,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.fuchss.objectcasket.impl.field.FieldInfo;
+import org.fuchss.objectcasket.impl.field.FieldInfo.Kind;
 import org.fuchss.objectcasket.impl.field.Many2ManyFieldInfo;
 import org.fuchss.objectcasket.impl.field.Many2OneFieldInfo;
 import org.fuchss.objectcasket.impl.field.One2ManyFieldInfo;
 import org.fuchss.objectcasket.impl.field.One2OneFieldInfo;
 import org.fuchss.objectcasket.impl.field.ValueFieldInfo;
-import org.fuchss.objectcasket.impl.field.FieldInfo.Kind;
 import org.fuchss.objectcasket.port.ObjectCasketCMP;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.sqlconnector.port.SqlArg;
@@ -64,17 +64,14 @@ public class EntityFactory {
 	private TableModuleException tableModuleException;
 	private Constructor<?> defaultConstructor;
 
-	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<ObjectCasketCMP, SqlArg.CMP>() {
-		private static final long serialVersionUID = 1L;
-
-		{
-			this.put(ObjectCasketCMP.EQUAL, SqlArg.CMP.EQUAL);
-			this.put(ObjectCasketCMP.GREATER, SqlArg.CMP.GREATER);
-			this.put(ObjectCasketCMP.LESS, SqlArg.CMP.LESS);
-			this.put(ObjectCasketCMP.GREATEREQ, SqlArg.CMP.GREATEREQ);
-			this.put(ObjectCasketCMP.LESSEQ, SqlArg.CMP.LESSEQ);
-		}
-	};
+	private static Map<ObjectCasketCMP, SqlArg.CMP> compareMap = new HashMap<>();
+	static {
+		compareMap.put(ObjectCasketCMP.EQUAL, SqlArg.CMP.EQUAL);
+		compareMap.put(ObjectCasketCMP.GREATER, SqlArg.CMP.GREATER);
+		compareMap.put(ObjectCasketCMP.LESS, SqlArg.CMP.LESS);
+		compareMap.put(ObjectCasketCMP.GREATEREQ, SqlArg.CMP.GREATEREQ);
+		compareMap.put(ObjectCasketCMP.LESSEQ, SqlArg.CMP.LESSEQ);
+	}
 
 	public EntityFactory(String tableName, Class<?> clazz, SessionImpl session) throws ObjectCasketException {
 
@@ -86,7 +83,9 @@ public class EntityFactory {
 			this.defaultConstructor.setAccessible(true);
 			this.session.register(clazz, this);
 			this.mkValueFieldInfo();
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
+			EntityFactoryException.Error.MissingDefaultConstructor.build(this.clazz.getName());
+		} catch (SecurityException e) {
 			ObjectCasketException.build(e);
 		}
 
@@ -175,7 +174,7 @@ public class EntityFactory {
 	}
 
 	private void setPrototype(RowPrototype rowPrototype, Object prototype, Field field, Map<String, ObjectCasketCMP> cmps) throws TableModuleException, ObjectCasketException, IllegalArgumentException, IllegalAccessException {
-		if (!this.valueFields.contains(field) && !Objects.equals(this.pkField , field)) {
+		if (!this.valueFields.contains(field) && !Objects.equals(this.pkField, field)) {
 			EntityFactoryException.Error.KISSLoad.build(field.getName());
 		}
 		field.setAccessible(true);
@@ -342,7 +341,7 @@ public class EntityFactory {
 	private void mkColumn(ValueFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), info.getColumnSqlType(), info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), info.getColumnSqlType(), info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -352,7 +351,7 @@ public class EntityFactory {
 	private void mkColumn(Many2OneFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -363,7 +362,7 @@ public class EntityFactory {
 	private void mkColumn(One2OneFieldInfo info) {
 		try {
 			if (this.tableModuleException == null) {
-				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(info.getColumnName(), info.getColumnType(), null, info.getFlags());
 			}
 		} catch (TableModuleException exc) {
 			this.tableModuleException = exc;
@@ -378,22 +377,22 @@ public class EntityFactory {
 			}
 			if (info.getKind() == Kind.ONE2ONE) {
 				One2OneFieldInfo o2oInfo = (One2OneFieldInfo) info;
-				this.tablePrototype.addColumn(o2oInfo.getRemoteFkColumnName(), o2oInfo.getMyPkType(), null, info.getFlags(), null);
+				this.tablePrototype.addColumn(o2oInfo.getRemoteFkColumnName(), o2oInfo.getMyPkType(), null, info.getFlags());
 				this.columnNameFkFieldInfoMap.put(o2oInfo.getRemoteFkColumnName(), o2oInfo);
 			}
 			if (info.getKind() == Kind.ONE2MANY) {
 				One2ManyFieldInfo o2mInfo = (One2ManyFieldInfo) info;
-				this.tablePrototype.addColumn(o2mInfo.getRemoteFkColumnName(), o2mInfo.getMyPkType(), null, o2mInfo.getFlags(), null);
+				this.tablePrototype.addColumn(o2mInfo.getRemoteFkColumnName(), o2mInfo.getMyPkType(), null, o2mInfo.getFlags());
 				this.columnNameFkFieldInfoMap.put(o2mInfo.getRemoteFkColumnName(), o2mInfo);
 			}
 			if (info.getKind() == Kind.MANY2MANY) {
 				Many2ManyFieldInfo m2mInfo = (Many2ManyFieldInfo) info;
 				if (m2mInfo.isAnonymousRemoteFK() && !this.tablePrototype.getColumnNames().contains(m2mInfo.getRemoteFKColumnName())) {
-					this.tablePrototype.addColumn(m2mInfo.getRemoteFKColumnName(), m2mInfo.getRemotePkType(), null, m2mInfo.getFlags(), null);
+					this.tablePrototype.addColumn(m2mInfo.getRemoteFKColumnName(), m2mInfo.getRemotePkType(), null, m2mInfo.getFlags());
 					this.columnNameFkFieldInfoMap.put(m2mInfo.getRemoteFKColumnName(), m2mInfo);
 				}
 				if (m2mInfo.isAnonymousOwnFK() && !this.tablePrototype.getColumnNames().contains(m2mInfo.getOwnFKColumnName())) {
-					this.tablePrototype.addColumn(m2mInfo.getOwnFKColumnName(), m2mInfo.getMyPkType(), null, m2mInfo.getFlags(), null);
+					this.tablePrototype.addColumn(m2mInfo.getOwnFKColumnName(), m2mInfo.getMyPkType(), null, m2mInfo.getFlags());
 					this.columnNameFkFieldInfoMap.put(m2mInfo.getOwnFKColumnName(), m2mInfo);
 				}
 			}
@@ -451,7 +450,8 @@ public class EntityFactory {
 	}
 
 	private void mkValueField(Field field, String tableName) throws ObjectCasketException {
-		if (field.isAnnotationPresent(Transient.class) || field.isAnnotationPresent(OneToOne.class) || field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class)) {
+		if (field.isAnnotationPresent(Transient.class) || field.isAnnotationPresent(OneToOne.class) || field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToMany.class)
+				|| field.isAnnotationPresent(ManyToMany.class)) {
 			return;
 		}
 		field.setAccessible(true);
@@ -534,7 +534,9 @@ public class EntityFactory {
 			KISSJoinTable("Impossible to delete join table entity directly. Remove over many-to-many association."), //
 			NonUniquePK("The pk object %s is not unique or unknown in table %s. The database is corruped!"), //
 			KISSLoad("Impossible to use non value field %s for protoyping."), //
-			UnknownField("The field %s is not a stored value field of class %s!"); //
+			UnknownField("The field %s is not a stored value field of class %s!"), //
+			MissingDefaultConstructor("There is no default constructor for class %s!"); //
+
 			private String str;
 
 			private Error(String str) {

@@ -2,62 +2,67 @@ package org.fuchss.sqlconnector.impl.object;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
 import org.fuchss.sqlconnector.port.SqlObject;
 
 public class SqlChar extends SqlObjectImpl {
 
-	SqlChar(Object obj) throws ConnectorException {
-		super(obj, SqlObject.Type.CHAR);
+	private static final Map<Class<?>, Function<Object, Object>> CAST = new HashMap<>();
+	static {
+		CAST.put(Character.class, n -> n);
+		CAST.put(String.class, n -> n == null ? null : n.toString());
+		CAST.put(Character.TYPE, n -> (n == null) ? ((char) 0) : n);
 	}
 
-	protected String val;
+	protected Character val;
+
+	SqlChar(Character obj) throws ConnectorException {
+		super(SqlObject.Type.CHAR);
+		this.val = obj;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(Class<T> type) {
+		Function<Object, Object> cast = CAST.get(type);
+		if (cast == null)
+			return null;
+		return (T) CAST.get(type).apply(this.val);
+	}
 
 	@Override
 	public String toString() {
-		return this.val;
-	}
-
-	@Override
-	public String toSqlString() {
-		return this.val == null ? null : "'" + this.val + "'";
-	}
-
-	@Override
-	public Object get() {
-		return this.val == null ? null : this.val.charAt(0);
-	}
-
-	@Override
-	public void setVal(Object obj) throws ConnectorException {
-		try {
-			this.val = obj == null ? null : Character.toString(obj.toString().charAt(0));
-		} catch (ClassCastException e) {
-			ObjectException.Error.Incompatible.build();
-		}
+		return (this.val == null) ? null : ("" + this.val);
 	}
 
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
-
-		try {
-			if (obj == null) {
-				return this.val == null ? 0 : 1;
-			}
-			String x = (obj instanceof Character) ? "'" + Character.toString((Character) obj) + "'" : obj.toString();
-			return (this.val == null) ? -1 : this.toSqlString().compareTo(x);
-		} catch (ClassCastException e) {
+		Character y = null;
+		if (obj instanceof String)
+			y = ((String) obj).charAt(0);
+		if (obj instanceof Character)
+			y = (Character) obj;
+		if (y == null)
 			ObjectException.Error.Incompatible.build();
-		}
-		return 0;
+		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
-	static class SqlBuilder implements SqlObjectBuilder {
+	static class SqlBuilder extends SqlObjectBuilderImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			return new SqlChar(obj);
+			if (obj == null)
+				return new SqlChar(null);
+			if (obj instanceof String)
+				return new SqlChar(((String) obj).charAt(0));
+			if (obj instanceof Character)
+				return new SqlChar((Character) obj);
+			ObjectException.Error.Incompatible.build();
+			return null;
 		}
 
 	}
@@ -67,9 +72,8 @@ public class SqlChar extends SqlObjectImpl {
 		try {
 			if (this.val == null) {
 				preparedStatement.setNull(pos, java.sql.Types.CHAR);
-			} else {
-				preparedStatement.setString(pos, this.val);
-			}
+			} else
+				preparedStatement.setObject(pos, this.val, java.sql.Types.CHAR);
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}

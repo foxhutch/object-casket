@@ -7,7 +7,7 @@ import org.fuchss.sqlconnector.port.SqlPrototype.Flag;
 
 public interface TablePrototype {
 
-	<T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<Flag> flags, T defaultVal) throws TableModuleException;
+	<T> void addColumn(String columnName, Class<T> type, SqlObject.Type sqlType, Set<Flag> flags) throws TableModuleException;
 
 	void removeColumn(String columnName) throws TableModuleException;
 
