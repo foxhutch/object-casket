@@ -21,15 +21,6 @@ public interface SqlObject {
 															// -1 x>y => +1 /
 															// x=y => 0
 
-	//
-	// This objects store the mapping info: //
-	// 1. A Set of proper set of storage classes to store the data for the Sql data
-	// type //
-	// 2. A dynamic cast to achieve the Java attribute class: SqlObjectToJava //
-	// 3. A dynamic cast to achieve one of the appropriate storage classes for
-	// Sql-Values: SqlToSqlObject //
-	//
-
 	enum Type {
 		INTEGER(Long.class, Long.TYPE, //
 				Integer.class, Integer.TYPE, //
@@ -50,17 +41,17 @@ public interface SqlObject {
 
 		public static final Set<SqlObject.Type> PK_SQL_TYPES = new HashSet<>();
 		static {
-			PK_SQL_TYPES.add(SqlObject.Type.INTEGER);
-			PK_SQL_TYPES.add(SqlObject.Type.BOOL);
-			PK_SQL_TYPES.add(SqlObject.Type.DOUBLE);
-			PK_SQL_TYPES.add(SqlObject.Type.NUMERIC);
-			PK_SQL_TYPES.add(SqlObject.Type.FLOAT);
-			PK_SQL_TYPES.add(SqlObject.Type.CHAR);
-			PK_SQL_TYPES.add(SqlObject.Type.VARCHAR);
-			PK_SQL_TYPES.add(SqlObject.Type.TEXT);
-			PK_SQL_TYPES.add(SqlObject.Type.DATE);
-			PK_SQL_TYPES.add(SqlObject.Type.TIMESTAMP);
-			PK_SQL_TYPES.add(SqlObject.Type.REAL);
+			PK_SQL_TYPES.add(INTEGER);
+			PK_SQL_TYPES.add(BOOL);
+			PK_SQL_TYPES.add(DOUBLE);
+			PK_SQL_TYPES.add(NUMERIC);
+			PK_SQL_TYPES.add(FLOAT);
+			PK_SQL_TYPES.add(CHAR);
+			PK_SQL_TYPES.add(VARCHAR);
+			PK_SQL_TYPES.add(TEXT);
+			PK_SQL_TYPES.add(DATE);
+			PK_SQL_TYPES.add(TIMESTAMP);
+			PK_SQL_TYPES.add(REAL);
 		}
 
 		public static final Set<Class<?>> PK_JAVA_TYPES = new HashSet<>();
@@ -70,7 +61,7 @@ public interface SqlObject {
 
 		public static final Set<SqlObject.Type> AUTOINCREMENT_SQL_TYPES = new HashSet<>();
 		static {
-			AUTOINCREMENT_SQL_TYPES.add(SqlObject.Type.INTEGER);
+			AUTOINCREMENT_SQL_TYPES.add(INTEGER);
 		}
 
 		public static final Set<Class<?>> AUTOINCREMENT_JAVA_TYPES = new HashSet<>();
@@ -88,6 +79,31 @@ public interface SqlObject {
 				type.types.forEach(t -> Type.typeMap.put(t, type));
 		}
 
+		private static Map<String, Set<Class<?>>> possibleClassMap = new HashMap<>();
+		static {
+			for (Type type : Type.values()) {
+				possibleClassMap.put(type.name(), new HashSet<>(type.types));
+			}
+			possibleClassMap.get(TEXT.name()).addAll(possibleClassMap.get(VARCHAR.name()));
+			possibleClassMap.get(REAL.name()).addAll(possibleClassMap.get(DOUBLE.name()));
+			possibleClassMap.get(REAL.name()).addAll(possibleClassMap.get(FLOAT.name()));
+			possibleClassMap.get(NUMERIC.name()).addAll(possibleClassMap.get(INTEGER.name()));
+			possibleClassMap.get(NUMERIC.name()).addAll(possibleClassMap.get(REAL.name()));
+			possibleClassMap.get(TIMESTAMP.name()).addAll(possibleClassMap.get(DATE.name()));
+
+		}
+
+		public static Type getDefaultType(Class<?> clazz, String columnDefinition) {
+			Type type = typeMap.get(clazz);
+			if ((columnDefinition == null) || columnDefinition.isEmpty())
+				return type;
+			String typeName = columnDefinition.strip().toUpperCase();
+			if (BLOB.name().equals(typeName))
+				return BLOB;
+			Set<Class<?>> possibleClasses = possibleClassMap.get(typeName);
+			return ((possibleClasses == null) || !possibleClasses.contains(clazz)) ? null : type;
+		}
+
 		public static Type getDefaultType(Class<?> clazz) {
 			return Type.typeMap.get(clazz);
 		}
@@ -101,17 +117,6 @@ public interface SqlObject {
 
 		private Type(Class<?>... classes) {
 			this.types = Arrays.asList(classes);
-		}
-
-		public List<? extends Class<?>> mapedTypes() {
-			return this.types;
-		}
-
-		public boolean isAssignable(String typeName) {
-			if (this.name().equals(typeName)) {
-				return true;
-			}
-			return typeName.equals("DATETIME") ? (this.name().equals("DATE") || this.name().equals("TIMESTAMP")) : false;
 		}
 
 	}

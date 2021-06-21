@@ -12,107 +12,144 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.fuchss.objectcasket.impl.EntityFactory;
 import org.fuchss.objectcasket.impl.SessionImpl;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.sqlconnector.port.SqlPrototype;
 
 public class Many2OneFieldInfo extends FieldInfo {
-	private Class<?> foreignClass;
-	private String foreignTableName;
 
-	private Field foreignField;
-	private FieldInfo.Kind foreignFieldKind;
+	private ColumnInfo foreignColumnInfo;
 
 	public Many2OneFieldInfo(Field field, Class<?> entityClass, String tableName, SessionImpl session) throws ObjectCasketException {
-		super(field, entityClass, Kind.MANY2ONE, session);
-		this.tableName = tableName;
-		this.checkField();
-		this.foreignClassAndTable();
+		super(field, entityClass, tableName, Kind.MANY2ONE, session);
+
+		Field pkField = this.checkField().getPkField();
+		if (pkField == null) {
+			FieldException.Error.MissingPrimaryKey.build(entityClass.getSimpleName());
+		}
+		this.ownColumnInfo.setJavaType(pkField.getType());
+
 		this.columnNameAndFlags();
-		this.findForeignField();
-		this.columnType = this.session.getEntityFactory(this.foreignClass).getPkField().getType();
+		this.mkForeignColumnInfo();
 	}
 
-	private void checkField() throws ObjectCasketException {
-		if (!this.field.getType().isAnnotationPresent(Entity.class)) {
-			String foreignClassName = this.field.getType().getSimpleName();
-			String fieldName = this.field.getName();
-			String entityClassName = this.field.getDeclaringClass().getSimpleName();
+	private void mkForeignColumnInfo() throws ObjectCasketException {
+
+		Class<?> foreignClass = this.findForeignClass();
+
+		String foreignTableName = foreignClass.getAnnotation(Table.class).name();
+		if (foreignTableName.isBlank())
+			foreignTableName = foreignClass.getSimpleName();
+
+		Field foreignM2MField = this.findForeignM2MField(foreignClass, foreignTableName);
+		Field foreignO2MField = this.findForeignO2MField(foreignClass, foreignTableName);
+
+		if (foreignM2MField != null) {
+			this.foreignColumnInfo = ColumnInfo.mkForeignColumnInfo(foreignClass, foreignM2MField, null, foreignTableName, Kind.MANY2MANY);
+		}
+		if (foreignO2MField != null) {
+			JoinColumn joinColumn = foreignO2MField.getAnnotation(JoinColumn.class);
+			String remoteFkColumnName = FieldInfo.fkJoinColumnName(foreignO2MField, foreignTableName, joinColumn);
+
+			this.foreignColumnInfo = ColumnInfo.mkForeignColumnInfo(foreignClass, foreignO2MField, remoteFkColumnName, foreignTableName, Kind.ONE2MANY);
+		}
+		if ((foreignM2MField == null) && (foreignO2MField == null))
+			this.foreignColumnInfo = ColumnInfo.mkForeignColumnInfo(foreignClass, null, null, foreignTableName, Kind.ONE2MANY);
+
+		if ((foreignM2MField != null) && (foreignO2MField != null))
+			FieldException.Error.WrongMany2OneField.build(this.ownColumnInfo.getField().getName(), this.ownColumnInfo.getEntityClass().getSimpleName(), foreignM2MField.getName(), foreignO2MField.getName());
+	}
+
+	private Class<?> findForeignClass() throws ObjectCasketException {
+
+		Field field = this.ownColumnInfo.getField();
+		Class<?> foreignClass = field.getType();
+
+		EntityFactory ef = this.session.getEntityFactory(foreignClass);
+		if (ef == null)
+			FieldException.Error.MissingEntityFactory.build(field.getName(), this.ownColumnInfo.getEntityClass().getSimpleName(), foreignClass.getSimpleName());
+		return foreignClass;
+
+	}
+
+	private EntityFactory checkField() throws ObjectCasketException {
+		Field field = this.ownColumnInfo.getField();
+		String foreignClassName = field.getType().getSimpleName();
+		String fieldName = field.getName();
+		String entityClassName = field.getDeclaringClass().getSimpleName();
+		if (!field.getType().isAnnotationPresent(Entity.class)) {
 			FieldException.Error.WrongEntity.build(foreignClassName, fieldName, entityClassName);
 		}
-	}
+		EntityFactory ef = this.session.getEntityFactory(field.getType());
+		if (ef == null)
+			FieldException.Error.MissingEntityFactory.build(fieldName, entityClassName, foreignClassName);
+		return ef;
 
-	private void foreignClassAndTable() {
-		this.foreignClass = this.field.getType();
-		this.foreignTableName = (this.foreignTableName = this.foreignClass.getAnnotation(Table.class).name()).isEmpty() ? this.foreignClass.getSimpleName() : this.foreignTableName;
 	}
 
 	private void columnNameAndFlags() {
-		Column column = this.field.getAnnotation(Column.class);
-		this.columnName = FieldInfo.fkColumnName(this.field, this.foreignTableName, column == null ? null : column.name());
+		Field field = this.ownColumnInfo.getField();
+		Column column = field.getAnnotation(Column.class);
 		if ((column != null) && !column.nullable()) {
 			this.addFlag(SqlPrototype.Flag.NOT_NULL);
 		}
 	}
 
-	private void findForeignField() throws ObjectCasketException {
+	private Field findForeignM2MField(Class<?> foreignClass, String foreignTableName) throws ObjectCasketException {
+		Field foreignField = null;
 		List<Field> possibleM2MFields = new ArrayList<>();
-		FieldInfo.findPossibleFields(this.foreignClass, possibleM2MFields, ManyToMany.class);
+		FieldInfo.findPossibleFields(foreignClass, possibleM2MFields, ManyToMany.class);
 		for (Field possibleField : possibleM2MFields) {
-			if (this.checkAndSetForeignM2MField(possibleField)) {
+			if (this.isForeignM2MField(possibleField, foreignTableName)) {
+				foreignField = possibleField;
+				foreignField.setAccessible(true);
 				break;
 			}
 		}
-		if (this.foreignField != null) {
-			return;
-		}
-		List<Field> possibleO2MFields = new ArrayList<>();
-		FieldInfo.findPossibleFields(this.foreignClass, possibleO2MFields, OneToMany.class);
-		for (Field possibleField : possibleO2MFields) {
-			if (this.checkAndSetForeignO2MField(possibleField)) {
-				break;
-			}
-		}
+		return foreignField;
 	}
 
-	private boolean checkAndSetForeignM2MField(Field possibleField) {
+	private Field findForeignO2MField(Class<?> foreignClass, String foreignTableName) throws ObjectCasketException {
+		Field foreignField = null;
+		List<Field> possibleO2MFields = new ArrayList<>();
+		FieldInfo.findPossibleFields(foreignClass, possibleO2MFields, OneToMany.class);
+		for (Field possibleField : possibleO2MFields) {
+			if (this.isForeignO2MField(possibleField, foreignTableName)) {
+				foreignField = possibleField;
+				foreignField.setAccessible(true);
+				break;
+			}
+		}
+		return foreignField;
+	}
+
+	private boolean isForeignM2MField(Field possibleField, String foreignTableName) {
 		JoinTable table = possibleField.getAnnotation(JoinTable.class);
 		if (table == null) {
 			return false;
 		}
 		JoinColumn[] ownJoinColumns = table.inverseJoinColumns();
-		String ownFKColumnName = FieldInfo.fkColumnName(possibleField, this.foreignTableName, (ownJoinColumns.length == 1) ? ownJoinColumns[0].name() : null);
-		if (this.columnName.equals(ownFKColumnName)) {
-			possibleField.setAccessible(true);
-			this.foreignField = possibleField;
-			this.kind = FieldInfo.Kind.MANY2MANY;
-			return true;
-		}
-		return false;
+		String ownFKColumnName = FieldInfo.fkJoinColumnName(possibleField, foreignTableName, (ownJoinColumns.length == 1) ? ownJoinColumns[0] : null);
+		return this.ownColumnInfo.getName().equals(ownFKColumnName);
 	}
 
-	private boolean checkAndSetForeignO2MField(Field possibleField) {
+	private boolean isForeignO2MField(Field possibleField, String foreignTableName) {
 		JoinColumn joinColumn = possibleField.getAnnotation(JoinColumn.class);
-		String remoteFkColumnName = FieldInfo.fkColumnName(possibleField, this.foreignTableName, joinColumn == null ? null : joinColumn.name());
-		if (this.columnName.equals(remoteFkColumnName)) {
-			possibleField.setAccessible(true);
-			this.foreignField = possibleField;
-			this.foreignFieldKind = FieldInfo.Kind.ONE2MANY;
-			return true;
-		}
-		return false;
+		String remoteFkColumnName = FieldInfo.fkJoinColumnName(possibleField, foreignTableName, joinColumn);
+		return this.ownColumnInfo.getName().equals(remoteFkColumnName);
 	}
 
 	public Class<?> getForeignClass() {
-		return this.foreignClass;
+		return this.foreignColumnInfo.getEntityClass();
 	}
 
 	public FieldInfo.Kind getForeignFieldKind() {
-		return this.foreignFieldKind;
+		return this.foreignColumnInfo.getKind();
 	}
 
 	public Field getForeignField() {
-		return this.foreignField;
+		return this.foreignColumnInfo.getField();
 	}
 
 }

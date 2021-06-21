@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,75 +16,88 @@ import org.fuchss.objectcasket.impl.SessionImpl;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 
 public class One2ManyFieldInfo extends FieldInfo {
-	private Class<?> foreignClass;
-	private String foreignTableName;
 
-	private String remoteFkColumnName;
-	private Field remoteFkField;
+	private ColumnInfo foreignColumnInfo;
+
 	private Class<?> myPkType;
 
 	public One2ManyFieldInfo(Field field, Class<?> entityClass, Class<?> myPkType, String tableName, SessionImpl session) throws ObjectCasketException {
-		super(field, entityClass, Kind.ONE2MANY, session);
-		this.tableName = tableName;
+		super(field, entityClass, tableName, Kind.ONE2MANY, session);
 		this.myPkType = myPkType;
-		this.checkFieldAndSetForeignClass();
-		this.remoteFK();
+		this.checkField();
+
+		this.mkForeignColumnInfo();
 	}
 
-	private void checkFieldAndSetForeignClass() throws ObjectCasketException {
-		String fieldName = this.field.getName();
-		String entityClassName = this.field.getDeclaringClass().getSimpleName();
-		if (!Set.class.isAssignableFrom(this.field.getType())) {
-			FieldException.Error.WrongOne2ManyField.build(fieldName, entityClassName);
-		}
-		this.foreignClass = (Class<?>) ((ParameterizedType) (this.field.getGenericType())).getActualTypeArguments()[0];
-		if (!this.foreignClass.isAnnotationPresent(Entity.class)) {
-			String foreignClassName = this.foreignClass.getSimpleName();
-			FieldException.Error.WrongOne2ManyEntity.build(foreignClassName, fieldName, entityClassName);
-		}
-		this.foreignTableName = (this.foreignTableName = this.foreignClass.getAnnotation(Table.class).name()).isEmpty() ? this.foreignClass.getSimpleName() : this.foreignTableName;
-	}
-
-	private void remoteFK() throws ObjectCasketException {
-		JoinColumn joinColumn = this.field.getAnnotation(JoinColumn.class);
-		this.remoteFkColumnName = FieldInfo.fkColumnName(this.field, this.tableName, joinColumn == null ? null : joinColumn.name());
-		this.setRemoteFkField();
-		if (this.remoteFkField == null) {
-			Set<FieldInfo> anonymousFKfieldInfos = this.session.getAnonymousFKfieldInfosMap().get(this.foreignClass);
-			if (anonymousFKfieldInfos == null) {
-				this.session.getAnonymousFKfieldInfosMap().put(this.foreignClass, anonymousFKfieldInfos = new HashSet<>());
-			}
-			anonymousFKfieldInfos.add(this);
+	private void checkField() throws ObjectCasketException {
+		Field field = this.ownColumnInfo.getField();
+		if (!Set.class.isAssignableFrom(field.getType())) {
+			FieldException.Error.WrongOne2ManyField.build(field.getName(), field.getDeclaringClass().getSimpleName());
 		}
 	}
 
-	private void setRemoteFkField() {
+	private void mkForeignColumnInfo() throws ObjectCasketException {
+
+		Class<?> foreignClass = this.findForeignClass();
+		String remoteFkColumnName = this.mkRemoteFkColumnName();
+		Field remoteFkField = this.findRemoteFkField(foreignClass, remoteFkColumnName);
+
+		String foreignTableName = foreignClass.getAnnotation(Table.class).name();
+		if (foreignTableName.isBlank())
+			foreignTableName = foreignClass.getSimpleName();
+
+		this.foreignColumnInfo = ColumnInfo.mkForeignColumnInfo(foreignClass, remoteFkField, remoteFkColumnName, foreignTableName, Kind.MANY2ONE);
+	}
+
+	private Class<?> findForeignClass() throws ObjectCasketException {
+		Field field = this.ownColumnInfo.getField();
+		Class<?> foreignClass = (Class<?>) ((ParameterizedType) (field.getGenericType())).getActualTypeArguments()[0];
+		if (!foreignClass.isAnnotationPresent(Entity.class)) {
+			FieldException.Error.WrongOne2ManyEntity.build(foreignClass.getSimpleName(), field.getName(), field.getDeclaringClass().getSimpleName());
+		}
+		if (this.session.getEntityFactory(foreignClass) == null) {
+			FieldException.Error.MissingEntityFactory.build(field.getName(), field.getDeclaringClass().getSimpleName(), foreignClass.getSimpleName());
+		}
+		return foreignClass;
+	}
+
+	private String mkRemoteFkColumnName() {
+		Field field = this.ownColumnInfo.getField();
+		JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
+		return FieldInfo.fkJoinColumnName(field, this.ownColumnInfo.getTableName(), joinColumn);
+	}
+
+	private Field findRemoteFkField(Class<?> foreignClass, String remoteFkColumnName) {
+		Field remoteFkField = null;
 		List<Field> possibleFields = new ArrayList<>();
-		FieldInfo.findPossibleFields(this.foreignClass, possibleFields, ManyToOne.class);
-
+		FieldInfo.findPossibleFields(foreignClass, possibleFields, ManyToOne.class);
 		for (Field possibleField : possibleFields) {
-			if (this.checkAndSetFkField(possibleField)) {
+			if (this.isFkField(possibleField, remoteFkColumnName)) {
+				remoteFkField = possibleField;
+				remoteFkField.setAccessible(true);
 				break;
 			}
 		}
+		if (remoteFkField == null) {
+			Set<FieldInfo> anonymousFKfieldInfos = this.session.getAnonymousFKfieldInfosMap().get(foreignClass);
+			if (anonymousFKfieldInfos == null) {
+				this.session.getAnonymousFKfieldInfosMap().put(foreignClass, anonymousFKfieldInfos = new HashSet<>());
+			}
+			anonymousFKfieldInfos.add(this);
+		}
+		return remoteFkField;
 	}
 
-	private boolean checkAndSetFkField(Field possibleField) {
+	private boolean isFkField(Field possibleField, String remoteFkColumnName) {
 		if (!this.getEntityClass().equals(possibleField.getType())) {
 			return false;
 		}
-		Column column = possibleField.getAnnotation(Column.class);
-		String col = FieldInfo.fkColumnName(possibleField, this.tableName, column == null ? null : column.name());
-		if (!this.remoteFkColumnName.equals(col)) {
-			return false;
-		}
-		this.remoteFkField = possibleField;
-		this.remoteFkField.setAccessible(true);
-		return true;
+		String col = FieldInfo.fkColumnName(possibleField, this.ownColumnInfo.getTableName());
+		return remoteFkColumnName.equals(col);
 	}
 
 	public String getRemoteFkColumnName() {
-		return this.remoteFkColumnName;
+		return this.foreignColumnInfo.getName();
 	}
 
 	public Class<?> getMyPkType() {
@@ -93,11 +105,11 @@ public class One2ManyFieldInfo extends FieldInfo {
 	}
 
 	public Field getRemoteFkField() {
-		return this.remoteFkField;
+		return this.foreignColumnInfo.getField();
 	}
 
 	public Class<?> getForeignClass() {
-		return this.foreignClass;
+		return this.foreignColumnInfo.getEntityClass();
 	}
 
 }

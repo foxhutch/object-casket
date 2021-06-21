@@ -91,18 +91,19 @@ public class TransactionImpl implements Transaction {
 	}
 
 	private void saveOrUpdate() throws ConnectorException, SQLException {
-		for (RowImpl row : this.createList) {
-			if (this.deleteListMap.containsKey(row)) {
-				continue;
-			}
-			this.createListMap.get(row).saveOrUpdate(row);
-		}
 		for (RowImpl row : this.writeList) {
 			if (this.deleteListMap.containsKey(row)) {
 				continue;
 			}
 			this.writeListMap.get(row).saveOrUpdate(row);
 		}
+		for (RowImpl row : this.createList) {
+			if (this.deleteListMap.containsKey(row)) {
+				continue;
+			}
+			this.createListMap.get(row).saveOrUpdate(row);
+		}
+
 	}
 
 	private void delete() throws ConnectorException {

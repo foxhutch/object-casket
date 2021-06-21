@@ -3,6 +3,7 @@ package org.fuchss.tablemodule.impl;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
@@ -76,9 +77,12 @@ public class TableModuleImpl implements TableModule {
 	}
 
 	private Map<String, SqlPrototype> mkColumnPrototypes(TablePrototypeImpl tablePrototypeImpl) throws TableModuleException {
-		Map<String, SqlPrototype> prototypes = new HashMap<>();
+		Map<String, SqlPrototype> prototypes = new TreeMap<>(); // TreeMap<>()
 		for (String name : tablePrototypeImpl.getColumnNames()) {
-			prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory));
+			if (name == null)
+				System.out.println("oops");
+			else
+				prototypes.put(name, tablePrototypeImpl.getColumnForName(name).mkPrototype(this.sqlObjectFactory));
 		}
 		return prototypes;
 

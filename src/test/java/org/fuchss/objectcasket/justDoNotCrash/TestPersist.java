@@ -1,14 +1,14 @@
 package org.fuchss.objectcasket.justDoNotCrash;
 
-import org.fuchss.objectcasket.TestBase;
-import org.fuchss.objectcasket.justDoNotCrash.types.A;
-import org.fuchss.objectcasket.justDoNotCrash.types.AB;
-import org.fuchss.objectcasket.justDoNotCrash.types.ABC;
-import org.fuchss.objectcasket.justDoNotCrash.types.XY;
-import org.fuchss.objectcasket.justDoNotCrash.types.XY1;
-import org.fuchss.objectcasket.justDoNotCrash.types.XY2;
-import org.fuchss.objectcasket.justDoNotCrash.types.XY3;
-import org.fuchss.objectcasket.justDoNotCrash.types.XY4;
+import org.fuchss.objectcasket.common.TestBase;
+import org.fuchss.objectcasket.justDoNotCrash.objects.A;
+import org.fuchss.objectcasket.justDoNotCrash.objects.AB;
+import org.fuchss.objectcasket.justDoNotCrash.objects.ABC;
+import org.fuchss.objectcasket.justDoNotCrash.objects.XY;
+import org.fuchss.objectcasket.justDoNotCrash.objects.XY1;
+import org.fuchss.objectcasket.justDoNotCrash.objects.XY2;
+import org.fuchss.objectcasket.justDoNotCrash.objects.XY3;
+import org.fuchss.objectcasket.justDoNotCrash.objects.XY4;
 import org.fuchss.objectcasket.port.Session;
 import org.junit.Test;
 

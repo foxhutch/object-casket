@@ -179,19 +179,43 @@ public class SessionImpl implements Session {
 		return objects;
 	}
 
+	/*
+	 * @Override public Object joinTableEntity(Object me, Object remote, String
+	 * joinTableName) throws ObjectCasketException { this.checkSession(); if ((me ==
+	 * null) || !this.entityFactoryMap.containsKey(me.getClass())) {
+	 * SessionException.Error.NoEntityFactoryForClass.build(me == null ? "Null" :
+	 * me.getClass().getSimpleName()); } if ((joinTableName == null) ||
+	 * !this.tableName2ClassMap.containsKey(joinTableName)) {
+	 * SessionException.Error.NoEntityFactoryForClass.build(joinTableName == null ?
+	 * "Null" : joinTableName); } Object joinTableEntity = null; Transaction
+	 * transaction = this.module.beginTransaction(); try { joinTableEntity =
+	 * this.joinTableEntity(me, remote, joinTableName, transaction); if
+	 * (joinTableEntity == null) joinTableEntity = this.joinTableEntity(remote, me,
+	 * joinTableName, transaction); this.module.commit(transaction); } catch
+	 * (ObjectCasketException | TableModuleException exc) { try {
+	 * this.module.rollback(transaction); } catch (TableModuleException e) {
+	 * ObjectCasketException.build(e); } ObjectCasketException.build(exc); } return
+	 * joinTableEntity; }
+	 */
+
 	@Override
-	public Object joinTableEntity(Object me, Object remote, String joinTableName) throws ObjectCasketException {
+	public <T> T joinTableEntity(Object me, Object remote, Class<T> joinTableClass) throws ObjectCasketException {
 		this.checkSession();
 		if ((me == null) || !this.entityFactoryMap.containsKey(me.getClass())) {
 			SessionException.Error.NoEntityFactoryForClass.build(me == null ? "Null" : me.getClass().getSimpleName());
 		}
-		if ((joinTableName == null) || !this.tableName2ClassMap.containsKey(joinTableName)) {
-			SessionException.Error.NoEntityFactoryForClass.build(joinTableName == null ? "Null" : joinTableName);
+		if ((remote == null) || !this.entityFactoryMap.containsKey(remote.getClass())) {
+			SessionException.Error.NoEntityFactoryForClass.build(remote == null ? "Null" : remote.getClass().getSimpleName());
 		}
-		Object joinTableEntity = null;
+		if ((joinTableClass == null) || !this.tableName2ClassMap.containsValue(joinTableClass)) {
+			SessionException.Error.NoEntityFactoryForClass.build(joinTableClass == null ? "Null" : joinTableClass.getSimpleName());
+		}
+		T joinTableEntity = null;
 		Transaction transaction = this.module.beginTransaction();
 		try {
-			joinTableEntity = this.joinTableEntity(me, remote, joinTableName, transaction);
+			joinTableEntity = this.joinTableEntity(me, remote, joinTableClass, transaction);
+			if (joinTableEntity == null)
+				joinTableEntity = this.joinTableEntity(remote, me, joinTableClass, transaction);
 			this.module.commit(transaction);
 		} catch (ObjectCasketException | TableModuleException exc) {
 			try {
@@ -204,10 +228,11 @@ public class SessionImpl implements Session {
 		return joinTableEntity;
 	}
 
-	private Object joinTableEntity(Object me, Object remote, String joinTableName, Transaction transaction) throws ObjectCasketException {
+	@SuppressWarnings("unchecked")
+	private <T> T joinTableEntity(Object me, Object remote, Class<T> joinTableClass, Transaction transaction) throws ObjectCasketException {
 		EntityFactory ef = this.entityFactoryMap.get(me.getClass());
 		Entity entity = ef.entity(me, transaction);
-		return entity.getJoinTableEntity(remote, joinTableName);
+		return (T) entity.getJoinTableEntity(remote, this.class2tableNameMap.get(joinTableClass));
 	}
 
 	@Override
