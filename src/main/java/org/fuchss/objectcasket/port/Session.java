@@ -59,18 +59,18 @@ public interface Session {
 	/**
 	 * Get join table entity.
 	 *
+	 * @param <T>
+	 *            type of join table class
 	 * @param me
 	 *            the current object
 	 * @param remote
 	 *            the remote object
-	 * @param joinTableName
-	 *            the join table's name
+	 * @param joinTableClass
+	 *            the join table's class
 	 * @return the join table's entity
 	 * @throws ObjectCasketException
 	 *             if not possible
 	 */
-	// Object joinTableEntity(Object me, Object remote, String joinTableName) throws
-	// ObjectCasketException;
 	<T> T joinTableEntity(Object me, Object remote, Class<T> joinTableClass) throws ObjectCasketException;
 
 	/**

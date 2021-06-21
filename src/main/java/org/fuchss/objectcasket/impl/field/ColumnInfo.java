@@ -111,13 +111,9 @@ public class ColumnInfo {
 		return this.kind;
 	}
 
-	/**
-	 * @deprecated Why !?
-	 */
-	@Deprecated
 	public void setKind(Kind kind) {
+		// May depend on Join Table Entry from M2M
 		this.kind = kind;
-		System.out.println("Just setting Kind to " + kind);
 	}
 
 	public boolean isPK() {
