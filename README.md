@@ -14,7 +14,9 @@ If you want to use maven or some similar tool add the following code to your pom
 	<repository>
 		<id>gh-fuchss</id>
 		<name>GitHub Maven Packages</name>
-		<url>https://nexus.fuchss.org/repository/github/</url>
+		<url>https://packages.fuchss.org/github/releases/raw/branch/releases/</url>
+		OR
+		<url>https://packages.fuchss.org/github/snapshots/raw/branch/snapshots/</url>
 	</repository>
 </repositories>
 <dependencies>

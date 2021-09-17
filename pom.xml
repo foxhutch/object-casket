@@ -21,15 +21,28 @@
 		<repository>
 			<id>gh-releases</id>
 			<name>git.fuchss.org Releases</name>
-			<url>https://nexus.fuchss.org/repository/github-releases/</url>
+			<url>git:releases://https://gh-actions:${env.DEPLOY_PASS}@packages.fuchss.org/github/releases.git</url>
 		</repository>
 		<snapshotRepository>
 			<id>gh-snapshots</id>
 			<name>git.fuchss.org Snapshots</name>
-			<url>https://nexus.fuchss.org/repository/github-snapshots/</url>
+			<url>git:snapshots://https://gh-actions:${env.DEPLOY_PASS}@packages.fuchss.org/github/snapshots.git</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>synergian-repo</id>
+			<url>https://raw.github.com/synergian/wagon-git/releases</url>
+		</pluginRepository>
+	</pluginRepositories>	
 	<build>
+		<extensions>
+			<extension>
+				<groupId>ar.com.synergian</groupId>
+				<artifactId>wagon-git</artifactId>
+				<version>0.2.5</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

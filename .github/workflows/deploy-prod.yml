@@ -18,14 +18,14 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-          
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v18
-        with:
-          servers: '[{ "id": "gh-releases", "username": "gh-actions", "password": "${{ secrets.DEPLOY_PASS }}" }, { "id": "gh-snapshots", "username": "gh-actions", "password": "${{ secrets.DEPLOY_PASS }}" }]'
         
       - name: Verify with Maven
         run: mvn -B verify
-      
+
+      - name: Configure GIT
+        run: git config --global user.email "gh-actions@fuchss.org" &&  git config --global user.name "CI"
+        
       - name: Publish Package
         run: mvn -B deploy
+        env:
+          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
