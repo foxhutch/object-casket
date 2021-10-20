@@ -13,7 +13,8 @@ public interface Configuration {
 	 *            the driver class
 	 * @param driverName
 	 *            the driver name for url
-	 * @return success or not
+	 * @return success or not. This means a new class and/or driver name were
+	 *         registered.
 	 * @throws ConnectorException
 	 *             if parameters are wrong
 	 */
@@ -24,7 +25,8 @@ public interface Configuration {
 	 *
 	 * @param uri
 	 *            the URI
-	 * @return success or not
+	 * @return success or not. This means the registered uri for the database was
+	 *         set or has changed.
 	 * @throws ConnectorException
 	 *             if parameter is wrong
 	 */
@@ -35,7 +37,8 @@ public interface Configuration {
 	 *
 	 * @param name
 	 *            the username
-	 * @return success or not
+	 * @return success or not. This means the registered user name was set or has
+	 *         changed.
 	 * @throws ConnectorException
 	 *             if parameter is wrong
 	 */
@@ -46,7 +49,8 @@ public interface Configuration {
 	 *
 	 * @param passwd
 	 *            the password
-	 * @return success or not
+	 * @return success or not. This means the registered password was set or has
+	 *         changed.
 	 * @throws ConnectorException
 	 *             if parameter is wrong
 	 */
@@ -57,11 +61,22 @@ public interface Configuration {
 	 *
 	 * @param flags
 	 *            the flags
-	 * @return success or not
+	 * @return success or not. This means the set of flags has changed.
 	 * @throws ConnectorException
 	 *             if parameter is wrong
 	 */
 	boolean setFlag(Flag... flags) throws ConnectorException;
+
+	/**
+	 * Set {@link Flag Flags} for this configuration.
+	 *
+	 * @param flags
+	 *            the flags
+	 * @return success or not. This means the set of flags has changed.
+	 * @throws ConnectorException
+	 *             if parameter is wrong
+	 */
+	boolean removeFlag(Flag... flags) throws ConnectorException;
 
 	enum Flag {
 		/**
@@ -71,6 +86,10 @@ public interface Configuration {
 		/**
 		 * Allow DB modification.
 		 */
-		MODIFY;
+		MODIFY,
+		/**
+		 * Allow multiple sessions.
+		 */
+		SESSIONS;
 	}
 }

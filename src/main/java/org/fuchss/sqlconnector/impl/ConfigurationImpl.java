@@ -17,7 +17,7 @@ public class ConfigurationImpl implements Configuration {
 	private String uri = null;
 	private String user = null;
 	private String passwd = null;
-	private List<Configuration.Flag> flags = null;
+	private List<Configuration.Flag> flags = new ArrayList<>();
 
 	private boolean inUse = false;
 
@@ -37,40 +37,41 @@ public class ConfigurationImpl implements Configuration {
 
 	@Override
 	public synchronized boolean setUri(String path) throws ConnectorException {
+		Objects.requireNonNull(path);
 		this.checkInUse();
 		String canonicalPath = null;
-		if ((path != null) && !this.initialized()) {
-			this.uri = "" + (canonicalPath = new File(path).toURI().getPath());
-		}
-		return (canonicalPath != null) ? canonicalPath.equals(this.uri) : false;
+		String oldUri = this.uri;
+		this.uri = "" + (canonicalPath = new File(path).toURI().getPath());
+		return (canonicalPath != null) ? canonicalPath.equals(this.uri) && !this.uri.equals(oldUri) : false;
 	}
 
 	@Override
 	public synchronized boolean setUser(String name) throws ConnectorException {
+		Objects.requireNonNull(name);
 		this.checkInUse();
-		if ((name != null) && !this.initialized()) {
-			this.user = "" + name;
-		}
-		return (name != null) ? name.equals(this.user) : false;
+		String oldUser = this.user;
+		this.user = "" + name;
+		return !this.user.equals(oldUser);
 	}
 
 	@Override
 	public synchronized boolean setPasswd(String name) throws ConnectorException {
-		this.checkInUse();
-		if ((name != null) && !this.initialized()) {
-			this.passwd = "" + name;
-		}
-		return (name != null) ? name.equals(this.passwd) : false;
+		Objects.requireNonNull(name);
+		String oldPasswd = this.passwd;
+		this.passwd = "" + name;
+		return !this.passwd.equals(oldPasswd);
 	}
 
 	@Override
 	public synchronized boolean setFlag(Configuration.Flag... flags) throws ConnectorException {
 		this.checkInUse();
-		if ((flags != null) && !this.initialized()) {
-			this.flags = new ArrayList<>(Arrays.asList(flags));
-			return true;
-		}
-		return false;
+		return this.flags.addAll(Arrays.asList(flags));
+	}
+
+	@Override
+	public synchronized boolean removeFlag(Configuration.Flag... flags) throws ConnectorException {
+		this.checkInUse();
+		return this.flags.removeAll(Arrays.asList(flags));
 	}
 
 	void setInUse(boolean inUse) {
