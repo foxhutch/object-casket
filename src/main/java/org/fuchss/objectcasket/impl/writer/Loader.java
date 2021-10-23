@@ -33,7 +33,7 @@ public class Loader implements Writer {
 
 	public void loadValueField(Field field, FieldInfo info) throws ObjectCasketException {
 		try {
-			Object value = this.row.read(this.transaction, info.getColumnName(), info.getColumnType());
+			Object value = this.row.read(this.transaction, info.getColumnName(), info.getColumnType(), field);
 			field.set(this.object, value);
 		} catch (TableModuleException | IllegalArgumentException | IllegalAccessException exc) {
 			ObjectCasketException.build(exc);
@@ -43,7 +43,7 @@ public class Loader implements Writer {
 	public Object load_M2O_Field(Field field, Many2OneFieldInfo info, SessionImpl session) throws ObjectCasketException {
 		Object value = null;
 		try {
-			Object fk = this.row.read(this.transaction, info.getColumnName(), info.getColumnType());
+			Object fk = this.row.read(this.transaction, info.getColumnName(), info.getColumnType(), null);
 			if (fk != null) {
 				EntityFactory foreignFactory = session.getEntityFactory(info.getForeignClass());
 				value = foreignFactory.getObjByPk(fk, this.transaction);
@@ -58,7 +58,7 @@ public class Loader implements Writer {
 	public Object load_O2O_Field(Field field, One2OneFieldInfo info, SessionImpl session) throws ObjectCasketException {
 		Object value = null;
 		try {
-			Object fk = this.row.read(this.transaction, info.getColumnName(), info.getColumnType());
+			Object fk = this.row.read(this.transaction, info.getColumnName(), info.getColumnType(), null);
 			if (fk != null) {
 				EntityFactory foreignFactory = session.getEntityFactory(info.getForeignClass());
 				value = foreignFactory.getObjByPk(fk, this.transaction);

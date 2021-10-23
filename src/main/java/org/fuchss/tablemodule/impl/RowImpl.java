@@ -1,5 +1,6 @@
 package org.fuchss.tablemodule.impl;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,10 +43,10 @@ public class RowImpl implements Row {
 	}
 
 	@Override
-	public <T> T read(Transaction transaction, String column, Class<T> type) throws TableModuleException {
+	public <T> T read(Transaction transaction, String column, Class<T> type, Field target) throws TableModuleException {
 		this.checkTransactionAndLockIfPossible(transaction);
 		try {
-			return this.get(column, type);
+			return this.get(column, type, target);
 		} finally {
 			((TransactionImpl) transaction).unlock();
 		}
@@ -73,14 +74,14 @@ public class RowImpl implements Row {
 
 	private <T> T getPK(Class<T> type) throws TableModuleException {
 		String column = this.table.getPkName();
-		return this.get(column, type);
+		return this.get(column, type, null);
 	}
 
-	private <T> T get(String column, Class<T> type) throws TableModuleException {
+	private <T> T get(String column, Class<T> type, Field target) throws TableModuleException {
 		SqlObject obj = this.getObject(column);
 		try {
 			if (obj != null) {
-				return obj.get(type);
+				return obj.get(type, target);
 			}
 		} catch (Exception e) {
 			TableModuleException.build(e);

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -47,7 +48,7 @@ public class SqlBlob extends SqlObjectImpl {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Class<T> type) {
+	public <T> T get(Class<T> type, Field target) {
 		if ((this.val != null) && type.isAssignableFrom(this.val.getClass())) {
 			// DeepCopy is needed because of references
 			return (T) SqlBlob.deepCopy(this.val);

@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.util.Date;
 
@@ -14,12 +15,15 @@ public class SqlTimestamp extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			if (obj == null)
-				return new SqlDate(null, SqlObject.Type.TIMESTAMP, TIMESTAMP_FORMAT_STR);
-			if (obj instanceof Date)
-				return new SqlDate(((Date) obj).getTime(), SqlObject.Type.TIMESTAMP, TIMESTAMP_FORMAT_STR);
-			if (obj instanceof Long)
-				return new SqlDate((Long) obj, SqlObject.Type.TIMESTAMP, TIMESTAMP_FORMAT_STR);
+			if (obj == null) {
+				return new SqlDate(null, SqlObject.Type.TIMESTAMP, SqlTimestamp.TIMESTAMP_FORMAT_STR);
+			}
+			if (obj instanceof Date) {
+				return new SqlDate(((Date) obj).getTime(), SqlObject.Type.TIMESTAMP, SqlTimestamp.TIMESTAMP_FORMAT_STR);
+			}
+			if (obj instanceof Long) {
+				return new SqlDate((Long) obj, SqlObject.Type.TIMESTAMP, SqlTimestamp.TIMESTAMP_FORMAT_STR);
+			}
 			ObjectException.Error.Incompatible.build();
 			return null;
 		}
@@ -37,7 +41,7 @@ public class SqlTimestamp extends SqlObjectImpl {
 	}
 
 	@Override
-	public <T> T get(Class<T> type) {
+	public <T> T get(Class<T> type, Field target) {
 		throw new UnsupportedOperationException("Use SqlDate implicitly");
 	}
 

@@ -100,7 +100,7 @@ public class TableImpl implements Table {
 			if (this.unusedSequenzNumbers == null) {
 				this.unusedSequenzNumbers = new ArrayList<>();
 			}
-			this.unusedSequenzNumbers.add(pk.get(Integer.class));
+			this.unusedSequenzNumbers.add(pk.get(Integer.class, null));
 		}
 	}
 
@@ -184,7 +184,7 @@ public class TableImpl implements Table {
 		this.rowToPrimaryKeyMap.put(row, pk);
 		this.primaryKeyToRowMap.put(pk, row);
 		if (this.autoincrement) {
-			int pkNo = pk.get(Integer.TYPE);
+			int pkNo = pk.get(Integer.TYPE, null);
 			this.sequenzNumber = (this.sequenzNumber < pkNo) ? pkNo : this.sequenzNumber;
 		}
 	}
@@ -196,10 +196,12 @@ public class TableImpl implements Table {
 		}
 		SqlObject sqlObj = null;
 		try {
-			if (fromSQL)
+			if (fromSQL) {
 				sqlObj = this.sqlObjectFactory.mkSqlObjectFromSQL(prototype.getType(), obj);
-			else
-				sqlObj = this.sqlObjectFactory.mkSqlObject(prototype.getType(), obj); //////////// from java
+			} else {
+				sqlObj = this.sqlObjectFactory.mkSqlObject(prototype.getType(), obj); //////////// from
+																						//////////// java
+			}
 		} catch (ConnectorException e) {
 			TableModuleException.build(e);
 		}
