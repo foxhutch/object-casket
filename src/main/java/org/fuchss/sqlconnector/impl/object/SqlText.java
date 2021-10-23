@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
@@ -11,10 +12,12 @@ public class SqlText extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlVarchar(null, SqlObject.Type.TEXT);
-			if (obj instanceof String)
+			}
+			if (obj instanceof String) {
 				return new SqlVarchar((String) obj, SqlObject.Type.TEXT);
+			}
 			ObjectException.Error.Incompatible.build();
 			return null;
 		}
@@ -33,7 +36,7 @@ public class SqlText extends SqlObjectImpl {
 	}
 
 	@Override
-	public <T> T get(Class<T> type) {
+	public <T> T get(Class<T> type, Field target) {
 		throw new UnsupportedOperationException("Use SqlVarchar implicitly");
 	}
 

@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 
 import org.fuchss.sqlconnector.port.ConnectorException;
@@ -12,8 +13,9 @@ public class SqlReal extends SqlObjectImpl {
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
 
-			if (obj == null)
+			if (obj == null) {
 				return new SqlDouble(null, SqlObject.Type.REAL);
+			}
 			if ((obj instanceof Float) || (obj instanceof Double)) {
 				return new SqlDouble(((Number) obj).doubleValue(), SqlObject.Type.REAL);
 			}
@@ -33,7 +35,7 @@ public class SqlReal extends SqlObjectImpl {
 	}
 
 	@Override
-	public <T> T get(Class<T> type) {
+	public <T> T get(Class<T> type, Field target) {
 		throw new UnsupportedOperationException("Use SqlDouble implicitly");
 	}
 

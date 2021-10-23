@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -16,15 +17,15 @@ public class SqlDate extends SqlObjectImpl {
 
 	private static final Map<Class<?>, Function<Object, Object>> CAST = new HashMap<>();
 	static {
-		CAST.put(Date.class, n -> (n == null) ? null : new Date((Long) n));
-		CAST.put(Long.class, n -> n);
-		CAST.put(Long.TYPE, n -> (n == null) ? 0 : n);
+		SqlDate.CAST.put(Date.class, n -> (n == null) ? null : new Date((Long) n));
+		SqlDate.CAST.put(Long.class, n -> n);
+		SqlDate.CAST.put(Long.TYPE, n -> (n == null) ? 0 : n);
 	}
 
 	private static final Map<SqlObject.Type, Integer> TARGET = new HashMap<>();
 	static {
-		TARGET.put(SqlObject.Type.DATE, java.sql.Types.DATE);
-		TARGET.put(SqlObject.Type.TIMESTAMP, java.sql.Types.TIMESTAMP);
+		SqlDate.TARGET.put(SqlObject.Type.DATE, java.sql.Types.DATE);
+		SqlDate.TARGET.put(SqlObject.Type.TIMESTAMP, java.sql.Types.TIMESTAMP);
 	}
 
 	private static final String DATE_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
@@ -40,11 +41,12 @@ public class SqlDate extends SqlObjectImpl {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Class<T> type) {
-		Function<Object, Object> cast = CAST.get(type);
-		if (cast == null)
+	public <T> T get(Class<T> type, Field target) {
+		Function<Object, Object> cast = SqlDate.CAST.get(type);
+		if (cast == null) {
 			return null;
-		return (T) CAST.get(type).apply(this.val);
+		}
+		return (T) SqlDate.CAST.get(type).apply(this.val);
 	}
 
 	@Override
@@ -55,12 +57,15 @@ public class SqlDate extends SqlObjectImpl {
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
 		Long y = null;
-		if (obj instanceof Date)
+		if (obj instanceof Date) {
 			y = ((Date) obj).getTime();
-		if (obj instanceof Long)
+		}
+		if (obj instanceof Long) {
 			y = (Long) obj;
-		if (y == null)
+		}
+		if (y == null) {
 			ObjectException.Error.Incompatible.build();
+		}
 		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
@@ -68,9 +73,10 @@ public class SqlDate extends SqlObjectImpl {
 	public void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException {
 		try {
 			if (this.val == null) {
-				preparedStatement.setNull(pos, TARGET.get(this.sqlType));
-			} else
-				preparedStatement.setObject(pos, this.val, TARGET.get(this.sqlType));
+				preparedStatement.setNull(pos, SqlDate.TARGET.get(this.sqlType));
+			} else {
+				preparedStatement.setObject(pos, this.val, SqlDate.TARGET.get(this.sqlType));
+			}
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}
@@ -80,12 +86,15 @@ public class SqlDate extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlDate(null, SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
-			if (obj instanceof Date)
+			}
+			if (obj instanceof Date) {
 				return new SqlDate(((Date) obj).getTime(), SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
-			if (obj instanceof Long)
+			}
+			if (obj instanceof Long) {
 				return new SqlDate((Long) obj, SqlObject.Type.DATE, SqlDate.DATE_FORMAT_STR);
+			}
 			ObjectException.Error.Incompatible.build();
 			return null;
 		}

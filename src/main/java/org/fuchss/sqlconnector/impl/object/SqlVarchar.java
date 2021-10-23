@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -16,9 +17,10 @@ public class SqlVarchar extends SqlObjectImpl {
 	}
 
 	@Override
-	public <T> T get(Class<T> type) {
-		if (type == String.class)
+	public <T> T get(Class<T> type, Field target) {
+		if (type == String.class) {
 			return type.cast(this.val);
+		}
 		return null;
 	}
 
@@ -30,10 +32,12 @@ public class SqlVarchar extends SqlObjectImpl {
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
 		String y = null;
-		if (obj instanceof String)
+		if (obj instanceof String) {
 			y = (String) obj;
-		if (y == null)
+		}
+		if (y == null) {
 			ObjectException.Error.Incompatible.build();
+		}
 		return (this.val == null) ? -1 : this.val.compareTo(y);
 
 	}
@@ -55,10 +59,12 @@ public class SqlVarchar extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlVarchar(null, SqlObject.Type.VARCHAR);
-			if (obj instanceof String)
+			}
+			if (obj instanceof String) {
 				return new SqlVarchar((String) obj, SqlObject.Type.VARCHAR);
+			}
 			ObjectException.Error.Incompatible.build();
 			return null;
 		}

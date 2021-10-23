@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.port;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,7 +14,7 @@ public interface SqlObject {
 
 	void prepareStatement(int pos, PreparedStatement preparedStatement) throws ConnectorException;
 
-	<T> T get(Class<T> type);
+	<T> T get(Class<T> type, Field target);
 
 	// Object get();
 
@@ -37,70 +38,79 @@ public interface SqlObject {
 		TEXT(), //
 		REAL(), //
 		NUMERIC(), //
-		TIMESTAMP(); //
+		TIMESTAMP(), //
+		JSON(); //
 
 		public static final Set<SqlObject.Type> PK_SQL_TYPES = new HashSet<>();
 		static {
-			PK_SQL_TYPES.add(INTEGER);
-			PK_SQL_TYPES.add(BOOL);
-			PK_SQL_TYPES.add(DOUBLE);
-			PK_SQL_TYPES.add(NUMERIC);
-			PK_SQL_TYPES.add(FLOAT);
-			PK_SQL_TYPES.add(CHAR);
-			PK_SQL_TYPES.add(VARCHAR);
-			PK_SQL_TYPES.add(TEXT);
-			PK_SQL_TYPES.add(DATE);
-			PK_SQL_TYPES.add(TIMESTAMP);
-			PK_SQL_TYPES.add(REAL);
+			Type.PK_SQL_TYPES.add(INTEGER);
+			Type.PK_SQL_TYPES.add(BOOL);
+			Type.PK_SQL_TYPES.add(DOUBLE);
+			Type.PK_SQL_TYPES.add(NUMERIC);
+			Type.PK_SQL_TYPES.add(FLOAT);
+			Type.PK_SQL_TYPES.add(CHAR);
+			Type.PK_SQL_TYPES.add(VARCHAR);
+			Type.PK_SQL_TYPES.add(TEXT);
+			Type.PK_SQL_TYPES.add(DATE);
+			Type.PK_SQL_TYPES.add(TIMESTAMP);
+			Type.PK_SQL_TYPES.add(REAL);
 		}
 
 		public static final Set<Class<?>> PK_JAVA_TYPES = new HashSet<>();
 		static {
-			PK_SQL_TYPES.forEach(t -> t.types.forEach(PK_JAVA_TYPES::add));
+			Type.PK_SQL_TYPES.forEach(t -> t.types.forEach(Type.PK_JAVA_TYPES::add));
 		}
 
 		public static final Set<SqlObject.Type> AUTOINCREMENT_SQL_TYPES = new HashSet<>();
 		static {
-			AUTOINCREMENT_SQL_TYPES.add(INTEGER);
+			Type.AUTOINCREMENT_SQL_TYPES.add(INTEGER);
 		}
 
 		public static final Set<Class<?>> AUTOINCREMENT_JAVA_TYPES = new HashSet<>();
 		static {
-			for (SqlObject.Type sqlType : AUTOINCREMENT_SQL_TYPES) {
-				for (Class<?> clazz : sqlType.types)
-					if (!clazz.isPrimitive())
-						AUTOINCREMENT_JAVA_TYPES.add(clazz);
+			for (SqlObject.Type sqlType : Type.AUTOINCREMENT_SQL_TYPES) {
+				for (Class<?> clazz : sqlType.types) {
+					if (!clazz.isPrimitive()) {
+						Type.AUTOINCREMENT_JAVA_TYPES.add(clazz);
+					}
+				}
 			}
 		}
 
 		private static Map<Class<?>, Type> typeMap = new HashMap<>();
 		static {
-			for (Type type : Type.values())
+			for (Type type : Type.values()) {
 				type.types.forEach(t -> Type.typeMap.put(t, type));
+			}
 		}
 
 		private static Map<String, Set<Class<?>>> possibleClassMap = new HashMap<>();
 		static {
 			for (Type type : Type.values()) {
-				possibleClassMap.put(type.name(), new HashSet<>(type.types));
+				Type.possibleClassMap.put(type.name(), new HashSet<>(type.types));
 			}
-			possibleClassMap.get(TEXT.name()).addAll(possibleClassMap.get(VARCHAR.name()));
-			possibleClassMap.get(REAL.name()).addAll(possibleClassMap.get(DOUBLE.name()));
-			possibleClassMap.get(REAL.name()).addAll(possibleClassMap.get(FLOAT.name()));
-			possibleClassMap.get(NUMERIC.name()).addAll(possibleClassMap.get(INTEGER.name()));
-			possibleClassMap.get(NUMERIC.name()).addAll(possibleClassMap.get(REAL.name()));
-			possibleClassMap.get(TIMESTAMP.name()).addAll(possibleClassMap.get(DATE.name()));
+			Type.possibleClassMap.get(TEXT.name()).addAll(Type.possibleClassMap.get(VARCHAR.name()));
+			Type.possibleClassMap.get(REAL.name()).addAll(Type.possibleClassMap.get(DOUBLE.name()));
+			Type.possibleClassMap.get(REAL.name()).addAll(Type.possibleClassMap.get(FLOAT.name()));
+			Type.possibleClassMap.get(NUMERIC.name()).addAll(Type.possibleClassMap.get(INTEGER.name()));
+			Type.possibleClassMap.get(NUMERIC.name()).addAll(Type.possibleClassMap.get(REAL.name()));
+			Type.possibleClassMap.get(TIMESTAMP.name()).addAll(Type.possibleClassMap.get(DATE.name()));
 
 		}
 
 		public static Type getDefaultType(Class<?> clazz, String columnDefinition) {
-			Type type = typeMap.get(clazz);
-			if ((columnDefinition == null) || columnDefinition.isEmpty())
+			Type type = Type.typeMap.get(clazz);
+			if ((columnDefinition == null) || columnDefinition.isEmpty()) {
 				return type;
+			}
 			String typeName = columnDefinition.strip().toUpperCase();
-			if (BLOB.name().equals(typeName))
+			if (BLOB.name().equals(typeName)) {
 				return BLOB;
-			Set<Class<?>> possibleClasses = possibleClassMap.get(typeName);
+			}
+			if (JSON.name().equals(typeName)) {
+				return JSON;
+			}
+			Set<Class<?>> possibleClasses = Type.possibleClassMap.get(typeName);
 			return ((possibleClasses == null) || !possibleClasses.contains(clazz)) ? null : type;
 		}
 
@@ -109,8 +119,8 @@ public interface SqlObject {
 		}
 
 		/*
-		 * ##########################################################################
-		 * non static part
+		 * #####################################################################
+		 * ##### non static part
 		 */
 
 		private final List<Class<?>> types;

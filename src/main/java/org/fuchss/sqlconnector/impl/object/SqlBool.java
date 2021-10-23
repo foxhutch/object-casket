@@ -1,5 +1,6 @@
 package org.fuchss.sqlconnector.impl.object;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,10 +14,10 @@ public class SqlBool extends SqlObjectImpl {
 
 	private static final Map<Class<?>, Function<Object, Object>> CAST = new HashMap<>();
 	static {
-		CAST.put(Boolean.class, n -> n == null ? null : ((Boolean) n));
-		CAST.put(Integer.class, n -> n == null ? null : ((Boolean) n) ? 1 : 0);
-		CAST.put(Boolean.TYPE, n -> (n == null) ? false : ((Boolean) n));
-		CAST.put(Integer.TYPE, n -> (n == null) ? false : ((Boolean) n) ? 1 : 0);
+		SqlBool.CAST.put(Boolean.class, n -> n == null ? null : ((Boolean) n));
+		SqlBool.CAST.put(Integer.class, n -> n == null ? null : ((Boolean) n) ? 1 : 0);
+		SqlBool.CAST.put(Boolean.TYPE, n -> (n == null) ? false : ((Boolean) n));
+		SqlBool.CAST.put(Integer.TYPE, n -> (n == null) ? false : ((Boolean) n) ? 1 : 0);
 	}
 
 	protected Boolean val;
@@ -28,11 +29,12 @@ public class SqlBool extends SqlObjectImpl {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Class<T> type) {
-		Function<Object, Object> cast = CAST.get(type);
-		if (cast == null)
+	public <T> T get(Class<T> type, Field target) {
+		Function<Object, Object> cast = SqlBool.CAST.get(type);
+		if (cast == null) {
 			return null;
-		return (T) CAST.get(type).apply(this.val);
+		}
+		return (T) SqlBool.CAST.get(type).apply(this.val);
 	}
 
 	@Override
@@ -43,12 +45,15 @@ public class SqlBool extends SqlObjectImpl {
 	@Override
 	public int compareTo(Object obj) throws ConnectorException {
 		Boolean y = null;
-		if (obj instanceof Integer)
+		if (obj instanceof Integer) {
 			y = !(((Integer) obj) == 0);
-		if (obj instanceof Boolean)
+		}
+		if (obj instanceof Boolean) {
 			y = (Boolean) obj;
-		if (y == null)
+		}
+		if (y == null) {
 			ObjectException.Error.Incompatible.build();
+		}
 		return (this.val == null) ? -1 : this.val.compareTo(y);
 	}
 
@@ -56,12 +61,15 @@ public class SqlBool extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObject(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlBool(null);
-			if (obj instanceof Integer)
+			}
+			if (obj instanceof Integer) {
 				return new SqlBool(!(((Integer) obj) == 0));
-			if (obj instanceof Boolean)
+			}
+			if (obj instanceof Boolean) {
 				return new SqlBool((Boolean) obj);
+			}
 			ObjectException.Error.Incompatible.build();
 			return null;
 		}
@@ -73,8 +81,9 @@ public class SqlBool extends SqlObjectImpl {
 		try {
 			if (this.val == null) {
 				preparedStatement.setNull(pos, java.sql.Types.BOOLEAN);
-			} else
+			} else {
 				preparedStatement.setObject(pos, this.val, java.sql.Types.BOOLEAN);
+			}
 		} catch (SQLException exc) {
 			ConnectorException.build(exc);
 		}

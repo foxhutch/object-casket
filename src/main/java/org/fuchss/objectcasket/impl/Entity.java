@@ -150,7 +150,7 @@ public class Entity {
 	private void writeValueField(Field field, Transaction transaction) throws TableModuleException, IllegalArgumentException, IllegalAccessException {
 		FieldInfo info = this.ef.getFieldInfo(field);
 		Object val = field.get(this.obj);
-		if (Objects.equals(val, this.row.read(transaction, info.getColumnName(), info.getColumnType()))) {
+		if (Objects.equals(val, this.row.read(transaction, info.getColumnName(), info.getColumnType(), field))) {
 			return;
 		}
 		this.row.write(transaction, info.getColumnName(), val);
@@ -197,7 +197,7 @@ public class Entity {
 		}
 		try {
 			FieldInfo fkInfo = this.ef.getAnonymousFkFieldInfo(columnName);
-			Object fk = this.row.read(transaction, columnName, ((One2OneFieldInfo) fkInfo).getMyPkType());
+			Object fk = this.row.read(transaction, columnName, ((One2OneFieldInfo) fkInfo).getMyPkType(), null);
 			if (fk == null) {
 				return null;
 			}
@@ -230,10 +230,10 @@ public class Entity {
 			Object fk = null;
 			Class<?> fkClass;
 			if (fkInfo.is(FieldInfo.Kind.MANY2MANY)) {
-				fk = this.row.read(transaction, columnName, ((Many2ManyFieldInfo) fkInfo).getPkType(columnName));
+				fk = this.row.read(transaction, columnName, ((Many2ManyFieldInfo) fkInfo).getPkType(columnName), null);
 				fkClass = (fk != null) ? ((Many2ManyFieldInfo) fkInfo).getEntityClass(columnName) : null;
 			} else {
-				fk = this.row.read(transaction, columnName, ((One2ManyFieldInfo) fkInfo).getMyPkType());
+				fk = this.row.read(transaction, columnName, ((One2ManyFieldInfo) fkInfo).getMyPkType(), null);
 				fkClass = (fk != null) ? ((One2ManyFieldInfo) fkInfo).getEntityClass() : null;
 			}
 			if (fk == null) {

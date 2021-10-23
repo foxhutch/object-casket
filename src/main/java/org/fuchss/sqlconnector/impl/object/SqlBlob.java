@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -19,14 +20,39 @@ public class SqlBlob extends SqlObjectImpl {
 
 	SqlBlob(Serializable obj) throws ConnectorException {
 		super(SqlObject.Type.BLOB);
-		this.val = obj;
+		try {
+			this.val = SqlBlob.deepCopy(obj);
+		} catch (Exception e) {
+			ConnectorException.build(e);
+		}
+	}
+
+	// Create a deep copy for BLOBs
+	private static Serializable deepCopy(Serializable s) {
+		try {
+			byte[] bytes = null;
+			try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream(); //
+					ObjectOutputStream oStream = new ObjectOutputStream(byteStream)) {
+				oStream.writeObject(s);
+				oStream.flush();
+				bytes = byteStream.toByteArray();
+			}
+			try (ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes); //
+					ObjectInputStream iStream = new ObjectInputStream(byteStream)) {
+				return (Serializable) iStream.readObject();
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Class<T> type) {
-		if ((this.val != null) && type.isAssignableFrom(this.val.getClass()))
-			return (T) this.val;
+	public <T> T get(Class<T> type, Field target) {
+		if ((this.val != null) && type.isAssignableFrom(this.val.getClass())) {
+			// DeepCopy is needed because of references
+			return (T) SqlBlob.deepCopy(this.val);
+		}
 		return null;
 	}
 
@@ -58,8 +84,9 @@ public class SqlBlob extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObjectFromJava(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlBlob(null);
+			}
 			if (obj instanceof Serializable) {
 				return new SqlBlob((Serializable) obj);
 			}
@@ -69,8 +96,9 @@ public class SqlBlob extends SqlObjectImpl {
 
 		@Override
 		public SqlObjectImpl mkSqlObjectFromSQL(Object obj) throws ConnectorException {
-			if (obj == null)
+			if (obj == null) {
 				return new SqlBlob(null);
+			}
 			if (obj instanceof byte[]) {
 				byte[] bytes = Base64.getDecoder().decode((byte[]) obj);
 				try (ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes); //
