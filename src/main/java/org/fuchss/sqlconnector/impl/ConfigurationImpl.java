@@ -108,6 +108,10 @@ public class ConfigurationImpl implements Configuration {
 		}
 	}
 
+	boolean isInUse() {
+		return this.inUse;
+	}
+
 	private static class ConfigurationException extends ConnectorException {
 
 		private static final long serialVersionUID = 1L;

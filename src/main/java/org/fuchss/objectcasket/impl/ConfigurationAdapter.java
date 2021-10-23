@@ -2,6 +2,7 @@ package org.fuchss.objectcasket.impl;
 
 import java.sql.Driver;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fuchss.objectcasket.port.Configuration;
 import org.fuchss.objectcasket.port.ObjectCasketException;
@@ -58,8 +59,8 @@ public class ConfigurationAdapter implements Configuration {
 	@Override
 	public boolean setFlag(Flag... flags) throws ObjectCasketException {
 		try {
-			org.fuchss.sqlconnector.port.Configuration.Flag[] tf = new org.fuchss.sqlconnector.port.Configuration.Flag[2];
-			ArrayList<org.fuchss.sqlconnector.port.Configuration.Flag> targetFlags = new ArrayList<>();
+			org.fuchss.sqlconnector.port.Configuration.Flag[] tf = new org.fuchss.sqlconnector.port.Configuration.Flag[flags.length];
+			List<org.fuchss.sqlconnector.port.Configuration.Flag> targetFlags = new ArrayList<>();
 			for (int i = 0; i < flags.length; i++) {
 				targetFlags.add(org.fuchss.sqlconnector.port.Configuration.Flag.values()[flags[i].ordinal()]);
 			}

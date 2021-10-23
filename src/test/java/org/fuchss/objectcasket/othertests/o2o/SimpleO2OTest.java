@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.tests.o2o;
+package org.fuchss.objectcasket.othertests.o2o;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

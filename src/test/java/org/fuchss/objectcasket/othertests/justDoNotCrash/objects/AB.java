@@ -1,5 +1,5 @@
 
-package org.fuchss.objectcasket.justDoNotCrash.objects;
+package org.fuchss.objectcasket.othertests.justDoNotCrash.objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

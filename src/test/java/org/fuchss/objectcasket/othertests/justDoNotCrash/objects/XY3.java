@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.justDoNotCrash.objects;
+package org.fuchss.objectcasket.othertests.justDoNotCrash.objects;
 
 import java.util.HashSet;
 import java.util.Set;

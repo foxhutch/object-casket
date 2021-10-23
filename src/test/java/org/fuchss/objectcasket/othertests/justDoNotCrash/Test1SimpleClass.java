@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.justDoNotCrash;
+package org.fuchss.objectcasket.othertests.justDoNotCrash;
 
 import java.io.IOException;
 

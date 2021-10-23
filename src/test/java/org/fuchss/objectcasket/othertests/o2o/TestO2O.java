@@ -1,11 +1,11 @@
-package org.fuchss.objectcasket.tests.o2o;
+package org.fuchss.objectcasket.othertests.o2o;
 
 import java.util.Set;
 
 import org.fuchss.objectcasket.common.TestBase;
+import org.fuchss.objectcasket.othertests.o2o.objects.A;
+import org.fuchss.objectcasket.othertests.o2o.objects.B;
 import org.fuchss.objectcasket.port.Session;
-import org.fuchss.objectcasket.tests.o2o.objects.A;
-import org.fuchss.objectcasket.tests.o2o.objects.B;
 import org.junit.Assert;
 import org.junit.Test;
 

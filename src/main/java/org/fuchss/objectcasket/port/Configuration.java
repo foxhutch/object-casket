@@ -76,6 +76,10 @@ public interface Configuration {
 		/**
 		 * Allow DB modification.
 		 */
-		MODIFY;
+		MODIFY,
+		/**
+		 * Allow multiple sessions.
+		 */
+		SESSIONS;
 	}
 }

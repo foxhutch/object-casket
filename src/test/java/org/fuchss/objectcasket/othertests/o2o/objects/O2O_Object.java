@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.tests.o2o.objects;
+package org.fuchss.objectcasket.othertests.o2o.objects;
 
 import java.util.Set;
 

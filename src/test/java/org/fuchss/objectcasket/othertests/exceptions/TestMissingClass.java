@@ -1,4 +1,4 @@
-package org.fuchss.objectcasket.tests.exceptions;
+package org.fuchss.objectcasket.othertests.exceptions;
 
 import java.util.Set;
 
