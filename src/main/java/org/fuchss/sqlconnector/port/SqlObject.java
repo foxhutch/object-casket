@@ -37,7 +37,8 @@ public interface SqlObject {
 		TEXT(), //
 		REAL(), //
 		NUMERIC(), //
-		TIMESTAMP(); //
+		TIMESTAMP(), //
+		JSON(); //
 
 		public static final Set<SqlObject.Type> PK_SQL_TYPES = new HashSet<>();
 		static {
@@ -56,7 +57,7 @@ public interface SqlObject {
 
 		public static final Set<Class<?>> PK_JAVA_TYPES = new HashSet<>();
 		static {
-			PK_SQL_TYPES.forEach(t -> t.types.forEach(PK_JAVA_TYPES::add));
+			PK_SQL_TYPES.forEach(t -> t.types.forEach(Type.PK_JAVA_TYPES::add));
 		}
 
 		public static final Set<SqlObject.Type> AUTOINCREMENT_SQL_TYPES = new HashSet<>();
@@ -67,22 +68,25 @@ public interface SqlObject {
 		public static final Set<Class<?>> AUTOINCREMENT_JAVA_TYPES = new HashSet<>();
 		static {
 			for (SqlObject.Type sqlType : AUTOINCREMENT_SQL_TYPES) {
-				for (Class<?> clazz : sqlType.types)
-					if (!clazz.isPrimitive())
+				for (Class<?> clazz : sqlType.types) {
+					if (!clazz.isPrimitive()) {
 						AUTOINCREMENT_JAVA_TYPES.add(clazz);
+					}
+				}
 			}
 		}
 
 		private static Map<Class<?>, Type> typeMap = new HashMap<>();
 		static {
-			for (Type type : Type.values())
+			for (Type type : Type.values()) {
 				type.types.forEach(t -> Type.typeMap.put(t, type));
+			}
 		}
 
 		private static Map<String, Set<Class<?>>> possibleClassMap = new HashMap<>();
 		static {
 			for (Type type : Type.values()) {
-				possibleClassMap.put(type.name(), new HashSet<>(type.types));
+				Type.possibleClassMap.put(type.name(), new HashSet<>(type.types));
 			}
 			possibleClassMap.get(TEXT.name()).addAll(possibleClassMap.get(VARCHAR.name()));
 			possibleClassMap.get(REAL.name()).addAll(possibleClassMap.get(DOUBLE.name()));
@@ -95,11 +99,16 @@ public interface SqlObject {
 
 		public static Type getDefaultType(Class<?> clazz, String columnDefinition) {
 			Type type = typeMap.get(clazz);
-			if ((columnDefinition == null) || columnDefinition.isEmpty())
+			if ((columnDefinition == null) || columnDefinition.isEmpty()) {
 				return type;
+			}
 			String typeName = columnDefinition.strip().toUpperCase();
-			if (BLOB.name().equals(typeName))
+			if (BLOB.name().equals(typeName)) {
 				return BLOB;
+			}
+			if (JSON.name().equals(typeName)) {
+				return JSON;
+			}
 			Set<Class<?>> possibleClasses = possibleClassMap.get(typeName);
 			return ((possibleClasses == null) || !possibleClasses.contains(clazz)) ? null : type;
 		}

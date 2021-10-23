@@ -24,6 +24,7 @@ public class SqlObjectFatoryImpl implements SqlObjectFactory {
 		typeToBuilderMap.put(SqlObject.Type.DATE, new SqlDate.SqlBuilder());
 		typeToBuilderMap.put(SqlObject.Type.TIMESTAMP, new SqlTimestamp.SqlBuilder());
 		typeToBuilderMap.put(SqlObject.Type.BLOB, new SqlBlob.SqlBuilder());
+		typeToBuilderMap.put(SqlObject.Type.JSON, new SqlJSON.SqlBuilder());
 	}
 
 	@Override
