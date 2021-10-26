@@ -74,6 +74,11 @@ public class ConfigurationImpl implements Configuration {
 		return this.flags.removeAll(Arrays.asList(flags));
 	}
 
+	@Override
+	public synchronized boolean containsAll(Flag... flags) throws ConnectorException {
+		return this.flags.containsAll(Arrays.asList(flags));
+	}
+
 	void setInUse(boolean inUse) {
 		this.inUse = inUse;
 	}

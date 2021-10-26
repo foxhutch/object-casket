@@ -71,6 +71,21 @@ public class ConfigurationAdapter implements Configuration {
 		return false;
 	}
 
+	@Override
+	public boolean containsAll(Flag... flags) throws ObjectCasketException {
+		try {
+			org.fuchss.sqlconnector.port.Configuration.Flag[] tf = new org.fuchss.sqlconnector.port.Configuration.Flag[flags.length];
+			List<org.fuchss.sqlconnector.port.Configuration.Flag> targetFlags = new ArrayList<>();
+			for (int i = 0; i < flags.length; i++) {
+				targetFlags.add(org.fuchss.sqlconnector.port.Configuration.Flag.values()[flags[i].ordinal()]);
+			}
+			return this.theConfiguration.containsAll(targetFlags.toArray(tf));
+		} catch (Exception exc) {
+			ObjectCasketException.build(exc);
+		}
+		return false;
+	}
+
 	org.fuchss.sqlconnector.port.Configuration getConfigruation() {
 		return this.theConfiguration;
 	}

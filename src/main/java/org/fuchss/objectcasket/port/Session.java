@@ -84,6 +84,15 @@ public interface Session {
 	void persist(Object obj) throws ObjectCasketException;
 
 	/**
+	 * Load new content from database and updates all managed objects.
+	 *
+	 * @return All objects with changed content after the sync.
+	 * @throws ObjectCasketException
+	 *             if not possible
+	 */
+	Map<Class<?>, Set<?>> resync() throws ObjectCasketException;
+
+	/**
 	 * Delete object from database
 	 *
 	 * @param obj

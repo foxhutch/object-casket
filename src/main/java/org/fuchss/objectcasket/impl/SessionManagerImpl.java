@@ -1,9 +1,12 @@
 package org.fuchss.objectcasket.impl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.fuchss.objectcasket.port.Configuration;
+import org.fuchss.objectcasket.port.Configuration.Flag;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
 import org.fuchss.objectcasket.port.SessionManager;
@@ -20,7 +23,7 @@ public class SessionManagerImpl implements SessionManager {
 	private SqlObjectFactory sqlObjectFactory;
 	private TableModuleBuilder tableModuleBuilder;
 
-	private Map<SqlDatabase, SessionImpl> sessionMap = new HashMap<>();
+	private Map<SqlDatabase, Set<SessionImpl>> sessionMap = new HashMap<>();
 	private Map<Session, SqlDatabase> databaseMap = new HashMap<>();
 
 	public SessionManagerImpl(SqlConnectionFactory sqlConnectionFactory, TableModuleFactory tableModuleFactory) {
@@ -34,11 +37,15 @@ public class SessionManagerImpl implements SessionManager {
 	public Session session(Configuration config) throws ObjectCasketException {
 		try {
 			SqlDatabase database = this.sqlDatabaseFactory.openDatabase(((ConfigurationAdapter) config).getConfigruation());
-			SessionImpl session = this.sessionMap.get(database);
-			if (session == null) {
-				this.sessionMap.put(database, session = new SessionImpl(this.tableModuleBuilder.tableModule(database, this.sqlObjectFactory)));
+			Set<SessionImpl> sessions = this.sessionMap.get(database);
+			if (sessions == null)
+				this.sessionMap.put(database, sessions = new HashSet<>());
+			SessionImpl session = null;
+			if (sessions.isEmpty() || config.containsAll(Flag.SESSIONS)) {
+				sessions.add(session = new SessionImpl(this.tableModuleBuilder.tableModule(database, this.sqlObjectFactory)));
 				this.databaseMap.put(session, database);
-			}
+			} else
+				session = sessions.isEmpty() ? null : sessions.iterator().next();
 			return session;
 		} catch (ConnectorException exc) {
 			ObjectCasketException.build(exc);
@@ -52,12 +59,14 @@ public class SessionManagerImpl implements SessionManager {
 		if (database == null) {
 			SessionManagerException.Error.UnknownSession.build();
 		}
+		Set<SessionImpl> sessions = this.sessionMap.get(database);
 		try {
-			this.sqlDatabaseFactory.closeDatabase(database);
+			if (sessions.contains(session) && (sessions.size() == 1))
+				this.sqlDatabaseFactory.closeDatabase(database);
 		} catch (ConnectorException exc) {
 			ObjectCasketException.build(exc);
 		}
-		this.sessionMap.remove(database);
+		sessions.remove(session);
 		this.databaseMap.remove(session);
 		((SessionImpl) session).terminate();
 	}

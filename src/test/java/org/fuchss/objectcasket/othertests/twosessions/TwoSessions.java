@@ -23,9 +23,9 @@ public class TwoSessions extends TestBase {
 		Configuration config = this.config();
 		config.setFlag(Configuration.Flag.SESSIONS);
 
-		Session[] session = new Session[2];
-		UserDTO[] user = new UserDTO[2];
-		LanguageDTO[] lang = new LanguageDTO[2];
+		Session[] session = new Session[3];
+		UserDTO[] user = new UserDTO[3];
+		LanguageDTO[] lang = new LanguageDTO[3];
 
 		session[0] = this.storePort.sessionManager().session(config);
 		session[0].declareClass(UserDTO.class, LanguageDTO.class);
@@ -46,12 +46,20 @@ public class TwoSessions extends TestBase {
 		user[1] = compareAndGet(user[0], session[1]);
 		lang[1] = compareAndGet(lang[0], session[1]);
 
-		lang[0].languageName = "newOne";
-		session[0].persist(lang[0]);
+		lang[1].languageName = "newOne";
+		session[1].persist(lang[1]);
 		Assert.assertFalse(lang[1].sameAs(lang[0]));
+
+		session[2] = this.storePort.sessionManager().session(config);
+		session[2].declareClass(UserDTO.class, LanguageDTO.class);
+		session[2].open();
+
+		user[2] = compareAndGet(user[1], session[2]);
+		lang[2] = compareAndGet(lang[1], session[2]);
 
 		this.storePort.sessionManager().terminate(session[0]);
 		this.storePort.sessionManager().terminate(session[1]);
+		this.storePort.sessionManager().terminate(session[2]);
 		System.out.println("Done");
 	}
 

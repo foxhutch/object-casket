@@ -6,10 +6,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.fuchss.sqlconnector.port.Configuration;
 import org.fuchss.sqlconnector.port.Configuration.Flag;
@@ -21,31 +19,26 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 
 	private Map<Configuration, ConfigurationImpl> configMap = new HashMap<>();
 
-	private Map<SqlDatabase, SqlDatabaseImpl> dbMap = new HashMap<>();
-	private Map<ConfigurationImpl, Set<SqlDatabaseImpl>> configDbMap = new HashMap<>();
-	private Map<SqlDatabaseImpl, ConfigurationImpl> dbConfigMap = new HashMap<>();
+	private Map<SqlDatabase, SqlDatabaseImpl> dbMap = new HashMap<>(); // x
+	private Map<ConfigurationImpl, SqlDatabaseImpl> configDbMap = new HashMap<>();
+	private Map<SqlDatabaseImpl, ConfigurationImpl> dbConfigMap = new HashMap<>(); // x
 
 	private Map<ConfigurationImpl, Connection> connectionMap = new HashMap<>();
 
 	@Override
 	public SqlDatabase openDatabase(Configuration config) throws ConnectorException {
-		SqlDatabaseImpl db;
+		SqlDatabaseImpl db = null;
 		ConfigurationImpl configImpl = this.checkConfiguration(config);
-		Set<SqlDatabaseImpl> dbs = new HashSet<>();
 		if (configImpl.isInUse())
-			dbs = this.configDbMap.get(configImpl);
+			db = this.configDbMap.get(configImpl);
 		else {
-			this.configDbMap.put(configImpl, dbs);
-			configImpl.setInUse(true);
-		}
-		if (configImpl.allows(Flag.SESSIONS) || dbs.isEmpty()) {
 			Connection connection = this.mkConnection(configImpl);
-			dbs.add(db = new SqlDatabaseImpl(connection));
+			db = new SqlDatabaseImpl(connection);
 			this.dbMap.put(db, db);
 			this.connectionMap.put(configImpl, connection);
 			this.dbConfigMap.put(db, configImpl);
-		} else {
-			db = dbs.iterator().next();
+			this.configDbMap.put(configImpl, db);
+			configImpl.setInUse(true);
 		}
 		return db;
 	}
@@ -83,15 +76,11 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 		SqlDatabaseImpl dbImpl = this.dbMap.get(db);
 		Objects.requireNonNull(dbImpl);
 		ConfigurationImpl config = this.dbConfigMap.get(dbImpl);
-		Set<SqlDatabaseImpl> dbs = this.configDbMap.get(config);
-		dbs.remove(dbImpl);
+		this.closeConnection(config);
+		this.configDbMap.remove(config);
 		this.dbMap.remove(dbImpl);
 		this.dbConfigMap.remove(dbImpl);
-		if (dbs.isEmpty()) {
-			config.setInUse(false);
-			this.configDbMap.remove(config);
-			this.closeConnection(config);
-		}
+		config.setInUse(false);
 	}
 
 	private void closeConnection(ConfigurationImpl config) throws ConnectorException {

@@ -346,6 +346,12 @@ public class SessionImpl implements Session {
 		return this.module;
 	}
 
+	@Override
+	public Map<Class<?>, Set<?>> resync() throws ObjectCasketException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private static class SessionException extends ObjectCasketException {
 
 		private static final long serialVersionUID = 1L;

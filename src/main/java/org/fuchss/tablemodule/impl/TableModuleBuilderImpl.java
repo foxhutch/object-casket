@@ -14,11 +14,13 @@ public class TableModuleBuilderImpl implements TableModuleBuilder {
 
 	@Override
 	public TableModule tableModule(SqlDatabase database, SqlObjectFactory sqlObjectFactoryt) {
-		TableModuleImpl tm;
-		if ((tm = this.databaseToTableModuleMap.get(database)) == null) {
-			this.databaseToTableModuleMap.put(database, tm = new TableModuleImpl(database, sqlObjectFactoryt));
-		}
-		return tm;
+		return new TableModuleImpl(database, sqlObjectFactoryt);
+
+		/*
+		 * TableModuleImpl tm; if ((tm = this.databaseToTableModuleMap.get(database)) ==
+		 * null) { this.databaseToTableModuleMap.put(database, tm = new
+		 * TableModuleImpl(database, sqlObjectFactoryt)); } return tm;
+		 */
 	}
 
 }

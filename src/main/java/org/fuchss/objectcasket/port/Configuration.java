@@ -2,6 +2,8 @@ package org.fuchss.objectcasket.port;
 
 import java.sql.Driver;
 
+import org.fuchss.sqlconnector.port.ConnectorException;
+
 /**
  * The configuration of Object Casket.
  *
@@ -67,6 +69,17 @@ public interface Configuration {
 	 *             if parameter is wrong
 	 */
 	boolean setFlag(Flag... flags) throws ObjectCasketException;
+
+	/**
+	 * Are the {@link Flag Flags} set.
+	 *
+	 * @param flags
+	 *            the flags
+	 * @return true iff all flags are set.
+	 * @throws ConnectorException
+	 *             if parameter is wrong
+	 */
+	boolean containsAll(Flag... flags) throws ObjectCasketException;
 
 	enum Flag {
 		/**

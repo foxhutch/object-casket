@@ -78,6 +78,17 @@ public interface Configuration {
 	 */
 	boolean removeFlag(Flag... flags) throws ConnectorException;
 
+	/**
+	 * Are the {@link Flag Flags} set.
+	 *
+	 * @param flags
+	 *            the flags
+	 * @return true iff all flags are set.
+	 * @throws ConnectorException
+	 *             if parameter is wrong
+	 */
+	boolean containsAll(Flag... flags) throws ConnectorException;
+
 	enum Flag {
 		/**
 		 * Allow file creation.
