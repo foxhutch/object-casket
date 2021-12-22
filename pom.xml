@@ -17,7 +17,7 @@
 		<sonar.organization>foxhutch</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		
-		<jackson.version>2.13.0</jackson.version>
+		<jackson.version>2.13.1</jackson.version>
 	</properties>
 	<distributionManagement>
 		<repository>
