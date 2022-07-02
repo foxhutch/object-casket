@@ -13,8 +13,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.Configuration;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TwoSessions extends TestBase {
 
@@ -48,7 +48,7 @@ public class TwoSessions extends TestBase {
 
 		lang[1].languageName = "newOne";
 		session[1].persist(lang[1]);
-		Assert.assertFalse(lang[1].sameAs(lang[0]));
+		Assertions.assertFalse(lang[1].sameAs(lang[0]));
 
 		session[2] = this.storePort.sessionManager().session(config);
 		session[2].declareClass(UserDTO.class, LanguageDTO.class);
@@ -65,17 +65,17 @@ public class TwoSessions extends TestBase {
 
 	private static UserDTO compareAndGet(UserDTO user, Session session) throws ObjectCasketException {
 		Set<UserDTO> users = session.getAllObjects(UserDTO.class);
-		Assert.assertTrue(users.size() == 1);
+		Assertions.assertTrue(users.size() == 1);
 		UserDTO newUser = users.iterator().next();
-		Assert.assertTrue(newUser.sameAs(user));
+		Assertions.assertTrue(newUser.sameAs(user));
 		return newUser;
 	}
 
 	private static LanguageDTO compareAndGet(LanguageDTO lang, Session session) throws ObjectCasketException {
 		Set<LanguageDTO> langs = session.getAllObjects(LanguageDTO.class);
-		Assert.assertTrue(langs.size() == 1);
+		Assertions.assertTrue(langs.size() == 1);
 		LanguageDTO newLang = langs.iterator().next();
-		Assert.assertTrue(newLang.sameAs(lang));
+		Assertions.assertTrue(newLang.sameAs(lang));
 		return newLang;
 	}
 

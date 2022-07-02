@@ -15,8 +15,8 @@ import javax.persistence.Table;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestValues_One2One_One2Many_Many2One extends TestBase {
 	@Test
@@ -64,7 +64,7 @@ public class TestValues_One2One_One2Many_Many2One extends TestBase {
 		f2.isomorphicValue = y;
 		session.persist(f2);
 
-		Assert.assertTrue(f1.isomorphicValue == null);
+		Assertions.assertTrue(f1.isomorphicValue == null);
 
 		f3.megamorphicValue = f1;
 		session.persist(f3);

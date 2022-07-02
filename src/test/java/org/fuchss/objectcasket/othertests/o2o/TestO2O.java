@@ -6,8 +6,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.othertests.o2o.objects.A;
 import org.fuchss.objectcasket.othertests.o2o.objects.B;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestO2O extends TestBase {
 
@@ -72,23 +72,23 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		Set<A> objs = session.getAllObjects(A.class);
-		Assert.assertTrue(objs.size() == 2);
+		Assertions.assertTrue(objs.size() == 2);
 
 		int i = 0;
 		for (A obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 				x = obj;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 2;
 				obj.other = y.other;
 				y = obj;
 			}
 		}
-		Assert.assertTrue(i == 3);
+		Assertions.assertTrue(i == 3);
 		z.other = x;
 
 		session.persist(y);
@@ -101,7 +101,7 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(A.class);
-		Assert.assertTrue(objs.size() == 3);
+		Assertions.assertTrue(objs.size() == 3);
 
 		A newX = new A('a');
 		A newY = new A('b');
@@ -110,22 +110,22 @@ public class TestO2O extends TestBase {
 		i = 0;
 		for (A obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 				newX = obj;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(y.sameAs(y, obj));
+				Assertions.assertTrue(y.sameAs(y, obj));
 				i += 2;
 				newY = obj;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 4;
 				newZ = obj;
 			}
 		}
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 
 		newZ.other = newX;
 		session.persist(newZ);
@@ -138,39 +138,39 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(A.class);
-		Assert.assertTrue(objs.size() == 3);
+		Assertions.assertTrue(objs.size() == 3);
 
 		i = 0;
 		for (A obj : objs) {
 			if (obj.pk == newX.pk) {
-				Assert.assertTrue(newX.sameAs(newX, obj));
+				Assertions.assertTrue(newX.sameAs(newX, obj));
 				i += 1;
 				x = obj;
 			}
 			if (obj.pk == newY.pk) {
-				Assert.assertTrue(newY.sameAs(newY, obj));
+				Assertions.assertTrue(newY.sameAs(newY, obj));
 				i += 2;
 				y = obj;
 			}
 			if (obj.pk == newZ.pk) {
-				Assert.assertTrue(newZ.sameAs(newZ, obj));
+				Assertions.assertTrue(newZ.sameAs(newZ, obj));
 				i += 4;
 				z = obj;
 			}
 		}
 
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 
-		Assert.assertTrue(x.other == y);
-		Assert.assertTrue(y.other == z);
-		Assert.assertTrue(z.other == x);
+		Assertions.assertTrue(x.other == y);
+		Assertions.assertTrue(y.other == z);
+		Assertions.assertTrue(z.other == x);
 
 		x.other = z;
 		session.persist(x);
 
-		Assert.assertTrue(x.other == z);
-		Assert.assertTrue(z.other == x);
-		Assert.assertTrue(y.other == null);
+		Assertions.assertTrue(x.other == z);
+		Assertions.assertTrue(z.other == x);
+		Assertions.assertTrue(y.other == null);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -184,19 +184,19 @@ public class TestO2O extends TestBase {
 		i = 0;
 		for (A obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(x.sameAs(y, obj));
+				Assertions.assertTrue(x.sameAs(y, obj));
 				i += 2;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(x.sameAs(z, obj));
+				Assertions.assertTrue(x.sameAs(z, obj));
 				i += 4;
 			}
 		}
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 		this.storePort.sessionManager().terminate(session);
 		session = this.storePort.sessionManager().session(this.config());
 		session.declareClass(//
@@ -219,24 +219,24 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(A.class);
-		Assert.assertTrue(objs.size() == 2);
+		Assertions.assertTrue(objs.size() == 2);
 
 		i = 0;
 		for (A obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(x.sameAs(y, obj));
+				Assertions.assertTrue(x.sameAs(y, obj));
 				i += 2;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 4;
 			}
 		}
-		Assert.assertTrue(i == 6);
+		Assertions.assertTrue(i == 6);
 
 		for (A obj : objs) {
 			session.delete(obj);
@@ -249,7 +249,7 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(A.class);
-		Assert.assertTrue(objs.isEmpty());
+		Assertions.assertTrue(objs.isEmpty());
 		this.storePort.sessionManager().terminate(session);
 
 	}
@@ -286,9 +286,9 @@ public class TestO2O extends TestBase {
 
 		session.persist(x);
 
-		Assert.assertTrue(x.pk != null);
-		Assert.assertTrue(y.pk != null);
-		Assert.assertTrue(z.pk == null);
+		Assertions.assertTrue(x.pk != null);
+		Assertions.assertTrue(y.pk != null);
+		Assertions.assertTrue(z.pk == null);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -298,29 +298,29 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		Set<B> objs = session.getAllObjects(B.class);
-		Assert.assertTrue(objs.size() == 2);
+		Assertions.assertTrue(objs.size() == 2);
 
 		int i = 0;
 		for (B obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 				x = obj;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 2;
 				obj.other = y.other;
 				y = obj;
 			}
 		}
-		Assert.assertTrue(i == 3);
+		Assertions.assertTrue(i == 3);
 		z.other = x;
 		session.persist(y);
 
-		Assert.assertTrue(x.pk != null);
-		Assert.assertTrue(y.pk != null);
-		Assert.assertTrue(z.pk != null);
+		Assertions.assertTrue(x.pk != null);
+		Assertions.assertTrue(y.pk != null);
+		Assertions.assertTrue(z.pk != null);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -330,7 +330,7 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(B.class);
-		Assert.assertTrue(objs.size() == 3);
+		Assertions.assertTrue(objs.size() == 3);
 
 		B newX = new B();
 		B newY = new B();
@@ -339,22 +339,22 @@ public class TestO2O extends TestBase {
 		i = 0;
 		for (B obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 				newX = obj;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(y.sameAs(y, obj));
+				Assertions.assertTrue(y.sameAs(y, obj));
 				i += 2;
 				newY = obj;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 4;
 				newZ = obj;
 			}
 		}
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 
 		newZ.other = newX;
 		session.persist(newZ);
@@ -367,42 +367,42 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(B.class);
-		Assert.assertTrue(objs.size() == 3);
+		Assertions.assertTrue(objs.size() == 3);
 
 		i = 0;
 		for (B obj : objs) {
 			if (obj.pk == newX.pk) {
-				Assert.assertTrue(newX.sameAs(newX, obj));
+				Assertions.assertTrue(newX.sameAs(newX, obj));
 				i += 1;
 				x = obj;
 			}
 			if (obj.pk == newY.pk) {
-				Assert.assertTrue(newY.sameAs(newY, obj));
+				Assertions.assertTrue(newY.sameAs(newY, obj));
 				i += 2;
 				y = obj;
 			}
 			if (obj.pk == newZ.pk) {
-				Assert.assertTrue(newZ.sameAs(newZ, obj));
+				Assertions.assertTrue(newZ.sameAs(newZ, obj));
 				i += 4;
 				z = obj;
 			}
 		}
 
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 
-		Assert.assertTrue(x.other == y);
-		Assert.assertTrue(y.other == z);
-		Assert.assertTrue(z.other == x);
+		Assertions.assertTrue(x.other == y);
+		Assertions.assertTrue(y.other == z);
+		Assertions.assertTrue(z.other == x);
 
 		x.other = z;
 		session.persist(x);
 
-		Assert.assertTrue(x.pk != null);
-		Assert.assertTrue(y.pk != null);
-		Assert.assertTrue(z.pk != null);
-		Assert.assertTrue(x.other == z);
-		Assert.assertTrue(z.other == x);
-		Assert.assertTrue(y.other == null);
+		Assertions.assertTrue(x.pk != null);
+		Assertions.assertTrue(y.pk != null);
+		Assertions.assertTrue(z.pk != null);
+		Assertions.assertTrue(x.other == z);
+		Assertions.assertTrue(z.other == x);
+		Assertions.assertTrue(y.other == null);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -416,19 +416,19 @@ public class TestO2O extends TestBase {
 		i = 0;
 		for (B obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(x.sameAs(y, obj));
+				Assertions.assertTrue(x.sameAs(y, obj));
 				i += 2;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(x.sameAs(z, obj));
+				Assertions.assertTrue(x.sameAs(z, obj));
 				i += 4;
 			}
 		}
-		Assert.assertTrue(i == 7);
+		Assertions.assertTrue(i == 7);
 		this.storePort.sessionManager().terminate(session);
 
 		session = this.storePort.sessionManager().session(this.config());
@@ -452,24 +452,24 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(B.class);
-		Assert.assertTrue(objs.size() == 2);
+		Assertions.assertTrue(objs.size() == 2);
 
 		i = 0;
 		for (B obj : objs) {
 			if (obj.pk == x.pk) {
-				Assert.assertTrue(x.sameAs(x, obj));
+				Assertions.assertTrue(x.sameAs(x, obj));
 				i += 1;
 			}
 			if (obj.pk == y.pk) {
-				Assert.assertTrue(x.sameAs(y, obj));
+				Assertions.assertTrue(x.sameAs(y, obj));
 				i += 2;
 			}
 			if (obj.pk == z.pk) {
-				Assert.assertTrue(obj.other == null);
+				Assertions.assertTrue(obj.other == null);
 				i += 4;
 			}
 		}
-		Assert.assertTrue(i == 6);
+		Assertions.assertTrue(i == 6);
 
 		for (B obj : objs) {
 			session.delete(obj);
@@ -482,7 +482,7 @@ public class TestO2O extends TestBase {
 		session.open();
 
 		objs = session.getAllObjects(B.class);
-		Assert.assertTrue(objs.isEmpty());
+		Assertions.assertTrue(objs.isEmpty());
 		this.storePort.sessionManager().terminate(session);
 
 	}

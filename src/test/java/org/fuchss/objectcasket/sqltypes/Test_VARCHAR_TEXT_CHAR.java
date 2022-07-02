@@ -9,8 +9,8 @@ import org.fuchss.objectcasket.sqltypes.objects.character.PK_CHAR1;
 import org.fuchss.objectcasket.sqltypes.objects.character.PK_CHAR2;
 import org.fuchss.objectcasket.sqltypes.objects.text.PK_TEXT;
 import org.fuchss.objectcasket.sqltypes.objects.text.PK_VARCHAR;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class Test_VARCHAR_TEXT_CHAR extends TestBase {
 
@@ -57,23 +57,23 @@ public class Test_VARCHAR_TEXT_CHAR extends TestBase {
 
 		for (int i = 0; i < ROWS; i++) {
 			session.persist(sql1_obj = new PK_VARCHAR("" + (i + 1)));
-			Assert.assertTrue(sql1_obj.cString.equals("" + (i + 1)));
-			Assert.assertTrue(sql1_obj.attr1.equals("" + (i + 1)));
-			Assert.assertNull(sql1_obj.attr2);
+			Assertions.assertTrue(sql1_obj.cString.equals("" + (i + 1)));
+			Assertions.assertTrue(sql1_obj.attr1.equals("" + (i + 1)));
+			Assertions.assertNull(sql1_obj.attr2);
 
 			session.persist(sql2_obj = new PK_TEXT("" + (i + 1)));
-			Assert.assertTrue(sql2_obj.cString.equals("" + (i + 1)));
-			Assert.assertTrue(sql2_obj.attr1.equals("" + (i + 1)));
-			Assert.assertNull(sql2_obj.attr2);
+			Assertions.assertTrue(sql2_obj.cString.equals("" + (i + 1)));
+			Assertions.assertTrue(sql2_obj.attr1.equals("" + (i + 1)));
+			Assertions.assertNull(sql2_obj.attr2);
 
 			session.persist(sql3_obj = new PK_CHAR1((char) (65 + i)));
-			Assert.assertTrue(sql3_obj.cCharacter == (char) (65 + i));
-			Assert.assertTrue(sql3_obj.attr1 == (char) (65 + i));
-			Assert.assertNull(sql3_obj.attr2);
+			Assertions.assertTrue(sql3_obj.cCharacter == (char) (65 + i));
+			Assertions.assertTrue(sql3_obj.attr1 == (char) (65 + i));
+			Assertions.assertNull(sql3_obj.attr2);
 
 			session.persist(sql4_obj = new PK_CHAR2((char) (97 + i)));
-			Assert.assertTrue(sql4_obj.tCharacter == (char) (97 + i));
-			Assert.assertTrue(sql4_obj.attr1 == (char) (97 + i));
+			Assertions.assertTrue(sql4_obj.tCharacter == (char) (97 + i));
+			Assertions.assertTrue(sql4_obj.attr1 == (char) (97 + i));
 
 			sql1.add(sql1_obj);
 			sql2.add(sql2_obj);
@@ -97,10 +97,10 @@ public class Test_VARCHAR_TEXT_CHAR extends TestBase {
 		Set<PK_CHAR1> sql_3 = session.getAllObjects(PK_CHAR1.class);
 		Set<PK_CHAR2> sql_4 = session.getAllObjects(PK_CHAR2.class);
 
-		Assert.assertTrue(sql1_obj.check(sql1, sql_1));
-		Assert.assertTrue(sql2_obj.check(sql2, sql_2));
-		Assert.assertTrue(sql3_obj.check(sql3, sql_3));
-		Assert.assertTrue(sql4_obj.check(sql4, sql_4));
+		Assertions.assertTrue(sql1_obj.check(sql1, sql_1));
+		Assertions.assertTrue(sql2_obj.check(sql2, sql_2));
+		Assertions.assertTrue(sql3_obj.check(sql3, sql_3));
+		Assertions.assertTrue(sql4_obj.check(sql4, sql_4));
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -141,10 +141,10 @@ public class Test_VARCHAR_TEXT_CHAR extends TestBase {
 		sql_3 = session.getAllObjects(PK_CHAR1.class);
 		sql_4 = session.getAllObjects(PK_CHAR2.class);
 
-		Assert.assertTrue(sql_1.isEmpty());
-		Assert.assertTrue(sql_2.isEmpty());
-		Assert.assertTrue(sql_3.isEmpty());
-		Assert.assertTrue(sql_4.isEmpty());
+		Assertions.assertTrue(sql_1.isEmpty());
+		Assertions.assertTrue(sql_2.isEmpty());
+		Assertions.assertTrue(sql_3.isEmpty());
+		Assertions.assertTrue(sql_4.isEmpty());
 
 		this.storePort.sessionManager().terminate(session);
 

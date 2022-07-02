@@ -7,8 +7,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.Session;
 import org.fuchss.objectcasket.sqltypes.objects.bool.PK_BOOL1;
 import org.fuchss.objectcasket.sqltypes.objects.bool.PK_BOOL2;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class Test_BOOL extends TestBase {
 
@@ -45,22 +45,22 @@ public class Test_BOOL extends TestBase {
 		PK_BOOL2 sql2_obj = null;
 
 		session.persist(sql1_obj = new PK_BOOL1(true));
-		Assert.assertTrue(sql1_obj.cBoolean);
-		Assert.assertTrue(sql1_obj.attr1);
-		Assert.assertNull(sql1_obj.attr2);
+		Assertions.assertTrue(sql1_obj.cBoolean);
+		Assertions.assertTrue(sql1_obj.attr1);
+		Assertions.assertNull(sql1_obj.attr2);
 		sql1.add(sql1_obj);
 		session.persist(sql1_obj = new PK_BOOL1(false));
-		Assert.assertFalse(sql1_obj.cBoolean);
-		Assert.assertFalse(sql1_obj.attr1);
-		Assert.assertNull(sql1_obj.attr2);
+		Assertions.assertFalse(sql1_obj.cBoolean);
+		Assertions.assertFalse(sql1_obj.attr1);
+		Assertions.assertNull(sql1_obj.attr2);
 		sql1.add(sql1_obj);
 		session.persist(sql2_obj = new PK_BOOL2(true));
-		Assert.assertTrue(sql2_obj.tBoolean);
-		Assert.assertTrue(sql2_obj.attr1);
+		Assertions.assertTrue(sql2_obj.tBoolean);
+		Assertions.assertTrue(sql2_obj.attr1);
 		sql2.add(sql2_obj);
 		session.persist(sql2_obj = new PK_BOOL2(false));
-		Assert.assertFalse(sql2_obj.tBoolean);
-		Assert.assertFalse(sql2_obj.attr1);
+		Assertions.assertFalse(sql2_obj.tBoolean);
+		Assertions.assertFalse(sql2_obj.attr1);
 		sql2.add(sql2_obj);
 
 		this.storePort.sessionManager().terminate(session);
@@ -74,10 +74,10 @@ public class Test_BOOL extends TestBase {
 		Set<PK_BOOL1> sql_1 = session.getAllObjects(PK_BOOL1.class);
 		Set<PK_BOOL2> sql_2 = session.getAllObjects(PK_BOOL2.class);
 
-		Assert.assertTrue(sql_1.size() == 2);
-		Assert.assertTrue(sql_2.size() == 2);
-		Assert.assertTrue(sql1_obj.check(sql1, sql_1));
-		Assert.assertTrue(sql2_obj.check(sql2, sql_2));
+		Assertions.assertTrue(sql_1.size() == 2);
+		Assertions.assertTrue(sql_2.size() == 2);
+		Assertions.assertTrue(sql1_obj.check(sql1, sql_1));
+		Assertions.assertTrue(sql2_obj.check(sql2, sql_2));
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -105,8 +105,8 @@ public class Test_BOOL extends TestBase {
 		sql_1 = session.getAllObjects(PK_BOOL1.class);
 		sql_2 = session.getAllObjects(PK_BOOL2.class);
 
-		Assert.assertTrue(sql_1.isEmpty());
-		Assert.assertTrue(sql_2.isEmpty());
+		Assertions.assertTrue(sql_1.isEmpty());
+		Assertions.assertTrue(sql_2.isEmpty());
 
 		this.storePort.sessionManager().terminate(session);
 

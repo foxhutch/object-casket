@@ -9,8 +9,8 @@ import org.fuchss.objectcasket.blobs.objects.BLOB_Ints;
 import org.fuchss.objectcasket.blobs.objects.BLOB_IntsList;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestBlob extends TestBase {
 
@@ -40,7 +40,7 @@ public class TestBlob extends TestBase {
 
 		this.storePort.sessionManager().terminate(session);
 
-		Assert.assertTrue(myBlob.check(sql1, sql_1));
+		Assertions.assertTrue(myBlob.check(sql1, sql_1));
 
 	}
 
@@ -75,6 +75,6 @@ public class TestBlob extends TestBase {
 		Set<BLOB_IntsList> sql_1 = session.getAllObjects(BLOB_IntsList.class);
 
 		this.storePort.sessionManager().terminate(session);
-		Assert.assertTrue(myBlob.check(Set.of(myBlob), sql_1));
+		Assertions.assertTrue(myBlob.check(Set.of(myBlob), sql_1));
 	}
 }

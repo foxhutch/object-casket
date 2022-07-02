@@ -23,10 +23,10 @@ import org.fuchss.tablemodule.port.TableModule;
 import org.fuchss.tablemodule.port.TableModuleException;
 import org.fuchss.tablemodule.port.TablePrototype;
 import org.fuchss.tablemodule.port.Transaction;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestCreateTable {
 	private static final Class<? extends Driver> DRIVER = org.sqlite.JDBC.class;
@@ -37,7 +37,7 @@ public class TestCreateTable {
 	private SqlObjectFactory objectFactory;
 	private TableModule module;
 
-	@Before
+	@BeforeEach
 	public void setUpConnection() throws Exception {
 		this.file = File.createTempFile("TestCreateTable", "db");
 		Files.deleteIfExists(this.file.toPath());
@@ -55,7 +55,7 @@ public class TestCreateTable {
 
 	}
 
-	@After
+	@AfterEach
 	public void cleanup() throws Exception {
 		SqlConnectionFactory.FACTORY.sqlPort().sqlDatabaseFactory().closeDatabase(this.db);
 		this.file.delete();
@@ -148,26 +148,26 @@ public class TestCreateTable {
 		row.write(tr, "id_tab18", x19);
 		row.write(tr, "id_tab19", x20);
 
-		Assert.assertTrue(x1 == row.read(tr, "id_tab", Integer.class));
-		Assert.assertTrue(x2 == row.read(tr, "id_tab1", Short.class));
-		Assert.assertTrue(x3 == row.read(tr, "id_tab2", Long.class));
-		Assert.assertTrue(x4 == row.read(tr, "id_tab3", Integer.TYPE));
-		Assert.assertTrue(x5 == row.read(tr, "id_tab4", Boolean.class));
-		Assert.assertTrue(x6 == row.read(tr, "id_tab5", Boolean.TYPE));
-		Assert.assertTrue(x7 == row.read(tr, "id_tab6", Double.class));
-		Assert.assertTrue(x8 == row.read(tr, "id_tab7", Double.TYPE));
-		Assert.assertTrue(x9 == row.read(tr, "id_tab8", Float.class));
-		Assert.assertTrue(x10 == row.read(tr, "id_tab9", Float.TYPE));
-		Assert.assertTrue(x11 == row.read(tr, "id_tab10", Byte.class));
-		Assert.assertTrue(x12 == row.read(tr, "id_tab11", Byte.TYPE));
-		Assert.assertTrue(x13 == row.read(tr, "id_tab12", Character.class));
-		Assert.assertTrue(x14 == row.read(tr, "id_tab13", Character.TYPE));
-		Assert.assertTrue(x15 == row.read(tr, "id_tab14", String.class));
-		Assert.assertTrue(x16.equals(row.read(tr, "id_tab15", Date.class)));
-		Assert.assertTrue(x17 == row.read(tr, "id_tab16", Double.class));
-		Assert.assertTrue(x18 == row.read(tr, "id_tab17", String.class));
-		Assert.assertTrue(x19 == row.read(tr, "id_tab18", Double.class));
-		Assert.assertTrue(x20.equals(row.read(tr, "id_tab19", Date.class)));
+		Assertions.assertTrue(x1 == row.read(tr, "id_tab", Integer.class));
+		Assertions.assertTrue(x2 == row.read(tr, "id_tab1", Short.class));
+		Assertions.assertTrue(x3 == row.read(tr, "id_tab2", Long.class));
+		Assertions.assertTrue(x4 == row.read(tr, "id_tab3", Integer.TYPE));
+		Assertions.assertTrue(x5 == row.read(tr, "id_tab4", Boolean.class));
+		Assertions.assertTrue(x6 == row.read(tr, "id_tab5", Boolean.TYPE));
+		Assertions.assertTrue(x7 == row.read(tr, "id_tab6", Double.class));
+		Assertions.assertTrue(x8 == row.read(tr, "id_tab7", Double.TYPE));
+		Assertions.assertTrue(x9 == row.read(tr, "id_tab8", Float.class));
+		Assertions.assertTrue(x10 == row.read(tr, "id_tab9", Float.TYPE));
+		Assertions.assertTrue(x11 == row.read(tr, "id_tab10", Byte.class));
+		Assertions.assertTrue(x12 == row.read(tr, "id_tab11", Byte.TYPE));
+		Assertions.assertTrue(x13 == row.read(tr, "id_tab12", Character.class));
+		Assertions.assertTrue(x14 == row.read(tr, "id_tab13", Character.TYPE));
+		Assertions.assertTrue(x15 == row.read(tr, "id_tab14", String.class));
+		Assertions.assertTrue(x16.equals(row.read(tr, "id_tab15", Date.class)));
+		Assertions.assertTrue(x17 == row.read(tr, "id_tab16", Double.class));
+		Assertions.assertTrue(x18 == row.read(tr, "id_tab17", String.class));
+		Assertions.assertTrue(x19 == row.read(tr, "id_tab18", Double.class));
+		Assertions.assertTrue(x20.equals(row.read(tr, "id_tab19", Date.class)));
 
 		this.module.commit(tr);
 

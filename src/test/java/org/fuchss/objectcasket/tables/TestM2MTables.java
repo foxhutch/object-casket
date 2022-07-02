@@ -10,8 +10,8 @@ import org.fuchss.objectcasket.tables.objects.EL1xER1;
 import org.fuchss.objectcasket.tables.objects.ELxER;
 import org.fuchss.objectcasket.tables.objects.ER;
 import org.fuchss.objectcasket.tables.objects.ER1;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestM2MTables extends TestBase {
 
@@ -36,7 +36,7 @@ public class TestM2MTables extends TestBase {
 		for (int i = 0; i < er.length; i++) {
 			e2.m2m.add(er[i]);
 			session.persist(e2);
-			Assert.assertTrue(e1.m2m.contains(er[i]));
+			Assertions.assertTrue(e1.m2m.contains(er[i]));
 
 		}
 		this.storePort.sessionManager().terminate(session);
@@ -49,10 +49,10 @@ public class TestM2MTables extends TestBase {
 		session.open();
 
 		Set<EL> es = session.getAllObjects(EL.class);
-		Assert.assertTrue(es.size() == 2);
+		Assertions.assertTrue(es.size() == 2);
 
 		for (EL e : es) {
-			Assert.assertTrue(e.m2m.size() == 10);
+			Assertions.assertTrue(e.m2m.size() == 10);
 		}
 		this.storePort.sessionManager().terminate(session);
 
@@ -79,9 +79,9 @@ public class TestM2MTables extends TestBase {
 		for (int i = 0; i < er.length; i++) {
 			e2.m2m.add(er[i]);
 			session.persist(e2);
-			Assert.assertTrue(e1.m2m.contains(er[i]));
-			Assert.assertTrue(er[i].m2m.contains(e2));
-			Assert.assertTrue(er[i].m2m.contains(e1));
+			Assertions.assertTrue(e1.m2m.contains(er[i]));
+			Assertions.assertTrue(er[i].m2m.contains(e2));
+			Assertions.assertTrue(er[i].m2m.contains(e1));
 		}
 		this.storePort.sessionManager().terminate(session);
 
@@ -95,9 +95,9 @@ public class TestM2MTables extends TestBase {
 		Set<EL1> es = session.getAllObjects(EL1.class);
 
 		for (EL1 e : es) {
-			Assert.assertTrue(e.m2m.size() == 10);
+			Assertions.assertTrue(e.m2m.size() == 10);
 			for (ER1 r : e.m2m)
-				Assert.assertTrue(r.m2m.size() == 2);
+				Assertions.assertTrue(r.m2m.size() == 2);
 		}
 
 		this.storePort.sessionManager().terminate(session);

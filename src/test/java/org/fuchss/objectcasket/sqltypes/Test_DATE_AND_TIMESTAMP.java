@@ -9,8 +9,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.Session;
 import org.fuchss.objectcasket.sqltypes.objects.date.PK_DATE;
 import org.fuchss.objectcasket.sqltypes.objects.date.PK_TIMESTAMP;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class Test_DATE_AND_TIMESTAMP extends TestBase {
 
@@ -54,14 +54,14 @@ public class Test_DATE_AND_TIMESTAMP extends TestBase {
 		for (int i = 0; i < ROWS; i++) {
 			cal.add(Calendar.DAY_OF_YEAR, 1);
 			session.persist(sql1_obj = new PK_DATE(cal.getTime()));
-			Assert.assertTrue(sql1_obj.cDate.equals(cal.getTime()));
-			Assert.assertTrue(sql1_obj.attr1.equals(cal.getTime()));
-			Assert.assertNull(sql1_obj.attr2);
+			Assertions.assertTrue(sql1_obj.cDate.equals(cal.getTime()));
+			Assertions.assertTrue(sql1_obj.attr1.equals(cal.getTime()));
+			Assertions.assertNull(sql1_obj.attr2);
 			sql1.add(sql1_obj);
 			session.persist(sql2_obj = new PK_TIMESTAMP(cal.getTime()));
-			Assert.assertTrue(sql2_obj.cTIMESTAMP.equals(cal.getTime()));
-			Assert.assertTrue(sql2_obj.attr1.equals(cal.getTime()));
-			Assert.assertNull(sql2_obj.attr2);
+			Assertions.assertTrue(sql2_obj.cTIMESTAMP.equals(cal.getTime()));
+			Assertions.assertTrue(sql2_obj.attr1.equals(cal.getTime()));
+			Assertions.assertNull(sql2_obj.attr2);
 			sql2.add(sql2_obj);
 		}
 
@@ -76,8 +76,8 @@ public class Test_DATE_AND_TIMESTAMP extends TestBase {
 		Set<PK_DATE> sql_1 = session.getAllObjects(PK_DATE.class);
 		Set<PK_TIMESTAMP> sql_2 = session.getAllObjects(PK_TIMESTAMP.class);
 
-		Assert.assertTrue(sql1_obj.check(sql1, sql_1));
-		Assert.assertTrue(sql2_obj.check(sql2, sql_2));
+		Assertions.assertTrue(sql1_obj.check(sql1, sql_1));
+		Assertions.assertTrue(sql2_obj.check(sql2, sql_2));
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -106,8 +106,8 @@ public class Test_DATE_AND_TIMESTAMP extends TestBase {
 		sql_1 = session.getAllObjects(PK_DATE.class);
 		sql_2 = session.getAllObjects(PK_TIMESTAMP.class);
 
-		Assert.assertTrue(sql_1.isEmpty());
-		Assert.assertTrue(sql_2.isEmpty());
+		Assertions.assertTrue(sql_1.isEmpty());
+		Assertions.assertTrue(sql_2.isEmpty());
 
 		this.storePort.sessionManager().terminate(session);
 

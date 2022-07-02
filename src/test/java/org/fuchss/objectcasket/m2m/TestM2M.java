@@ -14,8 +14,8 @@ import org.fuchss.objectcasket.m2m.objects.D;
 import org.fuchss.objectcasket.m2m.objects.DxE;
 import org.fuchss.objectcasket.m2m.objects.E;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestM2M extends TestBase {
 
@@ -66,34 +66,34 @@ public class TestM2M extends TestBase {
 		c3.a.add(a1);
 
 		session.persist(a1);
-		Assert.assertTrue(b1.a.contains(a1));
-		Assert.assertTrue(b2.a.contains(a1));
+		Assertions.assertTrue(b1.a.contains(a1));
+		Assertions.assertTrue(b2.a.contains(a1));
 		session.persist(a2);
-		Assert.assertTrue(b2.a.contains(a2));
-		Assert.assertTrue(b3.a.contains(a2));
+		Assertions.assertTrue(b2.a.contains(a2));
+		Assertions.assertTrue(b3.a.contains(a2));
 		session.persist(a3);
-		Assert.assertTrue(b3.a.contains(a3));
-		Assert.assertTrue(b1.a.contains(a3));
+		Assertions.assertTrue(b3.a.contains(a3));
+		Assertions.assertTrue(b1.a.contains(a3));
 
 		session.persist(b1);
-		Assert.assertTrue(c1.b.contains(b1));
-		Assert.assertTrue(c2.b.contains(b1));
+		Assertions.assertTrue(c1.b.contains(b1));
+		Assertions.assertTrue(c2.b.contains(b1));
 		session.persist(b2);
-		Assert.assertTrue(c2.b.contains(b2));
-		Assert.assertTrue(c3.b.contains(b2));
+		Assertions.assertTrue(c2.b.contains(b2));
+		Assertions.assertTrue(c3.b.contains(b2));
 		session.persist(b3);
-		Assert.assertTrue(c3.b.contains(b3));
-		Assert.assertTrue(c1.b.contains(b3));
+		Assertions.assertTrue(c3.b.contains(b3));
+		Assertions.assertTrue(c1.b.contains(b3));
 
 		session.persist(c1);
-		Assert.assertTrue(a1.c.contains(c1));
-		Assert.assertTrue(a2.c.contains(c1));
+		Assertions.assertTrue(a1.c.contains(c1));
+		Assertions.assertTrue(a2.c.contains(c1));
 		session.persist(c2);
-		Assert.assertTrue(a2.c.contains(c2));
-		Assert.assertTrue(a3.c.contains(c2));
+		Assertions.assertTrue(a2.c.contains(c2));
+		Assertions.assertTrue(a3.c.contains(c2));
 		session.persist(c3);
-		Assert.assertTrue(a3.c.contains(c3));
-		Assert.assertTrue(a1.c.contains(c3));
+		Assertions.assertTrue(a3.c.contains(c3));
+		Assertions.assertTrue(a1.c.contains(c3));
 		this.storePort.sessionManager().terminate(session);
 
 		session = this.storePort.sessionManager().session(this.config());
@@ -148,16 +148,16 @@ public class TestM2M extends TestBase {
 			}
 		}
 
-		Assert.assertTrue(allAs.size() == 3);
-		Assert.assertTrue(ab.size() == 3);
-		Assert.assertTrue(bc.size() == 3);
-		Assert.assertTrue(ca.size() == 3);
-		Assert.assertTrue(cb.size() == 3);
-		Assert.assertTrue(ba.size() == 3);
-		Assert.assertTrue(ac.size() == 3);
-		Assert.assertTrue(as.size() == 3);
-		Assert.assertTrue(bs.size() == 3);
-		Assert.assertTrue(cs.size() == 3);
+		Assertions.assertTrue(allAs.size() == 3);
+		Assertions.assertTrue(ab.size() == 3);
+		Assertions.assertTrue(bc.size() == 3);
+		Assertions.assertTrue(ca.size() == 3);
+		Assertions.assertTrue(cb.size() == 3);
+		Assertions.assertTrue(ba.size() == 3);
+		Assertions.assertTrue(ac.size() == 3);
+		Assertions.assertTrue(as.size() == 3);
+		Assertions.assertTrue(bs.size() == 3);
+		Assertions.assertTrue(cs.size() == 3);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -213,16 +213,16 @@ public class TestM2M extends TestBase {
 			}
 		}
 
-		Assert.assertTrue(allBs.size() == 3);
-		Assert.assertTrue(ab2.size() == 3);
-		Assert.assertTrue(bc2.size() == 3);
-		Assert.assertTrue(ca2.size() == 3);
-		Assert.assertTrue(cb2.size() == 3);
-		Assert.assertTrue(ba2.size() == 3);
-		Assert.assertTrue(ac2.size() == 3);
-		Assert.assertTrue(as2.size() == 3);
-		Assert.assertTrue(bs2.size() == 3);
-		Assert.assertTrue(cs2.size() == 3);
+		Assertions.assertTrue(allBs.size() == 3);
+		Assertions.assertTrue(ab2.size() == 3);
+		Assertions.assertTrue(bc2.size() == 3);
+		Assertions.assertTrue(ca2.size() == 3);
+		Assertions.assertTrue(cb2.size() == 3);
+		Assertions.assertTrue(ba2.size() == 3);
+		Assertions.assertTrue(ac2.size() == 3);
+		Assertions.assertTrue(as2.size() == 3);
+		Assertions.assertTrue(bs2.size() == 3);
+		Assertions.assertTrue(cs2.size() == 3);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -278,16 +278,16 @@ public class TestM2M extends TestBase {
 			}
 		}
 
-		Assert.assertTrue(allCs.size() == 3);
-		Assert.assertTrue(ab3.size() == 3);
-		Assert.assertTrue(bc3.size() == 3);
-		Assert.assertTrue(ca3.size() == 3);
-		Assert.assertTrue(cb3.size() == 3);
-		Assert.assertTrue(ba3.size() == 3);
-		Assert.assertTrue(ac3.size() == 3);
-		Assert.assertTrue(as3.size() == 3);
-		Assert.assertTrue(bs3.size() == 3);
-		Assert.assertTrue(cs3.size() == 3);
+		Assertions.assertTrue(allCs.size() == 3);
+		Assertions.assertTrue(ab3.size() == 3);
+		Assertions.assertTrue(bc3.size() == 3);
+		Assertions.assertTrue(ca3.size() == 3);
+		Assertions.assertTrue(cb3.size() == 3);
+		Assertions.assertTrue(ba3.size() == 3);
+		Assertions.assertTrue(ac3.size() == 3);
+		Assertions.assertTrue(as3.size() == 3);
+		Assertions.assertTrue(bs3.size() == 3);
+		Assertions.assertTrue(cs3.size() == 3);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -310,8 +310,8 @@ public class TestM2M extends TestBase {
 		session.persist(d);
 
 		DxE de = session.joinTableEntity(d, e, DxE.class);
-		Assert.assertTrue(de.d == d);
-		Assert.assertTrue(de.e == e);
+		Assertions.assertTrue(de.d == d);
+		Assertions.assertTrue(de.e == e);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -323,16 +323,16 @@ public class TestM2M extends TestBase {
 		session.open();
 
 		Set<D> ds = session.getAllObjects(D.class);
-		Assert.assertTrue(ds.size() == 1);
+		Assertions.assertTrue(ds.size() == 1);
 		for (D dd : ds) {
-			Assert.assertTrue(d.e.size() == 1);
+			Assertions.assertTrue(d.e.size() == 1);
 			for (E ee : dd.e) {
 				ee.d.contains(dd);
-				Assert.assertTrue(ee.d.size() == 1);
+				Assertions.assertTrue(ee.d.size() == 1);
 				DxE dxe = session.joinTableEntity(dd, ee, DxE.class);
-				Assert.assertNotNull(dxe);
-				Assert.assertTrue(dxe.d == dd);
-				Assert.assertTrue(dxe.e == ee);
+				Assertions.assertNotNull(dxe);
+				Assertions.assertTrue(dxe.d == dd);
+				Assertions.assertTrue(dxe.e == ee);
 			}
 		}
 		this.storePort.sessionManager().terminate(session);
@@ -370,24 +370,24 @@ public class TestM2M extends TestBase {
 		session.persist(y);
 
 		DxE xe1 = session.joinTableEntity(x, e1, DxE.class);
-		Assert.assertTrue(xe1.d == x);
-		Assert.assertTrue(xe1.e == e1);
+		Assertions.assertTrue(xe1.d == x);
+		Assertions.assertTrue(xe1.e == e1);
 		DxE xe2 = session.joinTableEntity(x, e2, DxE.class);
-		Assert.assertTrue(xe2.d == x);
-		Assert.assertTrue(xe2.e == e2);
+		Assertions.assertTrue(xe2.d == x);
+		Assertions.assertTrue(xe2.e == e2);
 		DxE xe3 = session.joinTableEntity(x, e3, DxE.class);
-		Assert.assertTrue(xe3.d == x);
-		Assert.assertTrue(xe3.e == e3);
+		Assertions.assertTrue(xe3.d == x);
+		Assertions.assertTrue(xe3.e == e3);
 
 		DxE ye4 = session.joinTableEntity(y, e4, DxE.class);
-		Assert.assertTrue(ye4.d == y);
-		Assert.assertTrue(ye4.e == e4);
+		Assertions.assertTrue(ye4.d == y);
+		Assertions.assertTrue(ye4.e == e4);
 		DxE ye5 = session.joinTableEntity(y, e5, DxE.class);
-		Assert.assertTrue(ye5.d == y);
-		Assert.assertTrue(ye5.e == e5);
+		Assertions.assertTrue(ye5.d == y);
+		Assertions.assertTrue(ye5.e == e5);
 		DxE ye6 = session.joinTableEntity(y, e6, DxE.class);
-		Assert.assertTrue(ye6.d == y);
-		Assert.assertTrue(ye6.e == e6);
+		Assertions.assertTrue(ye6.d == y);
+		Assertions.assertTrue(ye6.e == e6);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -399,15 +399,15 @@ public class TestM2M extends TestBase {
 		session.open();
 
 		Set<E> es = session.getAllObjects(E.class);
-		Assert.assertTrue(es.size() == 6);
+		Assertions.assertTrue(es.size() == 6);
 		for (E e : es) {
-			Assert.assertTrue(e.d.size() == 1);
+			Assertions.assertTrue(e.d.size() == 1);
 			for (D d : e.d) {
 				d.e.contains(e);
-				Assert.assertTrue(d.e.size() == 3);
+				Assertions.assertTrue(d.e.size() == 3);
 				DxE dxe = session.joinTableEntity(d, e, DxE.class);
-				Assert.assertTrue(dxe.d == d);
-				Assert.assertTrue(dxe.e == e);
+				Assertions.assertTrue(dxe.d == d);
+				Assertions.assertTrue(dxe.e == e);
 			}
 		}
 		this.storePort.sessionManager().terminate(session);

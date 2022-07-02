@@ -17,8 +17,8 @@ import org.fuchss.objectcasket.sqltypes.objects.numeric.PK_NUMERIC6;
 import org.fuchss.objectcasket.sqltypes.objects.numeric.PK_NUMERIC7;
 import org.fuchss.objectcasket.sqltypes.objects.numeric.PK_NUMERIC8;
 import org.fuchss.objectcasket.sqltypes.objects.numeric.PK_NUMERIC9;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class Test_NUMERIC extends TestBase {
 
@@ -88,58 +88,58 @@ public class Test_NUMERIC extends TestBase {
 
 		for (byte i = 0; i < ROWS; i++) {
 			session.persist(sql1_obj = new PK_NUMERIC1((long) (i + 1)));
-			Assert.assertTrue(sql1_obj.cLong == (i + 1));
-			Assert.assertTrue(sql1_obj.attr1 == (i + 1));
-			Assert.assertNull(sql1_obj.attr2);
+			Assertions.assertTrue(sql1_obj.cLong == (i + 1));
+			Assertions.assertTrue(sql1_obj.attr1 == (i + 1));
+			Assertions.assertNull(sql1_obj.attr2);
 
 			session.persist(sql2_obj = new PK_NUMERIC2(i + 1));
-			Assert.assertTrue(sql2_obj.cInteger == (i + 1));
-			Assert.assertTrue(sql2_obj.attr1 == (i + 1));
-			Assert.assertNull(sql2_obj.attr2);
+			Assertions.assertTrue(sql2_obj.cInteger == (i + 1));
+			Assertions.assertTrue(sql2_obj.attr1 == (i + 1));
+			Assertions.assertNull(sql2_obj.attr2);
 
 			session.persist(sql3_obj = new PK_NUMERIC3((short) (i + 1)));
-			Assert.assertTrue(sql3_obj.cShort == (short) (i + 1));
-			Assert.assertTrue(sql3_obj.attr1 == (short) (i + 1));
-			Assert.assertNull(sql3_obj.attr2);
+			Assertions.assertTrue(sql3_obj.cShort == (short) (i + 1));
+			Assertions.assertTrue(sql3_obj.attr1 == (short) (i + 1));
+			Assertions.assertNull(sql3_obj.attr2);
 
 			session.persist(sql4_obj = new PK_NUMERIC4((byte) (i + 1)));
-			Assert.assertTrue(sql4_obj.cByte == (byte) (i + 1));
-			Assert.assertTrue(sql4_obj.attr1 == (byte) (i + 1));
-			Assert.assertNull(sql4_obj.attr2);
+			Assertions.assertTrue(sql4_obj.cByte == (byte) (i + 1));
+			Assertions.assertTrue(sql4_obj.attr1 == (byte) (i + 1));
+			Assertions.assertNull(sql4_obj.attr2);
 
 			session.persist(sql5_obj = new PK_NUMERIC5(i + 1));
-			Assert.assertTrue(sql5_obj.tLong == (i + 1));
-			Assert.assertTrue(sql5_obj.attr1 == (i + 1));
+			Assertions.assertTrue(sql5_obj.tLong == (i + 1));
+			Assertions.assertTrue(sql5_obj.attr1 == (i + 1));
 
 			session.persist(sql6_obj = new PK_NUMERIC6(i + 1));
-			Assert.assertTrue(sql6_obj.tInteger == (i + 1));
-			Assert.assertTrue(sql6_obj.attr1 == (i + 1));
+			Assertions.assertTrue(sql6_obj.tInteger == (i + 1));
+			Assertions.assertTrue(sql6_obj.attr1 == (i + 1));
 
 			session.persist(sql7_obj = new PK_NUMERIC7((short) (i + 1)));
-			Assert.assertTrue(sql7_obj.tShort == (short) (i + 1));
-			Assert.assertTrue(sql7_obj.attr1 == (short) (i + 1));
+			Assertions.assertTrue(sql7_obj.tShort == (short) (i + 1));
+			Assertions.assertTrue(sql7_obj.attr1 == (short) (i + 1));
 
 			session.persist(sql8_obj = new PK_NUMERIC8((byte) (i + 1)));
-			Assert.assertTrue(sql8_obj.tByte == (byte) (i + 1));
-			Assert.assertTrue(sql8_obj.attr1 == (byte) (i + 1));
+			Assertions.assertTrue(sql8_obj.tByte == (byte) (i + 1));
+			Assertions.assertTrue(sql8_obj.attr1 == (byte) (i + 1));
 
 			session.persist(sql9_obj = new PK_NUMERIC9((i + 1) * 0.1));
-			Assert.assertTrue(sql9_obj.cDouble == ((i + 1) * 0.1));
-			Assert.assertTrue(sql9_obj.attr1 == ((i + 1) * 0.1));
-			Assert.assertNull(sql9_obj.attr2);
+			Assertions.assertTrue(sql9_obj.cDouble == ((i + 1) * 0.1));
+			Assertions.assertTrue(sql9_obj.attr1 == ((i + 1) * 0.1));
+			Assertions.assertNull(sql9_obj.attr2);
 
 			session.persist(sql10_obj = new PK_NUMERIC10((i + 1) * 0.1));
-			Assert.assertTrue(sql10_obj.tDouble == ((i + 1) * 0.1));
-			Assert.assertTrue(sql10_obj.attr1 == ((i + 1) * 0.1));
+			Assertions.assertTrue(sql10_obj.tDouble == ((i + 1) * 0.1));
+			Assertions.assertTrue(sql10_obj.attr1 == ((i + 1) * 0.1));
 
 			session.persist(sql11_obj = new PK_NUMERIC11((float) ((i + 1) * 0.1)));
-			Assert.assertTrue(sql11_obj.cFloat == (float) ((i + 1) * 0.1));
-			Assert.assertTrue(sql11_obj.attr1 == (float) ((i + 1) * 0.1));
-			Assert.assertNull(sql11_obj.attr2);
+			Assertions.assertTrue(sql11_obj.cFloat == (float) ((i + 1) * 0.1));
+			Assertions.assertTrue(sql11_obj.attr1 == (float) ((i + 1) * 0.1));
+			Assertions.assertNull(sql11_obj.attr2);
 
 			session.persist(sql12_obj = new PK_NUMERIC12((float) ((i + 1) * 0.1)));
-			Assert.assertTrue(sql12_obj.tFloat == (float) ((i + 1) * 0.1));
-			Assert.assertTrue(sql12_obj.attr1 == (float) ((i + 1) * 0.1));
+			Assertions.assertTrue(sql12_obj.tFloat == (float) ((i + 1) * 0.1));
+			Assertions.assertTrue(sql12_obj.attr1 == (float) ((i + 1) * 0.1));
 
 			sql1.add(sql1_obj);
 			sql2.add(sql2_obj);
@@ -185,18 +185,18 @@ public class Test_NUMERIC extends TestBase {
 		Set<PK_NUMERIC11> sql_11 = session.getAllObjects(PK_NUMERIC11.class);
 		Set<PK_NUMERIC12> sql_12 = session.getAllObjects(PK_NUMERIC12.class);
 
-		Assert.assertTrue(sql1_obj.check(sql1, sql_1));
-		Assert.assertTrue(sql2_obj.check(sql2, sql_2));
-		Assert.assertTrue(sql3_obj.check(sql3, sql_3));
-		Assert.assertTrue(sql4_obj.check(sql4, sql_4));
-		Assert.assertTrue(sql5_obj.check(sql5, sql_5));
-		Assert.assertTrue(sql6_obj.check(sql6, sql_6));
-		Assert.assertTrue(sql7_obj.check(sql7, sql_7));
-		Assert.assertTrue(sql8_obj.check(sql8, sql_8));
-		Assert.assertTrue(sql9_obj.check(sql9, sql_9));
-		Assert.assertTrue(sql10_obj.check(sql10, sql_10));
-		Assert.assertTrue(sql11_obj.check(sql11, sql_11));
-		Assert.assertTrue(sql12_obj.check(sql12, sql_12));
+		Assertions.assertTrue(sql1_obj.check(sql1, sql_1));
+		Assertions.assertTrue(sql2_obj.check(sql2, sql_2));
+		Assertions.assertTrue(sql3_obj.check(sql3, sql_3));
+		Assertions.assertTrue(sql4_obj.check(sql4, sql_4));
+		Assertions.assertTrue(sql5_obj.check(sql5, sql_5));
+		Assertions.assertTrue(sql6_obj.check(sql6, sql_6));
+		Assertions.assertTrue(sql7_obj.check(sql7, sql_7));
+		Assertions.assertTrue(sql8_obj.check(sql8, sql_8));
+		Assertions.assertTrue(sql9_obj.check(sql9, sql_9));
+		Assertions.assertTrue(sql10_obj.check(sql10, sql_10));
+		Assertions.assertTrue(sql11_obj.check(sql11, sql_11));
+		Assertions.assertTrue(sql12_obj.check(sql12, sql_12));
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -285,18 +285,18 @@ public class Test_NUMERIC extends TestBase {
 		sql_11 = session.getAllObjects(PK_NUMERIC11.class);
 		sql_12 = session.getAllObjects(PK_NUMERIC12.class);
 
-		Assert.assertTrue(sql_1.isEmpty());
-		Assert.assertTrue(sql_2.isEmpty());
-		Assert.assertTrue(sql_3.isEmpty());
-		Assert.assertTrue(sql_4.isEmpty());
-		Assert.assertTrue(sql_5.isEmpty());
-		Assert.assertTrue(sql_6.isEmpty());
-		Assert.assertTrue(sql_7.isEmpty());
-		Assert.assertTrue(sql_8.isEmpty());
-		Assert.assertTrue(sql_9.isEmpty());
-		Assert.assertTrue(sql_10.isEmpty());
-		Assert.assertTrue(sql_11.isEmpty());
-		Assert.assertTrue(sql_12.isEmpty());
+		Assertions.assertTrue(sql_1.isEmpty());
+		Assertions.assertTrue(sql_2.isEmpty());
+		Assertions.assertTrue(sql_3.isEmpty());
+		Assertions.assertTrue(sql_4.isEmpty());
+		Assertions.assertTrue(sql_5.isEmpty());
+		Assertions.assertTrue(sql_6.isEmpty());
+		Assertions.assertTrue(sql_7.isEmpty());
+		Assertions.assertTrue(sql_8.isEmpty());
+		Assertions.assertTrue(sql_9.isEmpty());
+		Assertions.assertTrue(sql_10.isEmpty());
+		Assertions.assertTrue(sql_11.isEmpty());
+		Assertions.assertTrue(sql_12.isEmpty());
 
 		this.storePort.sessionManager().terminate(session);
 

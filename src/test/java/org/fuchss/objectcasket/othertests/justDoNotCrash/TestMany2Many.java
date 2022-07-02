@@ -18,8 +18,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketCMP;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestMany2Many extends TestBase {
 
@@ -87,14 +87,14 @@ public class TestMany2Many extends TestBase {
 		Map<String, ObjectCasketCMP> selectMap = new HashMap<>();
 		selectMap.put("valueSL", ObjectCasketCMP.EQUAL);
 		Set<LeftSide> leftSides = session.getObjectsByPrototype(lx, selectMap);
-		Assert.assertTrue(leftSides.size() == 3);
+		Assertions.assertTrue(leftSides.size() == 3);
 
 		RightSide rx = new RightSide();
 		rx.valueSR = "r2";
 		selectMap = new HashMap<>();
 		selectMap.put("valueSR", ObjectCasketCMP.EQUAL);
 		Set<RightSide> rightSides = session.getObjectsByPrototype(rx, selectMap);
-		Assert.assertTrue(rightSides.size() == 3);
+		Assertions.assertTrue(rightSides.size() == 3);
 
 		this.storePort.sessionManager().terminate(session);
 	}

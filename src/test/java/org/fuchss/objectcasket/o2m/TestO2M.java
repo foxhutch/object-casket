@@ -41,8 +41,8 @@ import org.fuchss.objectcasket.o2m.objects.o2m.O2M_S_TEXT;
 import org.fuchss.objectcasket.o2m.objects.o2m.O2M_S_TIMESTAMP;
 import org.fuchss.objectcasket.o2m.objects.o2m.O2M_S_VARCHAR;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestO2M extends TestBase {
 
@@ -436,8 +436,8 @@ public class TestO2M extends TestBase {
 		Set<O2M_C_BOOL1> sql_1 = session.getAllObjects(O2M_C_BOOL1.class);
 		Set<O2M_C_BOOL2> sql_2 = session.getAllObjects(O2M_C_BOOL2.class);
 
-		Assert.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
-		Assert.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
+		Assertions.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
+		Assertions.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
 
 		this.storePort.sessionManager().terminate(session);
 

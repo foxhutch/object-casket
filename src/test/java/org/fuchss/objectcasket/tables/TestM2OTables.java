@@ -4,7 +4,7 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.Session;
 import org.fuchss.objectcasket.tables.objects.DL;
 import org.fuchss.objectcasket.tables.objects.DR;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestM2OTables extends TestBase {
 

@@ -43,8 +43,8 @@ import org.fuchss.objectcasket.o2m.objects.m2o.M2O_S_TEXT;
 import org.fuchss.objectcasket.o2m.objects.m2o.M2O_S_TIMESTAMP;
 import org.fuchss.objectcasket.o2m.objects.m2o.M2O_S_VARCHAR;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestM2O extends TestBase {
 
@@ -442,8 +442,8 @@ public class TestM2O extends TestBase {
 		Set<M2O_C_BOOL1> sql_1 = session.getAllObjects(M2O_C_BOOL1.class);
 		Set<M2O_C_BOOL2> sql_2 = session.getAllObjects(M2O_C_BOOL2.class);
 
-		Assert.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
-		Assert.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
+		Assertions.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
+		Assertions.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -841,8 +841,8 @@ public class TestM2O extends TestBase {
 		Set<M2O_C_CHAR1> sql_1 = session.getAllObjects(M2O_C_CHAR1.class);
 		Set<M2O_C_CHAR2> sql_2 = session.getAllObjects(M2O_C_CHAR2.class);
 
-		Assert.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
-		Assert.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
+		Assertions.assertTrue(sql_c1_obj.check(sql_c1, sql_1));
+		Assertions.assertTrue(sql_c2_obj.check(sql_c2, sql_2));
 
 		this.storePort.sessionManager().terminate(session);
 

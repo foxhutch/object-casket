@@ -4,8 +4,8 @@ import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.o2m.objects.o2m.O2M_C_BOOL1;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestO2MException extends TestBase {
 
@@ -14,7 +14,7 @@ public class TestO2MException extends TestBase {
 	@Test
 	public void test() throws Exception {
 
-		Exception exception = Assert.assertThrows(ObjectCasketException.class, () -> {
+		Exception exception = Assertions.assertThrows(ObjectCasketException.class, () -> {
 			this.session = this.storePort.sessionManager().session(this.config());
 			this.session.declareClass( //
 					O2M_C_BOOL1.class //
@@ -24,7 +24,7 @@ public class TestO2MException extends TestBase {
 
 		String actualMessage = exception.getMessage();
 
-		Assert.assertTrue(actualMessage.contains("O2M_C_BOOL1"));
+		Assertions.assertTrue(actualMessage.contains("O2M_C_BOOL1"));
 	}
 
 }

@@ -10,7 +10,7 @@ import org.fuchss.objectcasket.othertests.justDoNotCrash.objects.XY2;
 import org.fuchss.objectcasket.othertests.justDoNotCrash.objects.XY3;
 import org.fuchss.objectcasket.othertests.justDoNotCrash.objects.XY4;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPersist extends TestBase {
 

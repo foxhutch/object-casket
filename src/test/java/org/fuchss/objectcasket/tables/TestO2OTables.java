@@ -6,8 +6,8 @@ import org.fuchss.objectcasket.tables.objects.AL;
 import org.fuchss.objectcasket.tables.objects.AR;
 import org.fuchss.objectcasket.tables.objects.BL;
 import org.fuchss.objectcasket.tables.objects.BR;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestO2OTables extends TestBase {
 
@@ -33,7 +33,7 @@ public class TestO2OTables extends TestBase {
 		a2.one2one = a3;
 		session.persist(a2);
 
-		Assert.assertTrue(a1.one2one == null);
+		Assertions.assertTrue(a1.one2one == null);
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -55,7 +55,7 @@ public class TestO2OTables extends TestBase {
 		b1.one2one = b3;
 		session.persist(b1);
 
-		Assert.assertTrue(b3.one2one == b1);
+		Assertions.assertTrue(b3.one2one == b1);
 
 		b1.one2one = null;
 		session.persist(b1);
@@ -63,7 +63,7 @@ public class TestO2OTables extends TestBase {
 		b2.one2one = b3;
 		session.persist(b2);
 
-		Assert.assertTrue(b1.one2one == null);
+		Assertions.assertTrue(b1.one2one == null);
 
 		this.storePort.sessionManager().terminate(session);
 

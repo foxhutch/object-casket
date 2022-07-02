@@ -6,8 +6,8 @@ import java.util.Set;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.json.objects.JSON_Ints;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestJSON extends TestBase {
 
@@ -37,7 +37,7 @@ public class TestJSON extends TestBase {
 
 		this.storePort.sessionManager().terminate(session);
 
-		Assert.assertTrue(myBlob.check(sql1, sql_1));
+		Assertions.assertTrue(myBlob.check(sql1, sql_1));
 
 	}
 
@@ -72,6 +72,6 @@ public class TestJSON extends TestBase {
 		Set<JSON_Ints> sql_1 = session.getAllObjects(JSON_Ints.class);
 
 		this.storePort.sessionManager().terminate(session);
-		Assert.assertTrue(myBlob.check(Set.of(myBlob), sql_1));
+		Assertions.assertTrue(myBlob.check(Set.of(myBlob), sql_1));
 	}
 }

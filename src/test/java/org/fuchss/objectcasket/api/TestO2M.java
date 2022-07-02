@@ -10,8 +10,9 @@ import org.fuchss.objectcasket.api.objects.C;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 
 public class TestO2M extends TestBase {
 	//
@@ -38,21 +39,21 @@ public class TestO2M extends TestBase {
 
 		a1.manyBs.add(b1);
 		session.persist(a1);
-		Assert.assertTrue(b1.oneA == a1); // o2m: -> navigable !OK!
+		Assertions.assertTrue(b1.oneA == a1); // o2m: -> navigable !OK!
 
 		b2.oneA = a1;
 		session.persist(b2);
 
-		Assert.assertTrue(a1.manyBs.contains(b2));// o2m: <- navigable !OK!
+		Assertions.assertTrue(a1.manyBs.contains(b2));// o2m: <- navigable !OK!
 		c1.manyBs.add(b1);
 		session.persist(c1);
 
-		Assert.assertTrue(b1.oneC == null); // o2m: -x not navigable !OK!
+		Assertions.assertTrue(b1.oneC == null); // o2m: -x not navigable !OK!
 
 		b2.oneC = c1;
 		session.persist(b2);
 
-		Assert.assertTrue(!c1.manyBs.contains(b2)); // o2m: x- not navigable !OK!
+		Assertions.assertTrue(!c1.manyBs.contains(b2)); // o2m: x- not navigable !OK!
 
 		this.storePort.sessionManager().terminate(session);
 
@@ -64,7 +65,7 @@ public class TestO2M extends TestBase {
 		Set<B> bs = session.getAllObjects(B.class);
 		Set<C> cs = session.getAllObjects(C.class);
 
-		Assert.assertTrue(((as.size() == 1) && (bs.size() == 2) && (cs.size() == 1))); // Right number of objects !OK!"
+		Assertions.assertTrue(((as.size() == 1) && (bs.size() == 2) && (cs.size() == 1))); // Right number of objects !OK!"
 
 		A a1x = as.iterator().next();
 		Iterator<B> iter = bs.iterator();
@@ -72,14 +73,14 @@ public class TestO2M extends TestBase {
 		B b2x = iter.next();
 		C c1x = cs.iterator().next();
 
-		Assert.assertTrue(a1x.manyBs.contains(b1x) && a1x.manyBs.contains(b2x)); // a knows each b !OK!"
+		Assertions.assertTrue(a1x.manyBs.contains(b1x) && a1x.manyBs.contains(b2x)); // a knows each b !OK!"
 
-		Assert.assertTrue((b1x.oneA == a1x) && (b2x.oneA == a1x)); // Each b knows a !OK!
+		Assertions.assertTrue((b1x.oneA == a1x) && (b2x.oneA == a1x)); // Each b knows a !OK!
 
 		if (c1x.manyBs.contains(b1x)) {
-			Assert.assertTrue((b1x.oneC == null) && (b2x.oneC == c1x) && !c1x.manyBs.contains(b2x)); // c || b !OK!;
+			Assertions.assertTrue((b1x.oneC == null) && (b2x.oneC == c1x) && !c1x.manyBs.contains(b2x)); // c || b !OK!;
 		} else {
-			Assert.assertTrue((b1x.oneC == c1x) && (b2x.oneC == null) && c1x.manyBs.contains(b2x)); // c || b !OK!";
+			Assertions.assertTrue((b1x.oneC == c1x) && (b2x.oneC == null) && c1x.manyBs.contains(b2x)); // c || b !OK!";
 		}
 
 		this.storePort.sessionManager().terminate(session);

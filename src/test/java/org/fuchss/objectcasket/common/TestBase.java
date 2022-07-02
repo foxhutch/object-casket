@@ -8,8 +8,8 @@ import org.fuchss.objectcasket.ObjectCasketFactory;
 import org.fuchss.objectcasket.port.Configuration;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.ObjectCasketPort;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class TestBase {
 	private static final Class<? extends Driver> DRIVER = org.sqlite.JDBC.class;
@@ -18,7 +18,7 @@ public abstract class TestBase {
 	protected ObjectCasketPort storePort;
 	protected File dbFile;
 
-	@Before
+	@BeforeEach
 	public void setUpConnection() throws Exception {
 		this.storePort = ObjectCasketFactory.FACTORY.ObjectCasketPort();
 		this.dbFile = File.createTempFile("TestsDB" + this.getClass().getSimpleName(), ".db");
@@ -36,7 +36,7 @@ public abstract class TestBase {
 		return config;
 	}
 
-	@After
+	@AfterEach
 	public void cleanup() throws Exception {
 		this.dbFile.delete();
 		System.out.println("DB " + this.dbFile.getPath() + " deleted");

@@ -6,8 +6,8 @@ import org.fuchss.objectcasket.tables.objects.C1L;
 import org.fuchss.objectcasket.tables.objects.C1R;
 import org.fuchss.objectcasket.tables.objects.CL;
 import org.fuchss.objectcasket.tables.objects.CR;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestO2MTables extends TestBase {
 
@@ -31,7 +31,7 @@ public class TestO2MTables extends TestBase {
 		for (int i = 0; i < cr.length; i++) {
 			c2.one2many.add(cr[i]);
 			session.persist(c2);
-			Assert.assertFalse(c1.one2many.contains(cr[i]));
+			Assertions.assertFalse(c1.one2many.contains(cr[i]));
 
 		}
 		this.storePort.sessionManager().terminate(session);
@@ -54,13 +54,13 @@ public class TestO2MTables extends TestBase {
 		}
 		session.persist(c1);
 		for (int i = 0; i < cr.length; i++) {
-			Assert.assertTrue(cr[i].many2One == c1);
+			Assertions.assertTrue(cr[i].many2One == c1);
 		}
 
 		for (int i = 0; i < cr.length; i++) {
 			c2.one2many.add(cr[i]);
 			session.persist(c2);
-			Assert.assertFalse(c1.one2many.contains(cr[i]));
+			Assertions.assertFalse(c1.one2many.contains(cr[i]));
 		}
 		this.storePort.sessionManager().terminate(session);
 	}

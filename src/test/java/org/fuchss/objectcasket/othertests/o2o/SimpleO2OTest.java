@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SimpleO2OTest extends TestBase {
 	@Test
@@ -44,48 +44,48 @@ public class SimpleO2OTest extends TestBase {
 		session.persist(h1);
 		session.persist(h2);
 
-		Assert.assertEquals(2, session.getAllObjects(Human.class).size());
-		Assert.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(Human.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
 
 		// After deletion the reference to details shall be cleared but hd1
 		// shall still exist
 		session.delete(h1);
-		Assert.assertNull(h1.details);
-		Assert.assertEquals(1, session.getAllObjects(Human.class).size());
-		Assert.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
+		Assertions.assertNull(h1.details);
+		Assertions.assertEquals(1, session.getAllObjects(Human.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
 
 		h1.details = hd1;
 		session.persist(h1);
 
-		Assert.assertEquals(2, session.getAllObjects(Human.class).size());
-		Assert.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(Human.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
 
 		session.delete(h2);
 
-		Assert.assertEquals(1, session.getAllObjects(Human.class).size());
-		Assert.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
+		Assertions.assertEquals(1, session.getAllObjects(Human.class).size());
+		Assertions.assertEquals(2, session.getAllObjects(HumanDetails.class).size());
 
 		// Method getAllObjects() shall reference to the local objects.
 		hd1.age = -1;
-		Assert.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
+		Assertions.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
 
 		// DB shall be different
 		Human humanBySession = this.getHumanWithSession();
-		Assert.assertEquals(1, humanBySession.details.age);
+		Assertions.assertEquals(1, humanBySession.details.age);
 
 		// Persist h1 shall not cascade
 		session.persist(h1);
-		Assert.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
+		Assertions.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
 
 		humanBySession = this.getHumanWithSession();
-		Assert.assertEquals(1, humanBySession.details.age);
+		Assertions.assertEquals(1, humanBySession.details.age);
 
 		// Persist hd1 shall save changes
 		session.persist(hd1);
-		Assert.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
+		Assertions.assertEquals(-1, session.getAllObjects(Human.class).iterator().next().details.age);
 
 		humanBySession = this.getHumanWithSession();
-		Assert.assertEquals(-1, humanBySession.details.age);
+		Assertions.assertEquals(-1, humanBySession.details.age);
 
 		this.storePort.sessionManager().terminate(session);
 	}

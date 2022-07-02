@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import org.fuchss.objectcasket.common.TestBase;
 import org.fuchss.objectcasket.port.ObjectCasketException;
 import org.fuchss.objectcasket.port.Session;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Test1SimpleClass extends TestBase {
 
