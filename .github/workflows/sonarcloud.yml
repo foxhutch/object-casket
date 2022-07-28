@@ -9,30 +9,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  sonarcloud:
     if: ${{ github.actor != 'dependabot[bot]' }} 
-    
-    steps:
-    - uses: actions/checkout@v3
-      with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    uses: dfuchss/actions/.github/workflows/sonarcloud.yml@main
+    secrets:
+      SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: 17
-        
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-                
-    - name: Build and Analyze
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
