@@ -52,7 +52,7 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	public List<Map<String, SqlObject>> select(PreCompiledStatement preStat, Map<SqlArg, SqlObject> relatedObjs, Object obj) throws CasketException {
 		Util.objectsNotNull(preStat, relatedObjs);
 		PreCompiledSelect preStatImpl = (PreCompiledSelect) preStat;
-		List<Map<String, SqlObject>> result = new LinkedList<>();
+List<Map<String, SqlObject>> result = new ArrayList<>();
 
 		if (obj != null)
 			this.checkVoucherAndAcquier(obj);
