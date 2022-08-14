@@ -85,7 +85,7 @@ class ClassInfo<T> {
 	}
 
 	boolean notPkField(Field field) {
-		return field != this.pkField;
+return !field.equals(this.pkField);
 	}
 
 	String getColumnName() {
