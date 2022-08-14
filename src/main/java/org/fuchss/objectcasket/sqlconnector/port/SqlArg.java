@@ -1,28 +1,23 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A data structure to easily select rows in tables. The objects are created
  * directly from the database itself via
  * {@link SqlDatabase#mkSqlArg(TableAssignment, String, CMP)}.
- *
  */
 public interface SqlArg {
 
 	/**
 	 * For convenience: a unmodifiable empty set.
 	 */
-	final Set<SqlArg> EMPTY_SET = Collections.unmodifiableSet(new HashSet<>());
+	Set<SqlArg> EMPTY_SET = Collections.unmodifiableSet(new HashSet<>());
 
 	/**
 	 * For convenience: a unmodifiable empty map.
 	 */
-	final Map<SqlArg, SqlObject> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<>());
+	Map<SqlArg, SqlObject> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<>());
 
 	/**
 	 * This operation returns the name of the table for which the argument is build.
@@ -44,7 +39,6 @@ public interface SqlArg {
 	 * This operation returns the comparator which is used.
 	 *
 	 * @return the {@link SqlArg.CMP comparator}.
-	 *
 	 */
 	CMP cmp();
 
@@ -52,7 +46,6 @@ public interface SqlArg {
 	 * This operation returns the storage class for which the argument is build.
 	 *
 	 * @return the {@link StorageClass storage class}.
-	 *
 	 */
 
 	StorageClass storageClass();
@@ -67,7 +60,7 @@ public interface SqlArg {
 	 * @see CMP#GREATEREQ
 	 * @see CMP#UNEQUAL
 	 */
-	public enum CMP {
+	enum CMP {
 		/**
 		 * less than
 		 */
@@ -91,15 +84,14 @@ public interface SqlArg {
 		/**
 		 * different to
 		 */
-		UNEQUAL;
+		UNEQUAL
 	}
 
 	/**
 	 * To build more complex expressions arguments can be combined. Either with
 	 * {@link OP#AND AND} or {@link OP#OR OR}.
-	 *
 	 */
-	public enum OP {
+	enum OP {
 		/**
 		 * Every {@link SqlArg argument} must match.
 		 */
@@ -107,7 +99,7 @@ public interface SqlArg {
 		/**
 		 * Some {@link SqlArg arguments} must match.
 		 */
-		OR;
+		OR
 	}
 
 }

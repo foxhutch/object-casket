@@ -1,15 +1,15 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 class TestReload extends PrepareModule {
 
@@ -41,16 +41,14 @@ class TestReload extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < this.row.length; tIdx++) {
 			for (int rIdx = 0; rIdx < this.row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				this.table[tIdx].updateRow(this.row[tIdx][rIdx], map, voucher);
 			}
 		}
 
 		for (int tIdx = 0; tIdx < this.row.length; tIdx++)
 			for (int rIdx = 0; rIdx < this.row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				for (String col : this.textColumns)
 					Assertions.assertEquals(map.get(col), this.row[tIdx][rIdx].getValue(col, String.class));
 			}
@@ -59,8 +57,7 @@ class TestReload extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < this.row.length; tIdx++)
 			for (int rIdx = 0; rIdx < this.row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				for (String col : this.textColumns)
 					Assertions.assertEquals(map.get(col), this.row[tIdx][rIdx].getValue(col, String.class));
 			}
@@ -77,8 +74,7 @@ class TestReload extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < this.row.length; tIdx++)
 			for (int rIdx = 0; rIdx < this.row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) this.val[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) this.val[tIdx][rIdx];
 				for (String col : this.textColumns)
 					Assertions.assertEquals(map.get(col), this.row[tIdx][rIdx].getValue(col, String.class));
 			}
@@ -104,8 +100,7 @@ class TestReload extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < this.row.length; tIdx++) {
 			for (int rIdx = 0; rIdx < this.row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) this.val[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) this.val[tIdx][rIdx];
 				this.table[tIdx].updateRow(this.row[tIdx][rIdx], map, voucher);
 			}
 		}

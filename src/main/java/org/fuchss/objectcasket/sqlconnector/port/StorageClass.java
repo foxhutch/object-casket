@@ -1,18 +1,10 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This enumeration defines the mapping between java types and SQL types.
- *
  */
 @SuppressWarnings("unchecked")
 public enum StorageClass {
@@ -39,20 +31,24 @@ public enum StorageClass {
 	BLOB(Serializable.class);
 
 	private static final Set<StorageClass> thePkSqlTypes = new HashSet<>();
+
 	static {
 		StorageClass.thePkSqlTypes.add(INTEGER);
 		StorageClass.thePkSqlTypes.add(REAL);
 		StorageClass.thePkSqlTypes.add(TEXT);
 	}
+
 	/**
 	 * Only INTEGER, REAL, and TEXT are possible SQL types for primary keys.
 	 */
 	public static final Set<StorageClass> PK_SQL_TYPES = Collections.unmodifiableSet(thePkSqlTypes);
 
 	private static final Set<Class<? extends Serializable>> thePkJavaTypes = new HashSet<>();
+
 	static {
-		StorageClass.PK_SQL_TYPES.forEach(t -> t.types.forEach(StorageClass.thePkJavaTypes::add));
+		StorageClass.PK_SQL_TYPES.forEach(t -> StorageClass.thePkJavaTypes.addAll(t.types));
 	}
+
 	/**
 	 * All Java types that are mapped to an SQL INTEGER, REAL, or TEXT can be used
 	 * as primary keys.
@@ -60,47 +56,55 @@ public enum StorageClass {
 	public static final Set<Class<? extends Serializable>> PK_JAVA_TYPES = Collections.unmodifiableSet(thePkJavaTypes);
 
 	private static final Set<StorageClass> theAutoIncrementedSqlTypes = new HashSet<>();
+
 	static {
 		StorageClass.theAutoIncrementedSqlTypes.add(INTEGER);
 	}
+
 	/**
 	 * INTEGER is the only possible SQL type for auto generated primary keys.
 	 */
 	public static final Set<StorageClass> AUTOINCREMENT_SQL_TYPES = Collections.unmodifiableSet(theAutoIncrementedSqlTypes);
 
 	private static final Set<Class<? extends Serializable>> theAutoIncrementedJavaTypes = new HashSet<>();
+
 	static {
 		for (StorageClass sqlType : StorageClass.AUTOINCREMENT_SQL_TYPES) {
 			for (Class<? extends Serializable> clazz : sqlType.types) {
-				if (!clazz.isPrimitive()) { // only non primitive types can be null
+				if (!clazz.isPrimitive()) { // only non-primitive types can be null
 					StorageClass.theAutoIncrementedJavaTypes.add(clazz);
 				}
 			}
 		}
 	}
+
 	/**
 	 * All Java classes that are mapped to an SQL INTEGER are suitable for auto
 	 * generated primary keys.
 	 */
-	public static final Set<Class<? extends Serializable>> AUTOINCREMENTED_JAVA_TYPES = Collections.unmodifiableSet(theAutoIncrementedJavaTypes);
+	public static final Set<Class<? extends Serializable>> AUTO_INCREMENTED_JAVA_TYPES = Collections.unmodifiableSet(theAutoIncrementedJavaTypes);
 
-	private static Map<Class<? extends Serializable>, StorageClass> theTypeMap = new HashMap<>();
+	private static final Map<Class<? extends Serializable>, StorageClass> theTypeMap = new HashMap<>();
+
 	static {
 		for (StorageClass type : StorageClass.values()) {
 			type.types.forEach(t -> StorageClass.theTypeMap.put(t, type));
 		}
 	}
+
 	/**
 	 * The mapping between Java types and SQL types.
 	 */
 	public static final Map<Class<? extends Serializable>, StorageClass> TYPE_MAP = Collections.unmodifiableMap(theTypeMap);
 
 	private static final Map<String, Set<Class<? extends Serializable>>> thePossibleClassMap = new HashMap<>();
+
 	static {
 		for (StorageClass type : StorageClass.values()) {
 			StorageClass.thePossibleClassMap.put(type.name(), new HashSet<>(type.types));
 		}
 	}
+
 	/**
 	 * The reverse mapping between SQL types the set of corresponding Java types.
 	 */
@@ -118,11 +122,9 @@ public enum StorageClass {
 	private final List<Class<? extends Serializable>> types;
 
 	/**
-	 *
-	 * @param classes
-	 *            - the mapping.
+	 * @param classes - the mapping.
 	 */
-	private StorageClass(Class<? extends Serializable>... classes) {
+	StorageClass(Class<? extends Serializable>... classes) {
 		this.types = Arrays.asList(classes);
 	}
 }

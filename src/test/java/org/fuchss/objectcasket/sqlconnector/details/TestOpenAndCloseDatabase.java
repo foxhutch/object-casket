@@ -1,10 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.details;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Driver;
-import java.util.Arrays;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.SqlPort;
@@ -15,6 +10,11 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Driver;
+import java.util.Arrays;
 
 class TestOpenAndCloseDatabase {
 

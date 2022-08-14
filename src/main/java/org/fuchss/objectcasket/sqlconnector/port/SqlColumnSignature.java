@@ -1,14 +1,12 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
-import java.io.Serializable;
-
 import org.fuchss.objectcasket.common.CasketException;
 
+import java.io.Serializable;
+
 /**
- * This interface provides all informations to create and work on columns. This
+ * This interface provides all information to create and work on columns. This
  * includes types, values, and flags and also information about primary keys.
- *
- *
  */
 
 public interface SqlColumnSignature {
@@ -42,12 +40,9 @@ public interface SqlColumnSignature {
 	 * type} of the parameter and {@link SqlColumnSignature} object must be
 	 * identical. Null-Objects are not allowed.
 	 *
-	 * @param value
-	 *            - the value for the column.
-	 * @throws CasketException
-	 *             on error.
+	 * @param value - the value for the column.
+	 * @throws CasketException on error.
 	 * @see SqlObject
-	 *
 	 */
 
 	void setValue(SqlObject value) throws CasketException;
@@ -69,20 +64,16 @@ public interface SqlColumnSignature {
 	/**
 	 * This operation sets the {@link Flag flags} associated with this column.
 	 *
-	 * @param flag
-	 *            the flag to set.
-	 * @throws CasketException
-	 *             on error.
+	 * @param flag the flag to set.
+	 * @throws CasketException on error.
 	 */
 	void setFlag(Flag flag) throws CasketException;
 
 	/**
 	 * This operation resets the {@link Flag flags} associated with this column.
 	 *
-	 * @param flag
-	 *            - the flag to reset.
-	 * @throws CasketException
-	 *             on error.
+	 * @param flag - the flag to reset.
+	 * @throws CasketException on error.
 	 */
 	void resetFlag(Flag flag) throws CasketException;
 
@@ -99,7 +90,7 @@ public interface SqlColumnSignature {
 	 * column is {@link StorageClass#INTEGER}.
 	 *
 	 * @return true if this column is a primary key, with an automatically created
-	 *         value.
+	 * value.
 	 */
 	boolean isAutoIncrementedPrimaryKey();
 
@@ -130,7 +121,7 @@ public interface SqlColumnSignature {
 		 */
 		AUTOINCREMENT,
 		/**
-		 * This flag is used to declare that this column always has a non null value.
+		 * This flag is used to declare that this column always has a non-null value.
 		 * The flag "NOT_NULL" requires a not null default value. The flag "NOT NULL" is
 		 * not allowed for primary keys.
 		 */

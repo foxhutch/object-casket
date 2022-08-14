@@ -1,5 +1,11 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabaseFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,33 +14,24 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabaseFactory;
-
 /**
  * The implementation of the {@link SqlDatabaseFactory}.
- *
  */
 public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 
-	private Map<SqlDatabase, SqlDatabaseImpl> dbMap = new HashMap<>();
+	private final Map<SqlDatabase, SqlDatabaseImpl> dbMap = new HashMap<>();
 
-	private Map<ConfigurationImpl, SqlDatabaseImpl> configDbMap = new HashMap<>();
-	private Map<SqlDatabaseImpl, ConfigurationImpl> dbConfigMap = new HashMap<>(); // x
+	private final Map<ConfigurationImpl, SqlDatabaseImpl> configDbMap = new HashMap<>();
+	private final Map<SqlDatabaseImpl, ConfigurationImpl> dbConfigMap = new HashMap<>(); // x
 
-	private SqlObjectFatoryImpl sqlObjectFactory;
+	private final SqlObjectFactoryImpl sqlObjectFactory;
 
 	/**
 	 * The constructor.
 	 *
-	 * @param sqlObjectFactory
-	 *            - the {@link SqlObjectFatoryImpl object factory} to use.
-	 *
+	 * @param sqlObjectFactory - the {@link SqlObjectFactoryImpl object factory} to use.
 	 */
-	public SqlDatabaseFactoryImpl(SqlObjectFatoryImpl sqlObjectFactory) {
+	public SqlDatabaseFactoryImpl(SqlObjectFactoryImpl sqlObjectFactory) {
 		this.sqlObjectFactory = sqlObjectFactory;
 	}
 

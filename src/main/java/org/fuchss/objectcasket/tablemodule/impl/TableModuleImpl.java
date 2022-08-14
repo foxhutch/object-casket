@@ -1,30 +1,26 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.sqlconnector.port.*;
+import org.fuchss.objectcasket.tablemodule.port.Table;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
-import org.fuchss.objectcasket.tablemodule.port.Table;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-
 class TableModuleImpl implements TableModule {
 
-	private SqlObjectFactory objFac;
-	private SqlDatabase database;
+	private final SqlObjectFactory objFac;
+	private final SqlDatabase database;
 	private ModuleConfigurationImpl config;
 
-	private Map<String, TableImpl> allViews = new HashMap<>();
-	private Map<String, TableImpl> allTables = new HashMap<>();
+	private final Map<String, TableImpl> allViews = new HashMap<>();
+	private final Map<String, TableImpl> allTables = new HashMap<>();
 
 	private TransactionImpl transaction;
 
@@ -89,9 +85,9 @@ class TableModuleImpl implements TableModule {
 		Map<String, SqlColumnSignature> colSig = this.mkColSig(signature, pkName, autoIncrement);
 		TableAssignment dbTab = null;
 		dbTab = switch (cmd) {
-		case CREATE -> this.database.createTable(tableName, colSig);
-		case ASSIGN -> this.database.createView(tableName, colSig);
-		case ADJUST -> this.database.adjustTable(tableName, colSig);
+			case CREATE -> this.database.createTable(tableName, colSig);
+			case ASSIGN -> this.database.createView(tableName, colSig);
+			case ADJUST -> this.database.adjustTable(tableName, colSig);
 		};
 		Map<String, Class<? extends Serializable>> pkSignature = new HashMap<>();
 		pkSignature.put(pkName, signature.get(pkName));
@@ -209,7 +205,7 @@ class TableModuleImpl implements TableModule {
 	}
 
 	private enum CMD {
-		CREATE, ASSIGN, ADJUST;
+		CREATE, ASSIGN, ADJUST
 	}
 
 }

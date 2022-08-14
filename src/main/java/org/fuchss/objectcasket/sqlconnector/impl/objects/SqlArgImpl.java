@@ -5,26 +5,21 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
 /**
  * The implementation of the {@link SqlArg}.
- *
  */
 public class SqlArgImpl implements SqlArg {
 
-	private String tableName;
-	private String columnName;
-	private SqlColumnSignatureImpl proto;
-	private CMP cmp;
+	private final String tableName;
+	private final String columnName;
+	private final SqlColumnSignatureImpl proto;
+	private final CMP cmp;
 
 	/**
 	 * The constructor.
 	 *
-	 * @param tableName
-	 *            - the assigned table.
-	 * @param columnName
-	 *            - the assigned column.
-	 * @param proto
-	 *            - the signature of the column.
-	 * @param cmp
-	 *            - the comparator to use.
+	 * @param tableName  - the assigned table.
+	 * @param columnName - the assigned column.
+	 * @param proto      - the signature of the column.
+	 * @param cmp        - the comparator to use.
 	 */
 	public SqlArgImpl(String tableName, String columnName, SqlColumnSignatureImpl proto, CMP cmp) {
 		this.tableName = tableName;

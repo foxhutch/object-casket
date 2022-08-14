@@ -1,19 +1,20 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import java.sql.Driver;
-import java.util.EnumMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 
+import java.sql.Driver;
+import java.util.EnumMap;
+import java.util.Map;
+
 class ModuleConfigurationImpl implements ModuleConfiguration {
 
-	private DBConfiguration config;
+	private final DBConfiguration config;
 
-	private static Map<Flag, DBConfiguration.Flag> flagMap = new EnumMap<>(ModuleConfiguration.Flag.class);
+	private static final Map<Flag, DBConfiguration.Flag> flagMap = new EnumMap<>(ModuleConfiguration.Flag.class);
+
 	static {
 		flagMap.put(ModuleConfiguration.Flag.CREATE, DBConfiguration.Flag.CREATE);
 		flagMap.put(ModuleConfiguration.Flag.MODIFY, DBConfiguration.Flag.MODIFY);

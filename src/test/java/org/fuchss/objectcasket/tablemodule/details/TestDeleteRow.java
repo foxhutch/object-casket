@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.IOException;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 class TestDeleteRow extends PrepareModule {
 

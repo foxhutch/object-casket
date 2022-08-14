@@ -1,43 +1,32 @@
 package org.fuchss.objectcasket.objectpacker.port;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.PackerPort;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * The session manager is the central object to work with the Object Casket
  * system. It can be obtained via the {@link PackerPort} calling
  * {@link PackerPort#sessionManager()} on the static attribute
- * {@link PackerPort#PORT}. By default it is possible to work with different
+ * {@link PackerPort#PORT}. By default, it is possible to work with different
  * configurations simultaneously. If {@link Configuration.Flag#SESSIONS} is set
  * one can also work with multiple sessions based on the same
  * {@link Configuration configuration} concurrently. In this case Object Casket
  * synchronizes these sessions in the background.
  *
  * @see PackerPort
- *
- *
  */
 public interface SessionManager {
 
 	/**
 	 * This operation creates a new and empty {@link Configuration}. After all
-	 * informations to access the underlying database are added one can use this
+	 * information to access the underlying database are added one can use this
 	 * configuration to work with the configured database.
 	 *
 	 * @return a new {@link Configuration}
-	 *
 	 * @see SessionManager#editDomain(Configuration)
 	 * @see SessionManager#mkDomain(Configuration)
 	 * @see SessionManager#session(Configuration)
@@ -49,12 +38,9 @@ public interface SessionManager {
 	 * This process creates a new and empty domain as well as an empty database
 	 * according to the{@link Configuration}.
 	 *
-	 *
-	 * @param config
-	 *            - the configuration.
+	 * @param config - the configuration.
 	 * @return the domain.
-	 * @throws CasketException
-	 *             if configuration is invalid or the database already exists.
+	 * @throws CasketException if configuration is invalid or the database already exists.
 	 */
 	Domain mkDomain(Configuration config) throws CasketException;
 
@@ -62,12 +48,9 @@ public interface SessionManager {
 	 * This operation opens an existing domain (database). So the domain can be
 	 * modified.
 	 *
-	 *
-	 * @param config
-	 *            - the configuration.
+	 * @param config - the configuration.
 	 * @return the domain.
-	 * @throws CasketException
-	 *             if configuration is invalid or the database is already in use.
+	 * @throws CasketException if configuration is invalid or the database is already in use.
 	 */
 	Domain editDomain(Configuration config) throws CasketException;
 
@@ -77,7 +60,7 @@ public interface SessionManager {
 	 *
 	 * <p>
 	 * All Classes must be final and marked as {@link Entity @Entity}. At least one
-	 * attribute for the primary key and a default constructor must exists. This
+	 * attribute for the primary key and a default constructor must exist. This
 	 * attribute should be marked as {@link Id @Id}. For a primary key all primitive
 	 * Java types and also their corresponding classes can be used. If the primary
 	 * key corresponds to the Java class {@link Integer} it is possible to generate
@@ -119,12 +102,11 @@ public interface SessionManager {
 	 * stored objects, objects from associated classes.
 	 *
 	 * <p>
-	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a non
-	 * navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
+	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a non-navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
 	 *
 	 * <p>
 	 * {@link ManyToMany @ManyToMany} to access multiple objects. This represents a
-	 * non navigable UML-like many-to-many association. <code> A n-x--->m B </code>
+	 * non-navigable UML-like many-to-many association. <code> A n-x--->m B </code>
 	 * This annotation is only valid if the annotated attributes a {@link Set} with
 	 * an existing container.<strong> Both classes should be added at the same time,
 	 * or B before A.</strong>
@@ -135,7 +117,6 @@ public interface SessionManager {
 	 * annotation to define an individual name. This is also possible for the entity
 	 * itself by using {@link Table @Table} annotation.<strong> Both classes should
 	 * be added at the same time, or B before A.</strong>
-	 *
 	 *
 	 * <pre>
 	 * &#64;Entity()
@@ -166,21 +147,15 @@ public interface SessionManager {
 	 *
 	 * 	public Club(String name) {
 	 * 		this.name = name;
-	 * 	}
+	 *    }
 	 * }
 	 * </pre>
 	 *
-	 *
-	 * @param domain
-	 *            - the domain.
-	 * @param clazz
-	 *            - the classes.
-	 * @throws CasketException
-	 *             if a class is invalid, a session is running or the configuration
-	 *             has not enough rights.
-	 * @throws InterruptedException
-	 *             if interrupted.
-	 *
+	 * @param domain - the domain.
+	 * @param clazz  - the classes.
+	 * @throws CasketException      if a class is invalid, a session is running or the configuration
+	 *                              has not enough rights.
+	 * @throws InterruptedException if interrupted.
 	 * @see SessionManager#editDomain(Configuration)
 	 * @see SessionManager#mkDomain(Configuration)
 	 */
@@ -193,28 +168,22 @@ public interface SessionManager {
 	 * class definition were adopted. Be careful this operation cannot be undone.
 	 * Maybe you are lucky if you get an exception maybe not.
 	 *
-	 * @param domain
-	 *            - the domain.
-	 * @param clazz
-	 *            - the classes to modify.
-	 * @throws CasketException
-	 *             if class is invalid, did not exists, is in use, or the session
-	 *             has not enough rights.
+	 * @param domain - the domain.
+	 * @param clazz  - the classes to modify.
+	 * @throws CasketException if class is invalid, did not exist, is in use, or the session
+	 *                         has not enough rights.
 	 */
 	default void alterEntity(Domain domain, Class<?>... clazz) throws CasketException {
 		throw new UnsupportedOperationException("alterEntity not yet realized");
 	}
 
 	/**
-	 * This finalize the building or modification process of the domain. The
+	 * This finalizes the building or modification process of the domain. The
 	 * assigned database can now be use in a {@link Session}.
 	 *
-	 * @param domain
-	 *            - the domain to finalize.
-	 * @throws CasketException
-	 *             if the domain is invalid or already finalized.
-	 * @throws InterruptedException
-	 *             if interrupted.
+	 * @param domain - the domain to finalize.
+	 * @throws CasketException      if the domain is invalid or already finalized.
+	 * @throws InterruptedException if interrupted.
 	 */
 	void finalizeDomain(Domain domain) throws CasketException, InterruptedException;
 
@@ -224,46 +193,35 @@ public interface SessionManager {
 	 * session} if the flag {@link Configuration.Flag#SESSIONS} is set, otherwise
 	 * one will get the same session (object identity).
 	 *
-	 *
-	 * @param config
-	 *            - the configuration.
+	 * @param config - the configuration.
 	 * @return the session.
-	 * @throws CasketException
-	 *             if configuration is invalid.
+	 * @throws CasketException if configuration is invalid.
 	 */
 	Session session(Configuration config) throws CasketException;
 
 	/**
 	 * Terminate a session.
 	 *
-	 * @param session
-	 *            - the session.
-	 * @throws CasketException
-	 *             on error.
-	 * @throws InterruptedException
-	 *             if interrupted.
+	 * @param session - the session.
+	 * @throws CasketException      on error.
+	 * @throws InterruptedException if interrupted.
 	 */
 	void terminate(Session session) throws CasketException, InterruptedException;
 
 	/**
 	 * Terminate all sessions based on the specific configuration.
 	 *
-	 * @param config
-	 *            - the configuration.
-	 * @throws CasketException
-	 *             on error.
-	 * @throws InterruptedException
-	 *             if interrupted.
+	 * @param config - the configuration.
+	 * @throws CasketException      on error.
+	 * @throws InterruptedException if interrupted.
 	 */
 	void terminateAll(Configuration config) throws CasketException, InterruptedException;
 
 	/**
 	 * Terminate all sessions independently.
 	 *
-	 * @throws CasketException
-	 *             on error.
-	 * @throws InterruptedException
-	 *             if interrupted.
+	 * @throws CasketException      on error.
+	 * @throws InterruptedException if interrupted.
 	 */
 	void terminateAll() throws CasketException, InterruptedException;
 }

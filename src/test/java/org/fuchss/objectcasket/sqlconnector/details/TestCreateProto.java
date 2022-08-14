@@ -1,19 +1,15 @@
 package org.fuchss.objectcasket.sqlconnector.details;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.SqlPort;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
+import org.fuchss.objectcasket.sqlconnector.port.*;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.DialectSqlite;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.Serializable;
+import java.util.Date;
 
 class TestCreateProto {
 
@@ -112,7 +108,8 @@ class TestCreateProto {
 			Assertions.assertTrue(prototype.isAutoIncrementedPrimaryKey());
 	}
 
-	private <T extends Serializable> void createWrongPK(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, String name, CasketException error, boolean auto) throws CasketException {
+	private <T extends Serializable> void createWrongPK(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, String name, CasketException error, boolean auto)
+			throws CasketException {
 		SqlColumnSignature prototype = factory.mkColumnSignature(type, clazz, defaultValue);
 		Assertions.assertNotNull(prototype);
 

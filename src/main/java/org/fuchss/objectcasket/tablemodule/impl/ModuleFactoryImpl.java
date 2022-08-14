@@ -1,10 +1,5 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
@@ -15,27 +10,28 @@ import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * The implementation of the {@link TableModuleFactory}.
- *
- *
  */
 public class ModuleFactoryImpl implements TableModuleFactory {
 
-	private SqlObjectFactory objFac;
-	private SqlDatabaseFactory dbFac;
+	private final SqlObjectFactory objFac;
+	private final SqlDatabaseFactory dbFac;
 
-	private Map<ModuleConfigurationImpl, Set<TableModuleImpl>> configModuleMap = new HashMap<>();
-	private Map<ModuleConfigurationImpl, SqlDatabase> configDBMap = new HashMap<>();
-	private Map<SqlDatabase, ModuleConfigurationImpl> dbConfigMap = new HashMap<>();
+	private final Map<ModuleConfigurationImpl, Set<TableModuleImpl>> configModuleMap = new HashMap<>();
+	private final Map<ModuleConfigurationImpl, SqlDatabase> configDBMap = new HashMap<>();
+	private final Map<SqlDatabase, ModuleConfigurationImpl> dbConfigMap = new HashMap<>();
 
 	/**
 	 * The constructor.
 	 *
-	 * @param objFac
-	 *            - the assigned {@link SqlObjectFactory}.
-	 * @param dbFac
-	 *            - the assigned {@link SqlDatabaseFactory}.
+	 * @param objFac - the assigned {@link SqlObjectFactory}.
+	 * @param dbFac  - the assigned {@link SqlDatabaseFactory}.
 	 */
 	public ModuleFactoryImpl(SqlObjectFactory objFac, SqlDatabaseFactory dbFac) {
 		this.objFac = objFac;

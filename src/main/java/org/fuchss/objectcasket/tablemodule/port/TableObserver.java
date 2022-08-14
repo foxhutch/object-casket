@@ -10,7 +10,6 @@ import java.util.Set;
  *
  * @see Table#register(TableObserver)
  * @see Table#deregister(TableObserver)
- *
  */
 public interface TableObserver {
 
@@ -18,12 +17,9 @@ public interface TableObserver {
 	 * If an object should be informed about performed table changes, it must
 	 * implement this operation.
 	 *
-	 * @param changed
-	 *            - all changed rows.
-	 * @param deleted
-	 *            - all deleted rows.
-	 * @param added
-	 *            - all added rows.
+	 * @param changed - all changed rows.
+	 * @param deleted - all deleted rows.
+	 * @param added   - all added rows.
 	 */
 	void update(Set<Row> changed, Set<Row> deleted, Set<Row> added);
 

@@ -3,12 +3,10 @@ package org.fuchss.objectcasket.sqlconnector.port;
 import java.util.Set;
 
 /**
- * This interface provides all informations to access an SQL table or a part of
+ * This interface provides all information to access an SQL table or a part of
  * a table.
  *
  * @see SqlDatabase
- *
- *
  */
 public interface TableAssignment {
 
@@ -34,11 +32,10 @@ public interface TableAssignment {
 	Set<String> columnNames();
 
 	/**
-	 * This operations returns the {@link StorageClass SQL type} of the given
+	 * These operations return the {@link StorageClass SQL type} of the given
 	 * column.
 	 *
-	 * @param columnName
-	 *            - the name of the column.
+	 * @param columnName - the name of the column.
 	 * @return the {@link StorageClass SQL type}.
 	 */
 	StorageClass storageClass(String columnName);

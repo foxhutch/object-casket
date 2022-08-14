@@ -1,21 +1,21 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg.OP;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An implementation of the {@link SqlDialect} interface that works with H2
  * databases version 2.1.214.
- *
  */
 public class DialectH2 implements SqlDialect {
 
-	private static Map<StorageClass, String> stClassMap = new EnumMap<>(StorageClass.class);
+	private static final Map<StorageClass, String> stClassMap = new EnumMap<>(StorageClass.class);
+
 	static {
 		DialectH2.stClassMap.put(StorageClass.INTEGER, "INTEGER");
 		DialectH2.stClassMap.put(StorageClass.REAL, "REAL");
@@ -24,6 +24,7 @@ public class DialectH2 implements SqlDialect {
 	}
 
 	private static final Map<String, StorageClass> baseType2StClassMap = new HashMap<>();
+
 	static {
 		DialectH2.baseType2StClassMap.put("INTEGER", StorageClass.INTEGER);
 		DialectH2.baseType2StClassMap.put("REAL", StorageClass.REAL);
@@ -31,7 +32,8 @@ public class DialectH2 implements SqlDialect {
 		DialectH2.baseType2StClassMap.put("BINARY VARYING", StorageClass.BLOB);
 	}
 
-	private static Map<CMP, String> cmpMap = new EnumMap<>(CMP.class);
+	private static final Map<CMP, String> cmpMap = new EnumMap<>(CMP.class);
+
 	static {
 		DialectH2.cmpMap.put(CMP.LESS, "<");
 		DialectH2.cmpMap.put(CMP.GREATER, ">");
@@ -41,13 +43,15 @@ public class DialectH2 implements SqlDialect {
 		DialectH2.cmpMap.put(CMP.UNEQUAL, "<>");
 	}
 
-	private static Map<OP, String> opMap = new EnumMap<>(OP.class);
+	private static final Map<OP, String> opMap = new EnumMap<>(OP.class);
+
 	static {
 		DialectH2.opMap.put(OP.AND, " AND ");
 		DialectH2.opMap.put(OP.OR, " OR ");
 	}
 
-	private static Map<Flag, String> flagMap = new EnumMap<>(Flag.class);
+	private static final Map<Flag, String> flagMap = new EnumMap<>(Flag.class);
+
 	static {
 		DialectH2.flagMap.put(Flag.PRIMARY_KEY, "PRIMARY KEY");
 		DialectH2.flagMap.put(Flag.AUTOINCREMENT, "AUTO_INCREMENT");

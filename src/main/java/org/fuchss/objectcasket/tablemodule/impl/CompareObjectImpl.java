@@ -1,15 +1,16 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.tablemodule.port.Table;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 class CompareObjectImpl {
 
 	static Map<Table.TabCMP, SqlArg.CMP> map = new EnumMap<>(Table.TabCMP.class);
+
 	static {
 		map.put(Table.TabCMP.LESS, SqlArg.CMP.LESS);
 		map.put(Table.TabCMP.GREATER, SqlArg.CMP.GREATER);

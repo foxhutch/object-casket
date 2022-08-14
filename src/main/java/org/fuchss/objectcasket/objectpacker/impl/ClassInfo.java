@@ -1,5 +1,12 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketException;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -8,18 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-
 @SuppressWarnings("java:S3011")
 class ClassInfo<T> {
 
-	private String tableName;
+	private final String tableName;
 
 	List<Field> allFields;
 	Class<T> myClass;
@@ -65,8 +64,7 @@ class ClassInfo<T> {
 	static Class<Serializable> mkValueType(Field field) throws CasketException {
 		if (!Serializable.class.isAssignableFrom(field.getType()))
 			throw CasketError.NON_SERIALIZABLE_FIELD.build();
-		@SuppressWarnings("unchecked")
-		Class<Serializable> type = (Class<Serializable>) field.getType();
+		@SuppressWarnings("unchecked") Class<Serializable> type = (Class<Serializable>) field.getType();
 		return type;
 	}
 
@@ -85,7 +83,7 @@ class ClassInfo<T> {
 	}
 
 	boolean notPkField(Field field) {
-return !field.equals(this.pkField);
+		return !field.equals(this.pkField);
 	}
 
 	String getColumnName() {

@@ -9,7 +9,7 @@ import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
 
 class TabModImpl implements ModulePort, TableModuleFactory {
 
-	private SqlPort sqlPort = SqlPort.SQL_PORT;
+	private final SqlPort sqlPort = SqlPort.SQL_PORT;
 
 	private ModuleFactoryImpl modFac;
 

@@ -1,5 +1,13 @@
 package org.fuchss.objectcasket.tablemodule.api;
 
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.tablemodule.ModulePort;
+import org.fuchss.objectcasket.tablemodule.port.*;
+import org.fuchss.objectcasket.testutils.Utility;
+import org.fuchss.objectcasket.testutils.Utility.DB;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -7,19 +15,6 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.tablemodule.ModulePort;
-import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
-import org.fuchss.objectcasket.tablemodule.port.Row;
-import org.fuchss.objectcasket.tablemodule.port.Table;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
-import org.fuchss.objectcasket.tablemodule.port.TableObserver;
-import org.fuchss.objectcasket.testutils.Utility;
-import org.fuchss.objectcasket.testutils.Utility.DB;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 class TestTableObserver {
 

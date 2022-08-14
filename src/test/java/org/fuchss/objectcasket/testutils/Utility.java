@@ -1,5 +1,9 @@
 package org.fuchss.objectcasket.testutils;
 
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.SqlPort;
+import org.fuchss.objectcasket.sqlconnector.port.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,16 +16,6 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.SqlPort;
-import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
-import org.fuchss.objectcasket.sqlconnector.port.DialectH2;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.DialectSqlite;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
 public class Utility {
 
 	public static enum DB {
@@ -29,18 +23,21 @@ public class Utility {
 	}
 
 	private static Map<DB, Class<? extends Driver>> _dialectDriverMap = new HashMap<>();
+
 	static {
 		_dialectDriverMap.put(DB.H2, org.h2.Driver.class);
 		_dialectDriverMap.put(DB.SQLITE, org.sqlite.JDBC.class);
 	}
 
 	private static Map<DB, String> _dialectUrlPrefixMap = new HashMap<>();
+
 	static {
 		_dialectUrlPrefixMap.put(DB.H2, "jdbc:h2:");
 		_dialectUrlPrefixMap.put(DB.SQLITE, org.sqlite.JDBC.PREFIX);
 	}
 
 	private static Map<DB, SqlDialect> _dialectMap = new HashMap<>();
+
 	static {
 		_dialectMap.put(DB.H2, new DialectH2());
 		_dialectMap.put(DB.SQLITE, new DialectSqlite());
@@ -161,6 +158,8 @@ public class Utility {
 			return factory.mkColumnSignature(type, String.class, ("" + value));
 
 		return factory.mkColumnSignature(type, clazz, null);
-	};
+	}
+
+	;
 
 }

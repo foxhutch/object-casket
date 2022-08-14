@@ -1,24 +1,21 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.sql.Driver;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Configuration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 
+import java.sql.Driver;
+import java.util.*;
+
 class ConfigurationImpl implements Configuration {
 
-	private ModuleConfiguration config;
-	private Set<Flag> flags = new HashSet<>();
+	private final ModuleConfiguration config;
+	private final Set<Flag> flags = new HashSet<>();
 
-	private static Map<Flag, ModuleConfiguration.Flag> flagMap = new EnumMap<>(Configuration.Flag.class);
+	private static final Map<Flag, ModuleConfiguration.Flag> flagMap = new EnumMap<>(Configuration.Flag.class);
+
 	static {
 		flagMap.put(Configuration.Flag.CREATE, ModuleConfiguration.Flag.CREATE);
 		flagMap.put(Configuration.Flag.ALTER, ModuleConfiguration.Flag.CREATE);

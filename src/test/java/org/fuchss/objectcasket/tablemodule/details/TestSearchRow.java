@@ -1,10 +1,5 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.tablemodule.port.Table;
@@ -12,6 +7,11 @@ import org.fuchss.objectcasket.tablemodule.port.Table.TabCMP;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 class TestSearchRow extends PrepareModule {
 
@@ -43,8 +43,7 @@ class TestSearchRow extends PrepareModule {
 
 		this.initTables(dialect, TableA.class, TableB.class, TableC.class);
 
-		@SuppressWarnings("unchecked")
-		Set<Table.Exp>[] args = new HashSet[this.table.length];
+		@SuppressWarnings("unchecked") Set<Table.Exp>[] args = new HashSet[this.table.length];
 		for (int tIdx = 0; tIdx < this.table.length; tIdx++) {
 			args[tIdx] = new HashSet<>();
 			args[tIdx].add(new Table.Exp(this.textColumns[tIdx], TabCMP.UNEQUAL, "xyz"));
@@ -71,8 +70,7 @@ class TestSearchRow extends PrepareModule {
 
 		this.reopenModule(TableA.class, TableB.class, TableC.class);
 
-		@SuppressWarnings("unchecked")
-		Set<Table.Exp>[] args = new HashSet[this.table.length];
+		@SuppressWarnings("unchecked") Set<Table.Exp>[] args = new HashSet[this.table.length];
 		for (int tIdx = 0; tIdx < this.table.length; tIdx++) {
 			args[tIdx] = new HashSet<>();
 			args[tIdx].add(new Table.Exp(this.textColumns[tIdx], TabCMP.UNEQUAL, "xyz"));

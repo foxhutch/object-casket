@@ -1,17 +1,17 @@
 package org.fuchss.objectcasket.common;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Objects;
 
 /**
- *
  * The common Exception class for the object-casket system.
  *
  * @see CasketError
- *
  */
 public class CasketException extends Exception {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -34,8 +34,7 @@ public class CasketException extends Exception {
 	/**
 	 * Converts an arbitrary Exception into an CasketException.
 	 *
-	 * @param exc
-	 *            - the exception to convert.
+	 * @param exc - the exception to convert.
 	 * @return the CasketException.
 	 */
 	public static CasketException build(Exception exc) {
@@ -49,7 +48,6 @@ public class CasketException extends Exception {
 	}
 
 	/**
-	 *
 	 * @return the underlying error code.
 	 * @see CasketError
 	 */

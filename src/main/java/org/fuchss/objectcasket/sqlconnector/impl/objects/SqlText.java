@@ -1,23 +1,22 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * This class represents SQL TEXTs.
- *
  */
 public class SqlText extends SqlObj {
 
-	private String val;
+	private final String val;
 
 	private SqlText(String obj) {
-		this.val = obj == null ? obj : "" + obj;
+		this.val = obj == null ? null : "" + obj;
 	}
 
 	@Override
@@ -71,10 +70,9 @@ public class SqlText extends SqlObj {
 	/**
 	 * This operation generates TEXT form a Java object.
 	 *
-	 * @see StorageClass#TEXT
-	 * @param obj
-	 *            - the object to store as TEXT.
+	 * @param obj - the object to store as TEXT.
 	 * @return the {@link SqlObj}.
+	 * @see StorageClass#TEXT
 	 */
 	public static SqlObj mkSqlObjectFromJava(Object obj) {
 		return SqlText.mkSqlObject(obj);
@@ -83,8 +81,7 @@ public class SqlText extends SqlObj {
 	/**
 	 * his operation generates a TEXT-Object from the stored value in the database.
 	 *
-	 * @param obj
-	 *            - the read value.
+	 * @param obj - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {

@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 
 class TransactionImpl {
 

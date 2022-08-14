@@ -14,7 +14,6 @@ import java.util.Map;
  * @see SqlDatabase#newRow(PreCompiledStatement, Map, Object)
  * @see SqlDatabase#delete(PreCompiledStatement, Map, Object)
  * @see SqlDatabase#updateRow(PreCompiledStatement, SqlObject, Map, Object)
- *
  */
 public interface DatabaseObserver {
 
@@ -22,14 +21,10 @@ public interface DatabaseObserver {
 	 * If an object should be informed about performed database updates, it must
 	 * implement this operation.
 	 *
-	 * @param tabOrView
-	 *            - the observed {@link TableAssignment}.
-	 * @param changed
-	 *            - the primary keys of all changed rows.
-	 * @param deleted
-	 *            - the former primary keys of all deleted rows.
-	 * @param added
-	 *            - the new primary keys of all added rows.
+	 * @param tabOrView - the observed {@link TableAssignment}.
+	 * @param changed   - the primary keys of all changed rows.
+	 * @param deleted   - the former primary keys of all deleted rows.
+	 * @param added     - the new primary keys of all added rows.
 	 */
 	void update(TableAssignment tabOrView, List<SqlObject> changed, List<SqlObject> deleted, List<SqlObject> added);
 

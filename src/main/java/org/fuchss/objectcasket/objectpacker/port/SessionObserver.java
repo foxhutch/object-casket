@@ -8,25 +8,18 @@ package org.fuchss.objectcasket.objectpacker.port;
  * @see Session#resync(Object)
  * @see Session#register(SessionObserver)
  * @see Session#deregister(SessionObserver)
- *
  */
 
 public interface SessionObserver {
 
 	/**
-	 *
-	 * @param deleted
-	 *            -a managed object which was deleted in another session.
-	 *
+	 * @param deleted -a managed object which was deleted in another session.
 	 * @see Session#delete(Object)
 	 */
 	void externDeleted(Object deleted);
 
 	/**
-	 *
-	 * @param changed
-	 *            - a managed object which was modified in another session.
-	 *
+	 * @param changed - a managed object which was modified in another session.
 	 * @see Session#persist(Object)
 	 */
 	void externChanged(Object changed);

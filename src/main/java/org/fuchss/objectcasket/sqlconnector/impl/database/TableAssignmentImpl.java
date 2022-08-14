@@ -1,19 +1,19 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
+import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
-
 class TableAssignmentImpl implements TableAssignment {
 
-	private String tableName;
-	private String pkName;
-	private Map<String, SqlColumnSignatureImpl> colSigMap;
+	private final String tableName;
+	private final String pkName;
+	private final Map<String, SqlColumnSignatureImpl> colSigMap;
 
 	TableAssignmentImpl(String tableName, Map<String, SqlColumnSignatureImpl> colSigMap) {
 		this.tableName = tableName;

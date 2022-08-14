@@ -10,10 +10,8 @@ import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
  * Typically, SQL dialects differ in the naming of data types and annotations
  * for column definitions.
  * <p>
- * Currently two dialects are predefined {@link DialectH2} and
+ * Currently, two dialects are predefined {@link DialectH2} and
  * {@link DialectSqlite}.
- *
- *
  */
 public interface SqlDialect {
 
@@ -21,10 +19,8 @@ public interface SqlDialect {
 	 * Methods implementing this operation should return string representations of
 	 * the given comparison operator.
 	 *
-	 * @param cmp
-	 *            - the {@link CMP comparator}.
+	 * @param cmp - the {@link CMP comparator}.
 	 * @return the dialect specific representation of the comparator.
-	 *
 	 */
 	String cmpString(CMP cmp);
 
@@ -32,8 +28,7 @@ public interface SqlDialect {
 	 * Methods implementing this operation should return string representations of
 	 * the given boolean operator.
 	 *
-	 * @param op
-	 *            - the {@link OP operator}.
+	 * @param op - the {@link OP operator}.
 	 * @return the dialect specific name of an operator.
 	 */
 	String operatorString(OP op);
@@ -42,8 +37,7 @@ public interface SqlDialect {
 	 * Methods implementing this operation should return string representations of
 	 * the given {@link Flag annotation}.
 	 *
-	 * @param flag
-	 *            - the {@link Flag flag}.
+	 * @param flag - the {@link Flag flag}.
 	 * @return the dialect specific name of the flag.
 	 */
 	String flagString(Flag flag);
@@ -53,12 +47,11 @@ public interface SqlDialect {
 	 * Object Casket StorageClasses and dialect specific SQL types representing this
 	 * classes.
 	 *
-	 * @param stClass
-	 *            - the Object Casket {@link StorageClass}.
+	 * @param stClass - the Object Casket {@link StorageClass}.
 	 * @return the dialect specific name of the SQL type.
 	 *
-	 *         <p>
-	 *         E.g. StorageClass.TEXT {@literal ->} "VARCHAR(1000000000)"
+	 * <p>
+	 * E.g. StorageClass.TEXT {@literal ->} "VARCHAR(1000000000)"
 	 */
 	String storageClassString(StorageClass stClass);
 
@@ -69,13 +62,11 @@ public interface SqlDialect {
 	 * and dialect specific and can differ from the strings used in the reverse
 	 * mapping ({@link SqlDialect#storageClassString(StorageClass)}.
 	 *
-	 * @param typeName
-	 *            - the dialect specific name of the SQL type.
+	 * @param typeName - the dialect specific name of the SQL type.
 	 * @return the abstract {@link StorageClass SQL type}.
 	 *
-	 *         <p>
-	 *         E.g. "CHARACTER VARYING" {@literal ->} StorageClass.TEXT
-	 *
+	 * <p>
+	 * E.g. "CHARACTER VARYING" {@literal ->} StorageClass.TEXT
 	 */
 	StorageClass baseTypeStorageClass(String typeName);
 

@@ -1,9 +1,5 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.ModulePort;
@@ -14,6 +10,10 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 class TestModuleFactory {
 

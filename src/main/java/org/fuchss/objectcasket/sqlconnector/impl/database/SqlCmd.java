@@ -1,22 +1,18 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+
 class SqlCmd {
 
-	private SqlDialect dialect;
+	private final SqlDialect dialect;
 
 	SqlCmd(SqlDialect dialect) {
 		this.dialect = dialect;
@@ -27,7 +23,7 @@ class SqlCmd {
 		StringBuilder columnInfo = new StringBuilder();
 		for (ColumnDefinition colDef : colDefs)
 			columnInfo.append(columnInfo.isEmpty() ? "" : ",").append(this.columnDefinition(colDef));
-		return String.format("CREATE TABLE \"%s\" (%s)", table, columnInfo.toString());
+		return String.format("CREATE TABLE \"%s\" (%s)", table, columnInfo);
 	}
 
 	private String columnDefinition(ColumnDefinition colDef) {
@@ -82,21 +78,21 @@ class SqlCmd {
 
 	String select(String table, Set<String> columns, List<SqlArg> args, SqlArg.OP op) {
 		String operand = this.dialect.operatorString(op);
-		List<ColumnAndComperator> colAndComp = args.stream().map(arg -> new ColumnAndComperator(arg.columnName(), this.dialect.cmpString(arg.cmp()))).toList();
+		List<ColumnAndComparator> colAndComp = args.stream().map(arg -> new ColumnAndComparator(arg.columnName(), this.dialect.cmpString(arg.cmp()))).toList();
 		return this.selectRowsStmt(table, columns, colAndComp, operand);
 	}
 
-	private String selectRowsStmt(String table, Set<String> columns, List<ColumnAndComperator> args, String operand) {
+	private String selectRowsStmt(String table, Set<String> columns, List<ColumnAndComparator> args, String operand) {
 		StringBuilder whereClause = new StringBuilder();
-		for (ColumnAndComperator arg : args) {
-			String argString = String.format("\"%s\" %s ?", arg.columnName(), arg.comperator());
+		for (ColumnAndComparator arg : args) {
+			String argString = String.format("\"%s\" %s ?", arg.columnName(), arg.comparator());
 			whereClause.append(whereClause.isEmpty() ? "WHERE " : operand).append(argString);
 		}
 		if ((columns == null) || columns.isEmpty()) {
-			return String.format("SELECT * FROM \"%s\" %s", table, whereClause.toString());
+			return String.format("SELECT * FROM \"%s\" %s", table, whereClause);
 		}
 		String columnNames = this.columnNames(columns);
-		return String.format("SELECT %s FROM \"%s\" %s", columnNames, table, whereClause.toString());
+		return String.format("SELECT %s FROM \"%s\" %s", columnNames, table, whereClause);
 	}
 
 	private String columnNames(Collection<String> columns) {
@@ -119,13 +115,13 @@ class SqlCmd {
 
 	String delete(String table, List<SqlArg> args, SqlArg.OP op) {
 		String operand = this.dialect.operatorString(op);
-		List<ColumnAndComperator> colAndComp = args.stream().map(arg -> new ColumnAndComperator(arg.columnName(), this.dialect.cmpString(arg.cmp()))).toList();
+		List<ColumnAndComparator> colAndComp = args.stream().map(arg -> new ColumnAndComparator(arg.columnName(), this.dialect.cmpString(arg.cmp()))).toList();
 		StringBuilder whereClause = new StringBuilder();
-		for (ColumnAndComperator cAc : colAndComp) {
-			String argString = String.format("\"%s\" %s ?", cAc.columnName(), cAc.comperator());
+		for (ColumnAndComparator cAc : colAndComp) {
+			String argString = String.format("\"%s\" %s ?", cAc.columnName(), cAc.comparator());
 			whereClause.append(whereClause.isEmpty() ? "WHERE " : operand).append(argString);
 		}
-		return String.format("DELETE FROM \"%s\" %s", table, whereClause.toString());
+		return String.format("DELETE FROM \"%s\" %s", table, whereClause);
 	}
 
 	private ColumnDefinition mkColumnDefinition(String column, SqlColumnSignatureImpl colSig) {
@@ -137,10 +133,10 @@ class SqlCmd {
 		return new ColumnDefinition(column, type, primaryKey, autoIncrement, notNull, defaultValue);
 	}
 
-	final record ColumnAndComperator(String columnName, String comperator) {
+	record ColumnAndComparator(String columnName, String comparator) {
 	}
 
-	final record ColumnDefinition(String columnName, String type, boolean primaryKey, boolean autoIncrement, boolean notNull, String defaultValue) {
+	record ColumnDefinition(String columnName, String type, boolean primaryKey, boolean autoIncrement, boolean notNull, String defaultValue) {
 	}
 
 	SqlValidator getValidator(ResultSet resultSet, String pkName) throws SQLException {

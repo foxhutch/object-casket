@@ -1,19 +1,11 @@
 package org.fuchss.objectcasket.objectpacker.port;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * A session of the Object Casket system. Depending to the
@@ -24,15 +16,13 @@ import org.fuchss.objectcasket.tablemodule.port.TableModule;
  * @see SessionObserver
  * @see Configuration
  * @see Configuration.Flag
- *
- *
  */
 public interface Session {
 	/**
 	 * This operation maps existing database tables to user-defined classes. These
 	 * classes must be final and marked as an{@link Entity}. It is possible to use a
 	 * class with fewer attributes than columns in the database table. At least an
-	 * attribute for the primary key and the default constructor must exists. The
+	 * attribute for the primary key and the default constructor must exist. The
 	 * attribute for the primary key should be marked as {@link Id @Id}. All
 	 * primitive Java types and also their corresponding classes can be used for a
 	 * primary key. If the primary key corresponds to the Java class
@@ -75,12 +65,11 @@ public interface Session {
 	 * stored objects, objects from associated classes.
 	 *
 	 * <p>
-	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a non
-	 * navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
+	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a non-navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
 	 *
 	 * <p>
 	 * {@link ManyToMany @ManyToMany} to access multiple objects. This represents a
-	 * non navigable UML-like many-to-many association. <code> A n-x--->m B </code>
+	 * non-navigable UML-like many-to-many association. <code> A n-x--->m B </code>
 	 * This annotation is valid only if the annotated attribute is declared as a
 	 * {@link Set} with an initially existing container. <strong> Both classes
 	 * should be declared at the same time, or B before A.</strong>
@@ -90,7 +79,6 @@ public interface Session {
 	 * individualize the mapping, it is possible to use the annotation
 	 * {@link Column @Column} to define an individual name. This is also possible
 	 * for the entity itself by using the {@link Table @Table} annotation.
-	 *
 	 *
 	 * <pre>
 	 * &#64;Entity()
@@ -121,50 +109,40 @@ public interface Session {
 	 *
 	 * 	public Club(String name) {
 	 * 		this.name = name;
-	 * 	}
+	 *    }
 	 * }
 	 * </pre>
 	 *
-	 *
-	 *
-	 *
-	 * @param clazz
-	 *            - the classes.
-	 * @throws CasketException
-	 *             if a class is not a proper entity or no assignable database table
-	 *             exists.
+	 * @param clazz - the classes.
+	 * @throws CasketException if a class is not a proper entity or no assignable database table
+	 *                         exists.
 	 */
 	void declareClass(Class<?>... clazz) throws CasketException;
 
 	/**
 	 * This operation opens a new transaction.
 	 *
-	 * @throws CasketException
-	 *             if a transaction is already running.
+	 * @throws CasketException if a transaction is already running.
 	 */
 
 	void beginTransaction() throws CasketException;
 
 	/**
-	 * This operation closes the transaction an commits all outstanding actions.
+	 * This operation closes the transaction and commits all outstanding actions.
 	 *
-	 * @throws CasketException
-	 *             if no transaction is running.
+	 * @throws CasketException if no transaction is running.
 	 */
 	void endTransaction() throws CasketException;
 
 	/**
 	 * This operation retrieves all objects of a given class.
 	 *
-	 * @param <T>
-	 *            - the class type.
-	 * @param clazz
-	 *            - the class.
+	 * @param <T>   - the class type.
+	 * @param clazz - the class.
 	 * @return a set of objects.
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	<T> Set<T> getAllObjects(Class<T> clazz) throws CasketException;
 
@@ -172,33 +150,26 @@ public interface Session {
 	 * This operation retrieves all objects matching the set of {@link Session.Exp
 	 * expressions}.
 	 *
-	 * @param <T>
-	 *            - the class type.
-	 * @param clazz
-	 *            - the class.
-	 * @param args
-	 *            - a set of {@link Session.Exp expressions} (attribute name,
-	 *            comperator, value).
+	 * @param <T>   - the class type.
+	 * @param clazz - the class.
+	 * @param args  - a set of {@link Session.Exp expressions} (attribute name,
+	 *              comparator, value).
 	 * @return a set of objects.
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	<T> Set<T> getObjects(Class<T> clazz, Set<Exp> args) throws CasketException;
 
 	/**
-	 * This operations persists / saves an object of a previous assigned class.
+	 * These operations persist / save an object of a previous assigned class.
 	 * ({@link Session#declareClass(Class...)}).
 	 *
-	 * @param <T>
-	 *            - the type of the object.
-	 * @param obj
-	 *            - the object.
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @param <T> - the type of the object.
+	 * @param obj - the object.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	<T> void persist(T obj) throws CasketException;
 
@@ -206,10 +177,9 @@ public interface Session {
 	 * This operation reloads the content of a database and restores all managed
 	 * objects.
 	 *
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	void resync() throws CasketException;
 
@@ -218,14 +188,11 @@ public interface Session {
 	 * multiple sessions exists ({@link Configuration.Flag#SESSIONS }), this was
 	 * done automatically if the database content was update within another session.
 	 *
-	 ** @param <T>
-	 *            - the type of the object.
-	 * @param obj
-	 *            - the object to reload.
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @param <T> - the type of the object.
+	 * @param obj - the object to reload.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	<T> void resync(T obj) throws CasketException;
 
@@ -233,14 +200,11 @@ public interface Session {
 	 * This operation deletes an object from a database. This is only possible, if
 	 * this object is not used within a many-to-one or many-to-many association.
 	 *
-	 ** @param <T>
-	 *            - the type of the object.
-	 * @param obj
-	 *            - the object.
-	 * @throws CasketException
-	 *             on error. When called within a transaction, the transaction will
-	 *             be closed and a {@link TableModule#rollback(Object) rollback}
-	 *             will be performed.
+	 * @param <T> - the type of the object.
+	 * @param obj - the object.
+	 * @throws CasketException on error. When called within a transaction, the transaction will
+	 *                         be closed and a {@link TableModule#rollback(Object) rollback}
+	 *                         will be performed.
 	 */
 	<T> void delete(T obj) throws CasketException;
 
@@ -248,8 +212,7 @@ public interface Session {
 	 * To observe changes done by the auto sync mechanism it is possible to register
 	 * a {@link SessionObserver}.
 	 *
-	 * @param obs
-	 *            - the session observer to add.
+	 * @param obs - the session observer to add.
 	 * @return true iff the observer is newly assigned.
 	 * @see Session#resync(Object)
 	 */
@@ -258,12 +221,9 @@ public interface Session {
 	/**
 	 * This operation removes an existing {@link SessionObserver}.
 	 *
-	 * @param obs
-	 *            - the session observer to remove.
-	 *
+	 * @param obs - the session observer to remove.
 	 * @return true if the observer was removed and the set of observers has
-	 *         changed.
-	 *
+	 * changed.
 	 * @see Session#register(SessionObserver obs)
 	 */
 	boolean deregister(SessionObserver obs);
@@ -276,16 +236,12 @@ public interface Session {
 	 * {@literal ("=", "<" , ">", "<=", ">=", "!=")}, and the third element is the
 	 * value to which the attribute is compared.
 	 *
-	 * @param fieldName
-	 *            - the name of the attribute.
-	 * @param op
-	 *            - the comparison operation.
-	 * @param value
-	 *            - the value to which the attribute is compared.
-	 *
+	 * @param fieldName - the name of the attribute.
+	 * @param op        - the comparison operation.
+	 * @param value     - the value to which the attribute is compared.
 	 * @see Session#getObjects(Class, Set)
 	 */
-	final record Exp(String fieldName, String op, Serializable value) {
+	record Exp(String fieldName, String op, Serializable value) {
 	}
 
 }

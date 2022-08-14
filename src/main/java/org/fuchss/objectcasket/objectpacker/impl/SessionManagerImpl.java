@@ -1,8 +1,5 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.IntolerantHashMap;
@@ -13,26 +10,26 @@ import org.fuchss.objectcasket.objectpacker.port.Session;
 import org.fuchss.objectcasket.objectpacker.port.SessionManager;
 import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * The implementation of the {@link SessionManager}.
- *
- *
  */
 public class SessionManagerImpl implements SessionManager {
 
-	private TableModuleFactory modFac;
+	private final TableModuleFactory modFac;
 
-	private IntolerantMap<ConfigurationImpl, Set<SessionImpl>> sessionMap = new IntolerantHashMap<>();
+	private final IntolerantMap<ConfigurationImpl, Set<SessionImpl>> sessionMap = new IntolerantHashMap<>();
 
-	private IntolerantMap<DomainImpl, ConfigurationImpl> domainConfigMap = new IntolerantHashMap<>();
+	private final IntolerantMap<DomainImpl, ConfigurationImpl> domainConfigMap = new IntolerantHashMap<>();
 
-	private IntolerantMap<DomainImpl, SessionImpl> domainBuilderMap = new IntolerantHashMap<>();
+	private final IntolerantMap<DomainImpl, SessionImpl> domainBuilderMap = new IntolerantHashMap<>();
 
 	/**
 	 * The constructor.
 	 *
-	 * @param tableModuleFactory
-	 *            - the assigned {@link TableModuleFactory}.
+	 * @param tableModuleFactory - the assigned {@link TableModuleFactory}.
 	 */
 	public SessionManagerImpl(TableModuleFactory tableModuleFactory) {
 		this.modFac = tableModuleFactory;

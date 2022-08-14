@@ -1,15 +1,5 @@
 package org.fuchss.objectcasket.objectpacker.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.PackerPort;
 import org.fuchss.objectcasket.objectpacker.port.Configuration;
@@ -20,6 +10,11 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 class TestDelete {
 

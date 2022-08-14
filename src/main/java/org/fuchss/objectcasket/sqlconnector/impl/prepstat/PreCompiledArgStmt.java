@@ -1,19 +1,14 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
 
 abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 
@@ -39,11 +34,9 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 	 * This operation is used to execute a pre-compiled statement which needs
 	 * arguments.
 	 *
-	 * @param values
-	 *            - {@link SqlArg arguments} and their values.
+	 * @param values - {@link SqlArg arguments} and their values.
 	 * @return the {@link ResultSet}.
-	 * @throws CasketException
-	 *             on error.
+	 * @throws CasketException on error.
 	 */
 	public ResultSet setValuesAndExecute(Map<SqlArg, SqlObject> values) throws CasketException {
 		this.setArgs(values);
@@ -54,8 +47,7 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 	 * This operation is used to execute a pre-compiled statement without arguments.
 	 *
 	 * @return the {@link ResultSet}.
-	 * @throws CasketException
-	 *             on error.
+	 * @throws CasketException on error.
 	 */
 	protected abstract ResultSet execute() throws CasketException;
 
@@ -74,7 +66,7 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 		Set<SqlArg> missingArgs = new HashSet<>(values.keySet());
 		Set<SqlArg> neededArgs = new HashSet<>(this.args);
 		missingArgs.removeIf(arg -> this.args.contains(arg));
-		neededArgs.removeIf(arg -> values.keySet().contains(arg));
+		neededArgs.removeIf(values::containsKey);
 		if (missingArgs.isEmpty() && neededArgs.isEmpty())
 			return;
 		throw CasketError.INVALID_ARGUMENTS.build();

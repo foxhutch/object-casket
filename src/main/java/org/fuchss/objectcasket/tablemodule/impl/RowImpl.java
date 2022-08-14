@@ -1,23 +1,24 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObjectMaps;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 class RowImpl implements Row {
 
-	private TableImpl tab;
+	private final TableImpl tab;
 	protected Map<String, Object> valueMap = new HashMap<>();
 	protected Map<String, Object> oldValueMap = new HashMap<>();
 
 	private static final Map<Class<?>, Object> NULL_MAP = new HashMap<>();
+
 	static {
 		RowImpl.NULL_MAP.put(Character.TYPE, (char) 0);
 		RowImpl.NULL_MAP.put(Double.TYPE, 0.0);
@@ -110,7 +111,7 @@ class RowImpl implements Row {
 		return this.isDirty;
 	}
 
-	protected synchronized void hasChangd() {
+	protected synchronized void hasChanged() {
 		this.isDirty = true;
 	}
 

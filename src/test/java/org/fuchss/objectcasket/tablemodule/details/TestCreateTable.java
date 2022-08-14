@@ -1,12 +1,5 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.SqlPort;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
@@ -19,6 +12,13 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 class TestCreateTable {
 

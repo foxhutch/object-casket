@@ -1,9 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.api;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
@@ -11,6 +7,10 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 class TestCreateRow extends PrepareTable {
 

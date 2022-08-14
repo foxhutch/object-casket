@@ -11,7 +11,6 @@ import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
  * {@link SqlDatabase databases}. One {@link SqlDatabaseFactory factory} for the
  * databases themselves and one {@link SqlObjectFactory factory} for the
  * {@link SqlObject SqlObjects} that can be stored in cells of tables.
- *
  */
 
 public interface SqlPort {

@@ -1,26 +1,21 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
+import org.fuchss.objectcasket.common.*;
+import org.fuchss.objectcasket.objectpacker.port.Session;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
+import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Table;
-
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.IntolerantHashMap;
-import org.fuchss.objectcasket.common.IntolerantMap;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.objectpacker.port.Session;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
-
 class SessionImpl extends SyncedSession implements Session {
 
 	protected IntolerantMap<Class<?>, ClassInfo<?>> classInfoMap = new IntolerantHashMap<>();
 	protected IntolerantMap<Class<?>, String> classTableNameMap = new IntolerantHashMap<>();
-	private IntolerantMap<String, Class<?>> tableNameClassMap = new IntolerantHashMap<>();
+	private final IntolerantMap<String, Class<?>> tableNameClassMap = new IntolerantHashMap<>();
 
 	protected IntolerantMap<M2MInfo<?, ?>, JoinTableBuilder<?, ?>> joinTabFactoryFactoryMap = new IntolerantHashMap<>();
 
@@ -137,15 +132,13 @@ class SessionImpl extends SyncedSession implements Session {
 
 	<T> boolean isManaged(T obj) throws CasketException {
 		Util.objectsNotNull(obj);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
 		return objFactory.objectRowMap.containsKey(obj);
 	}
 
 	<T> void addClient(T supplier) throws CasketException {
 		Util.objectsNotNull(supplier);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFac = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(supplier.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFac = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(supplier.getClass());
 		objFac.addClient(supplier, this.transaction);
 	}
 
@@ -153,8 +146,7 @@ class SessionImpl extends SyncedSession implements Session {
 		Util.objectsNotNull(clazz);
 		if (pk == null)
 			return;
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFac = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFac = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
 		objFac.removeClient(pk, this.transaction);
 	}
 

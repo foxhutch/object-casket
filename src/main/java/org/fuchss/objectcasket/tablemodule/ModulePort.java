@@ -7,8 +7,6 @@ import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
  * Through the static {@link ModulePort#PORT} object one obtains the
  * {@link TableModuleFactory} to create, modify, and access the tables inside a
  * database.
- *
- *
  */
 
 public interface ModulePort {

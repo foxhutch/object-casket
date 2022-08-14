@@ -1,18 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
@@ -22,17 +9,19 @@ import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledDelete;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledSelect;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledUpdate;
-import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
+import org.fuchss.objectcasket.sqlconnector.port.*;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 class SqlDatabaseImpl extends SimpleDatabase {
 
-	protected SqlDatabaseImpl(Connection connection, boolean canCreate, SqlObjectFatoryImpl objectFactory, SqlCmd sqlCmd) {
+	protected SqlDatabaseImpl(Connection connection, boolean canCreate, SqlObjectFactoryImpl objectFactory, SqlCmd sqlCmd) {
 		super(connection, canCreate, objectFactory, sqlCmd);
 	}
 
@@ -52,10 +41,10 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	public List<Map<String, SqlObject>> select(PreCompiledStatement preStat, Map<SqlArg, SqlObject> relatedObjs, Object obj) throws CasketException {
 		Util.objectsNotNull(preStat, relatedObjs);
 		PreCompiledSelect preStatImpl = (PreCompiledSelect) preStat;
-List<Map<String, SqlObject>> result = new ArrayList<>();
+		List<Map<String, SqlObject>> result = new ArrayList<>();
 
 		if (obj != null)
-			this.checkVoucherAndAcquier(obj);
+			this.checkVoucherAndAcquire(obj);
 
 		try (ResultSet resultSet = preStatImpl.setValuesAndExecute(relatedObjs)) {
 			while (resultSet.next())
@@ -106,7 +95,7 @@ List<Map<String, SqlObject>> result = new ArrayList<>();
 		PreCompiledDelete preStatImpl = (PreCompiledDelete) preStat;
 		List<SqlObject> result = new ArrayList<>();
 
-		this.checkVoucherAndAcquier(obj);
+		this.checkVoucherAndAcquire(obj);
 
 		try (ResultSet resultSet = preStatImpl.setValuesAndExecute(relatedObjs)) {
 			String tableName = preStatImpl.tableName();
@@ -156,7 +145,7 @@ List<Map<String, SqlObject>> result = new ArrayList<>();
 	public void updateRow(PreCompiledStatement preStat, SqlObject pk, Map<String, SqlObject> values, Object obj) throws CasketException {
 		Util.objectsNotNull(preStat, pk, values);
 		PreCompiledUpdate preStatImpl = (PreCompiledUpdate) preStat;
-		this.checkVoucherAndAcquier(obj);
+		this.checkVoucherAndAcquire(obj);
 		Map<String, SqlObject> tmpArgs = Util.copyAndIgnore(values, preStatImpl.pkName());
 		try {
 			preStatImpl.setValuesAndExecute(tmpArgs, pk);

@@ -1,9 +1,9 @@
 package org.fuchss.objectcasket.objectpacker.common;
 
+import org.fuchss.objectcasket.objectpacker.port.SessionObserver;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.fuchss.objectcasket.objectpacker.port.SessionObserver;
 
 public class Observer implements SessionObserver {
 

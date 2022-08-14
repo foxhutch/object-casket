@@ -1,20 +1,19 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The {@link PreCompiledStatement} to delete rows inside the database table.
- *
  */
 public class PreCompiledDelete extends PreCompiledArgStmt {
 
@@ -27,21 +26,16 @@ public class PreCompiledDelete extends PreCompiledArgStmt {
 	/**
 	 * The constructor.
 	 *
-	 * @param prepStat
-	 *            - the used {@link PreparedStatement} to delete rows.
-	 * @param prepSelectStat
-	 *            - the necessary {@link PreparedStatement} to select the rows which
-	 *            should be deleted.
-	 * @param tableName
-	 *            - the assigned table.
-	 * @param argList
-	 *            - all arguments to use.
-	 * @param colSigMap
-	 *            - the signatures.
-	 * @throws CasketException
-	 *             on error.
+	 * @param prepStat       - the used {@link PreparedStatement} to delete rows.
+	 * @param prepSelectStat - the necessary {@link PreparedStatement} to select the rows which
+	 *                       should be deleted.
+	 * @param tableName      - the assigned table.
+	 * @param argList        - all arguments to use.
+	 * @param colSigMap      - the signatures.
+	 * @throws CasketException on error.
 	 */
-	public PreCompiledDelete(PreparedStatement prepStat, PreparedStatement prepSelectStat, String tableName, List<SqlArg> argList, Map<String, SqlColumnSignatureImpl> colSigMap) throws CasketException {
+	public PreCompiledDelete(PreparedStatement prepStat, PreparedStatement prepSelectStat, String tableName, List<SqlArg> argList, Map<String, SqlColumnSignatureImpl> colSigMap)
+			throws CasketException {
 		super(prepStat, tableName, argList, colSigMap);
 		this.prepSelectStat = prepSelectStat;
 	}

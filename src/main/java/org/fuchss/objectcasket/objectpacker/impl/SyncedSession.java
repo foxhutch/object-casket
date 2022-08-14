@@ -1,5 +1,10 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.objectpacker.port.Session;
+import org.fuchss.objectcasket.objectpacker.port.SessionObserver;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,21 +13,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.objectpacker.port.Session;
-import org.fuchss.objectcasket.objectpacker.port.SessionObserver;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-
 abstract class SyncedSession extends CoreSession implements Runnable {
 
 	private Thread thread;
-	private Semaphore needSync = new Semaphore(0); // only for signal
+	private final Semaphore needSync = new Semaphore(0); // only for signal
 
-	private Set<SessionObserver> observers = new HashSet<>();
+	private final Set<SessionObserver> observers = new HashSet<>();
 
-	private Set<Object> changedObjects = new HashSet<>();
-	private Set<Object> deletedObjects = new HashSet<>();
-	private Map<JoinTableBuilder<?, ?>, SuppliersLoadInfo> suppliersToLoad = new HashMap<>();
+	private final Set<Object> changedObjects = new HashSet<>();
+	private final Set<Object> deletedObjects = new HashSet<>();
+	private final Map<JoinTableBuilder<?, ?>, SuppliersLoadInfo> suppliersToLoad = new HashMap<>();
 
 	protected SyncedSession(TableModule tabMod, ConfigurationImpl config) {
 		super(tabMod, config);
@@ -143,7 +143,7 @@ abstract class SyncedSession extends CoreSession implements Runnable {
 		theThread.join();
 	}
 
-	final record SuppliersLoadInfo(Set<Serializable> pks, String pkName) {
+	record SuppliersLoadInfo(Set<Serializable> pks, String pkName) {
 	}
 
 }

@@ -1,23 +1,19 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.SqlPort;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
+import org.fuchss.objectcasket.tablemodule.ModulePort;
+import org.fuchss.objectcasket.tablemodule.port.*;
+import org.fuchss.objectcasket.testutils.Utility;
+import org.fuchss.objectcasket.testutils.Utility.DB;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.SqlPort;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.tablemodule.ModulePort;
-import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
-import org.fuchss.objectcasket.tablemodule.port.Row;
-import org.fuchss.objectcasket.tablemodule.port.Table;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
-import org.fuchss.objectcasket.testutils.Utility;
-import org.fuchss.objectcasket.testutils.Utility.DB;
 
 class PrepareModule {
 

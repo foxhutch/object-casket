@@ -1,35 +1,23 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.DatabaseObserver;
-import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
+import org.fuchss.objectcasket.sqlconnector.port.*;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
 
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
+
 class TableImpl implements Table, DatabaseObserver {
 
-	private SqlDatabase db;
-	private SqlObjectFactory objFac;
-	private TableAssignment dbTab;
-	private TableAssignment pkTab;
+	private final SqlDatabase db;
+	private final SqlObjectFactory objFac;
+	private final TableAssignment dbTab;
+	private final TableAssignment pkTab;
 
 	private boolean closed;
 	private SqlArg pkArg;
@@ -39,16 +27,16 @@ class TableImpl implements Table, DatabaseObserver {
 	private PreCompiledStatement selectRowByPkStmt;
 	private CasketException exc;
 
-	private Map<Object, RowImpl> pkRowMap = new HashMap<>();
-	private Map<Row, RowImpl> myRows = new HashMap<>();
-	private Set<TableObserver> observers = new HashSet<>();
+	private final Map<Object, RowImpl> pkRowMap = new HashMap<>();
+	private final Map<Row, RowImpl> myRows = new HashMap<>();
+	private final Set<TableObserver> observers = new HashSet<>();
 
-	private Map<String, Class<? extends Serializable>> rowSignature = new HashMap<>();
+	private final Map<String, Class<? extends Serializable>> rowSignature = new HashMap<>();
 	private String pkName;
 	private Class<? extends Serializable> pkType;
 	private boolean isAutoIncrementedPK;
 
-	private TableModuleImpl myModule;
+	private final TableModuleImpl myModule;
 
 	protected TableImpl(TableModuleImpl module, TableAssignment dbTab, TableAssignment pkTab, SqlDatabase db, SqlObjectFactory objFac) {
 		this.myModule = module;
@@ -59,7 +47,7 @@ class TableImpl implements Table, DatabaseObserver {
 	}
 
 	protected void initSignature(Map<String, Class<? extends Serializable>> signature, String pkName, boolean autoIncrement) throws CasketException {
-		signature.forEach(this.rowSignature::put);
+		this.rowSignature.putAll(signature);
 		this.pkName = pkName;
 		this.pkType = signature.get(pkName);
 		this.isAutoIncrementedPK = autoIncrement;
@@ -106,7 +94,7 @@ class TableImpl implements Table, DatabaseObserver {
 		for (SqlObject obj : changed) {
 			RowImpl row = this.pkRowMap.get(obj.get(this.pkType));
 			if (row != null) {
-				row.hasChangd();
+				row.hasChanged();
 				changedRows.add(row);
 			}
 		}

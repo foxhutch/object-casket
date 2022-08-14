@@ -1,5 +1,11 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
+
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -7,12 +13,6 @@ import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 
 class ConfigurationImpl implements DBConfiguration {
 	private Class<? extends Driver> driver;
@@ -22,7 +22,7 @@ class ConfigurationImpl implements DBConfiguration {
 	private String user = null;
 	private String passwd = null;
 	private SqlCmd sqlCmd = null;
-	private List<DBConfiguration.Flag> flags = new ArrayList<>();
+	private final List<DBConfiguration.Flag> flags = new ArrayList<>();
 
 	private boolean inUse = false;
 
@@ -53,7 +53,7 @@ class ConfigurationImpl implements DBConfiguration {
 		Util.objectsNotNull(name);
 		this.checkNotInUse();
 		String oldUser = this.user;
-		this.user = new StringBuilder(name).toString();
+		this.user = name;
 		return !this.user.equals(oldUser);
 	}
 
@@ -62,7 +62,7 @@ class ConfigurationImpl implements DBConfiguration {
 		Util.objectsNotNull(name);
 		this.checkNotInUse();
 		String oldPasswd = this.passwd;
-		this.passwd = new StringBuilder(name).toString();
+		this.passwd = name;
 		return !this.passwd.equals(oldPasswd);
 	}
 
@@ -100,19 +100,19 @@ class ConfigurationImpl implements DBConfiguration {
 	}
 
 	String getURL() {
-		return (new StringBuilder(this.driverPrefix)).append(this.uri).toString();
+		return this.driverPrefix + this.uri;
 	}
 
 	String getURI() {
-		return new StringBuilder(this.uri).toString();
+		return this.uri;
 	}
 
 	String getUser() {
-		return new StringBuilder(this.user).toString();
+		return this.user;
 	}
 
 	String getPasswd() {
-		return new StringBuilder(this.passwd).toString();
+		return this.passwd;
 	}
 
 	boolean allows(DBConfiguration.Flag flag) {

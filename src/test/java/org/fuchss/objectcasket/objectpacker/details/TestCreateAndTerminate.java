@@ -1,8 +1,5 @@
 package org.fuchss.objectcasket.objectpacker.details;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.PackerPort;
 import org.fuchss.objectcasket.objectpacker.port.Configuration;
@@ -13,6 +10,9 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 class TestCreateAndTerminate {
 

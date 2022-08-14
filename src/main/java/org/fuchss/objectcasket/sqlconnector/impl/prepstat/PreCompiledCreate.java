@@ -1,11 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlInteger;
@@ -13,30 +7,29 @@ import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The {@link PreCompiledStatement} to create a new row inside the database
  * table.
- *
  */
 public class PreCompiledCreate extends PreCompiledStmtImpl {
 
-	private boolean isAutoIncrement;
+	private final boolean isAutoIncrement;
 
 	/**
 	 * The constructor.
 	 *
-	 * @param prepStat
-	 *            - the used {@link PreparedStatement}.
-	 * @param table
-	 *            - the assigned table.
-	 * @param columnNames
-	 *            - all columns in the right order.
-	 * @param protoMap
-	 *            - the signatures.
-	 * @param isAutoIncrement
-	 *            - indicates whether the primary key will be generated.
-	 * @throws CasketException
-	 *             on error.
+	 * @param prepStat        - the used {@link PreparedStatement}.
+	 * @param table           - the assigned table.
+	 * @param columnNames     - all columns in the right order.
+	 * @param protoMap        - the signatures.
+	 * @param isAutoIncrement - indicates whether the primary key will be generated.
+	 * @throws CasketException on error.
 	 */
 	public PreCompiledCreate(PreparedStatement prepStat, String table, List<String> columnNames, Map<String, SqlColumnSignatureImpl> protoMap, boolean isAutoIncrement) throws CasketException {
 		super(prepStat, table, columnNames, protoMap);
@@ -49,11 +42,8 @@ public class PreCompiledCreate extends PreCompiledStmtImpl {
 	 * This operation is used to execute a pre-compiled statement which needs
 	 * values.
 	 *
-	 * @param values
-	 *            - the values to use.
-	 *
-	 * @throws CasketException
-	 *             on error.
+	 * @param values - the values to use.
+	 * @throws CasketException on error.
 	 */
 	public void setValuesAndExecute(Map<String, SqlObject> values) throws CasketException {
 		super.setValues(values);

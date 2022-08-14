@@ -1,23 +1,22 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * This class represents SQL REALs.
- *
  */
 
 public class SqlReal extends SqlObj {
 
-	private Double val;
+	private final Double val;
 
 	private SqlReal(Double obj) {
-		this.val = obj == null ? null : obj.doubleValue();
+		this.val = obj;
 	}
 
 	@Override
@@ -69,10 +68,9 @@ public class SqlReal extends SqlObj {
 	/**
 	 * his operation generates a REAL-Object form a Java object.
 	 *
-	 * @see StorageClass#REAL
-	 * @param obj
-	 *            - the object to store as a REAL.
+	 * @param obj - the object to store as a REAL.
 	 * @return the {@link SqlObj}
+	 * @see StorageClass#REAL
 	 */
 	public static SqlObj mkSqlObjectFromJava(Object obj) {
 		return SqlReal.mkSqlObject(obj);
@@ -81,8 +79,7 @@ public class SqlReal extends SqlObj {
 	/**
 	 * This operation generates a REAL-Object from the stored value in the database.
 	 *
-	 * @param obj
-	 *            - the read value.
+	 * @param obj - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {

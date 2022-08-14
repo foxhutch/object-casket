@@ -1,18 +1,17 @@
 package org.fuchss.objectcasket.common;
 
+import java.io.Serial;
 import java.util.HashMap;
 
 /**
  * The implementation of {@link IntolerantHashMap}.
  *
- *
- * @param <K>
- *            -a type variable for keys.
- * @param <V>
- *            -a type variable for values.
+ * @param <K> -a type variable for keys.
+ * @param <V> -a type variable for values.
  */
 public class IntolerantHashMap<K, V> extends HashMap<K, V> implements IntolerantMap<K, V> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Override

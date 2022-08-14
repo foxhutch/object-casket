@@ -1,19 +1,15 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
 
 class PreCompiledStmtImpl implements PreCompiledStatement {
 
@@ -65,7 +61,7 @@ class PreCompiledStmtImpl implements PreCompiledStatement {
 	}
 
 	@Override
-	public boolean pkIsAutoincremented() {
+	public boolean pkIsAutoIncremented() {
 		return this.columns.get(this.pkColumnName).isAutoIncrementedPrimaryKey();
 	}
 

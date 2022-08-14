@@ -1,9 +1,5 @@
 package org.fuchss.objectcasket.common;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.fuchss.objectcasket.objectpacker.port.Session;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
@@ -13,10 +9,12 @@ import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
- *
  * Object Casket error codes
- *
  */
 public enum CasketError {
 
@@ -188,7 +186,7 @@ public enum CasketError {
 
 	/**
 	 * It is impossible to modify the structure of a table if the table is part of a
-	 * m2m or m2one association.
+	 * m2m or m2o association.
 	 */
 	TABLE_IN_USE,
 
@@ -228,7 +226,7 @@ public enum CasketError {
 	UNKNOWN_COLUMNS,
 
 	/**
-	 * Some of the literals used cannot be mapped to an {@link Table.TabCMP
+	 * Some literals used cannot be mapped to an {@link Table.TabCMP
 	 * operator}.
 	 */
 	UNKNOWN_OPERATOR,

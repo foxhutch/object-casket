@@ -9,12 +9,11 @@ import java.util.function.UnaryOperator;
 
 /**
  * Additional {@link SqlObject} features.
- *
- *
  */
 public abstract class SqlObjectMaps implements SqlObject {
 
 	private static final Map<Class<? extends Serializable>, UnaryOperator<Object>> _CAST = new HashMap<>();
+
 	static {
 
 		SqlObjectMaps._CAST.put(String.class, n -> n == null ? null : n.toString());
@@ -44,6 +43,7 @@ public abstract class SqlObjectMaps implements SqlObject {
 	protected static final Map<Class<? extends Serializable>, UnaryOperator<Object>> CAST = Collections.unmodifiableMap(_CAST);
 
 	private static final Map<Class<? extends Serializable>, Class<? extends Serializable>> AUTOBOX = new HashMap<>();
+
 	static {
 		SqlObjectMaps.AUTOBOX.put(Character.TYPE, Character.class);
 		SqlObjectMaps.AUTOBOX.put(Double.TYPE, Double.class);
@@ -66,8 +66,7 @@ public abstract class SqlObjectMaps implements SqlObject {
 	 * possible to check whether an SQL object can be assigned to an attribute which
 	 * is only a Java type.
 	 *
-	 * @param clazz
-	 *            - a Java class or type.
+	 * @param clazz - a Java class or type.
 	 * @return the class for the type and the class for the class.
 	 */
 	public static Class<? extends Serializable> respectBoxing(Class<? extends Serializable> clazz) {

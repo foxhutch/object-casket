@@ -1,27 +1,20 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
 
 import javax.persistence.Column;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @SuppressWarnings("java:S3011")
 class ObjectBuilderCore<T> {
@@ -30,12 +23,12 @@ class ObjectBuilderCore<T> {
 	protected TableModule tabMod;
 
 	protected ClassInfo<T> classInfo;
-	private Class<T> myClass;
+	private final Class<T> myClass;
 
 	protected String tableName;
 	protected Constructor<T> defaultConstructor;
 
-	private Set<String> allColumnNames = new HashSet<>();
+	private final Set<String> allColumnNames = new HashSet<>();
 	protected List<Field> valueFields = new ArrayList<>();
 	protected List<Field> many2OneFields = new ArrayList<>();
 	protected List<Field> many2ManyFields = new ArrayList<>();
@@ -43,7 +36,7 @@ class ObjectBuilderCore<T> {
 	protected Map<Field, String> fieldColumnMap = new HashMap<>();
 	protected Map<Field, Class<Serializable>> fieldTypeMap = new HashMap<>();
 	protected Map<Field, M2MInfo<T, ?>> m2mFieldInfoMap = new HashMap<>();
-	private Map<Field, M2OInfo> many2OneFieldInfoMap = new HashMap<>();
+	private final Map<Field, M2OInfo> many2OneFieldInfoMap = new HashMap<>();
 
 	protected static final String REF_COUNTER = "ref@counter";
 	protected static final String SUPPLIER_COUNTER = "supplier@counter";
@@ -169,16 +162,14 @@ class ObjectBuilderCore<T> {
 	@SuppressWarnings("unchecked")
 	private <S> M2MInfo<T, S> loadOrPersist(ClassInfo<S> classInfo, String columnName, String joinTableName, Set<Exp> args) throws CasketException {
 		M2MInfo<T, S> info = null;
-		@SuppressWarnings("rawtypes")
-		Set<M2MInfo> relevantInfos = this.session.getObjects(M2MInfo.class, args);
+		@SuppressWarnings("rawtypes") Set<M2MInfo> relevantInfos = this.session.getObjects(M2MInfo.class, args);
 		if (!relevantInfos.isEmpty() && !(info = relevantInfos.iterator().next()).getSupplierTableName().equals(classInfo.getTableName()) && !info.getJoinTableName().equals(joinTableName))
 			throw CasketError.WRONG_CLASS_IN_MANY_TO_MANY_DECLARATION.build();
 
 		args.clear();
 		args.add(new Exp(M2MInfo.FIELD_JOIN_TABLE_NAME, "==", joinTableName));
-		@SuppressWarnings("rawtypes")
-		Set<M2MInfo> controllInfos = this.session.getObjects(M2MInfo.class, args);
-		if (relevantInfos.size() != controllInfos.size())
+		@SuppressWarnings("rawtypes") Set<M2MInfo> controlInfos = this.session.getObjects(M2MInfo.class, args);
+		if (relevantInfos.size() != controlInfos.size())
 			throw CasketError.WRONG_JOIN_TABLE_IN_MANY_TO_ONE_DECLARATION.build();
 
 		if (relevantInfos.isEmpty()) {

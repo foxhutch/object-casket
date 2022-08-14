@@ -1,13 +1,5 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Session;
@@ -16,6 +8,10 @@ import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
 
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
+
 class JoinTableBuilder<C, S> implements TableObserver {
 
 	private static final String PK_ID = "pk@id";
@@ -23,15 +19,15 @@ class JoinTableBuilder<C, S> implements TableObserver {
 	private static final String SUPPLIER_ID = "supplier@id";
 	private static final Class<? extends Serializable> PK_TYPE = Integer.class;
 
-	private SessionImpl session;
-	private TableModule tabMod;
+	private final SessionImpl session;
+	private final TableModule tabMod;
 	private Table joinTable;
-	private M2MInfo<C, S> info;
+	private final M2MInfo<C, S> info;
 
-	private Map<C, Map<S, Row>> joinTabEntryMap = new HashMap<>();
-	private Map<Row, C> rowToClientMap = new HashMap<>();
-	private Map<Row, S> rowToSupplierMap = new HashMap<>();
-	private Map<Serializable, Row> supplierKeyMap = new HashMap<>();
+	private final Map<C, Map<S, Row>> joinTabEntryMap = new HashMap<>();
+	private final Map<Row, C> rowToClientMap = new HashMap<>();
+	private final Map<Row, S> rowToSupplierMap = new HashMap<>();
+	private final Map<Serializable, Row> supplierKeyMap = new HashMap<>();
 
 	JoinTableBuilder(SessionImpl sessionImpl, TableModule tableModule, M2MInfo<C, S> info) throws CasketException {
 		this.info = info;

@@ -4,19 +4,15 @@ import org.fuchss.objectcasket.common.CasketException;
 
 /**
  * Main interface to access or create a database.
- *
- *
  */
 public interface SqlDatabaseFactory {
 
 	/**
 	 * This operation closes the connection to the {@link SqlDatabase database}. So
-	 * no one can read and write any more.
+	 * no one can read and write anymore.
 	 *
-	 * @param db
-	 *            - the SqlDatabase object to close.
-	 * @throws CasketException
-	 *             on error.
+	 * @param db - the SqlDatabase object to close.
+	 * @throws CasketException on error.
 	 */
 	void closeDatabase(SqlDatabase db) throws CasketException;
 
@@ -33,11 +29,9 @@ public interface SqlDatabaseFactory {
 	 * the {@link DBConfiguration configuration}. It should be noted that if the
 	 * same configuration is used twice, the same (identical) database is created.
 	 *
-	 * @param config
-	 *            - the configuration.
+	 * @param config - the configuration.
 	 * @return the SqlDatabase object.
-	 * @throws CasketException
-	 *             on error.
+	 * @throws CasketException on error.
 	 */
 	SqlDatabase openDatabase(DBConfiguration config) throws CasketException;
 

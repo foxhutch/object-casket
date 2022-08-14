@@ -1,14 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Semaphore;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
@@ -17,17 +8,22 @@ import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.Semaphore;
+
 abstract class AcidDatabase implements SqlDatabase {
 
 	protected Connection connection;
-	protected SqlObjectFatoryImpl objectFactory;
+	protected SqlObjectFactoryImpl objectFactory;
 	protected SqlCmd sqlCmd;
 
 	protected TransactionImpl transaction;
 	protected Object voucher;
 
-	private Semaphore beginTransaction = new Semaphore(1);
-	private Semaphore endTransaction = new Semaphore(0);
+	private final Semaphore beginTransaction = new Semaphore(1);
+	private final Semaphore endTransaction = new Semaphore(0);
 
 	protected Map<TableAssignment, TableAssignmentImpl> assignedTables = new HashMap<>();
 
@@ -36,13 +32,13 @@ abstract class AcidDatabase implements SqlDatabase {
 
 	protected abstract SqlDatabase getSqlDatabase();
 
-	protected AcidDatabase(Connection connection, SqlObjectFatoryImpl objectFactory, SqlCmd sqlCmd) {
+	protected AcidDatabase(Connection connection, SqlObjectFactoryImpl objectFactory, SqlCmd sqlCmd) {
 		this.connection = connection;
 		this.objectFactory = objectFactory;
 		this.sqlCmd = sqlCmd;
 	}
 
-	protected final void checkVoucherAndAcquier(Object obj) throws CasketException {
+	protected final void checkVoucherAndAcquire(Object obj) throws CasketException {
 		this.transactionAcquire();
 		if ((this.voucher != obj) || !obj.getClass().getName().startsWith(AcidDatabase.class.getName() + "$")) {
 			this.endTransaction.release();
@@ -87,7 +83,7 @@ abstract class AcidDatabase implements SqlDatabase {
 
 	@Override
 	public void endTransaction(Object obj) throws CasketException {
-		this.checkVoucherAndAcquier(obj);
+		this.checkVoucherAndAcquire(obj);
 
 		try {
 			this.connection.commit();

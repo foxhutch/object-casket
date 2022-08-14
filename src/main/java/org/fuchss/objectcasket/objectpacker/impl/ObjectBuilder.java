@@ -1,17 +1,5 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
@@ -20,14 +8,20 @@ import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.Map.Entry;
+
 @SuppressWarnings("java:S3011")
 class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 
 	private Table objectTable;
 
 	Map<T, Row> objectRowMap = new HashMap<>();
-	private Map<Row, T> rowObjectMap = new HashMap<>();
-	private Map<Serializable, T> pkToObjectMap = new HashMap<>();
+	private final Map<Row, T> rowObjectMap = new HashMap<>();
+	private final Map<Serializable, T> pkToObjectMap = new HashMap<>();
 
 	private static final Class<? extends Serializable> REF_COUNTER_TYPE = Integer.TYPE;
 	private static final Class<? extends Serializable> SUPPLIER_COUNTER_TYPE = Integer.TYPE;
@@ -94,13 +88,13 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 			objects.add(obj);
 		}
 		for (Row row : newRows) {
-			T obj = this.rowObjectMap.get(row);
+			final T obj = this.rowObjectMap.get(row);
 			synchronized (obj) {
 				this.fillMany2OneFields(obj, row);
 			}
 		}
 		for (Row row : newRows) {
-			T obj = this.rowObjectMap.get(row);
+			final T obj = this.rowObjectMap.get(row);
 			synchronized (obj) {
 				this.fillMany2ManyFields(obj, transaction);
 			}
@@ -338,9 +332,8 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 	}
 
 	/*
-	 * used by session to manage m2one
+	 * used by session to manage m2o
 	 */
-
 	synchronized void addClient(T supplier, Object transaction) throws CasketException {
 		Row row = this.getRowIfExists(supplier);
 
@@ -414,17 +407,13 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 
 	private static Table.TabCMP str2CMP(String sCmp) throws CasketException {
 		return switch (sCmp) {
-		case "<" -> Table.TabCMP.LESS;
-		case ">" -> Table.TabCMP.GREATER;
-		case "==" -> Table.TabCMP.EQUAL;
-		case "=" -> Table.TabCMP.EQUAL;
-		case "<=" -> Table.TabCMP.LESSEQ;
-		case "=<" -> Table.TabCMP.LESSEQ;
-		case ">=" -> Table.TabCMP.GREATEREQ;
-		case "=>" -> Table.TabCMP.GREATEREQ;
-		case "!=" -> Table.TabCMP.UNEQUAL;
-		case "<>" -> Table.TabCMP.UNEQUAL;
-		default -> throw CasketError.UNKNOWN_OPERATOR.build();
+			case "<" -> Table.TabCMP.LESS;
+			case ">" -> Table.TabCMP.GREATER;
+			case "==", "=" -> Table.TabCMP.EQUAL;
+			case "<=", "=<" -> Table.TabCMP.LESSEQ;
+			case ">=", "=>" -> Table.TabCMP.GREATEREQ;
+			case "!=", "<>" -> Table.TabCMP.UNEQUAL;
+			default -> throw CasketError.UNKNOWN_OPERATOR.build();
 		};
 	}
 

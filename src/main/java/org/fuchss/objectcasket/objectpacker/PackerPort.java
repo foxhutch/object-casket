@@ -6,8 +6,6 @@ import org.fuchss.objectcasket.objectpacker.port.SessionManager;
  * The main access point to work with the Object Casket system. Via the static
  * {@link PackerPort#PORT} one can access the {@link SessionManager session
  * manager} the central object to work with the Object Casket system.
- *
- *
  */
 public interface PackerPort {
 

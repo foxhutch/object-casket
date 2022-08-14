@@ -1,14 +1,10 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import java.util.Set;
-
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.IntolerantHashMap;
-import org.fuchss.objectcasket.common.IntolerantMap;
-import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.common.*;
 import org.fuchss.objectcasket.objectpacker.port.Session;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
+
+import java.util.Set;
 
 abstract class CoreSession implements Session {
 	protected IntolerantMap<Class<?>, ObjectBuilder<?>> objectFactoryMap = new IntolerantHashMap<>();
@@ -45,8 +41,7 @@ abstract class CoreSession implements Session {
 
 	@Override
 	public synchronized <T> Set<T> getAllObjects(Class<T> clazz) throws CasketException {
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
 		try {
 			boolean local = this.localTransaction();
 			Set<T> resultSet = objFactory.getAllObjects(this.transaction);
@@ -62,8 +57,7 @@ abstract class CoreSession implements Session {
 	@Override
 	public synchronized <T> Set<T> getObjects(Class<T> clazz, Set<Session.Exp> args) throws CasketException {
 		Util.objectsNotNull(args);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(clazz);
 		try {
 			boolean local = this.localTransaction();
 			Set<T> resultSet = objFactory.getObjects(args, this.transaction);
@@ -79,8 +73,7 @@ abstract class CoreSession implements Session {
 	@Override
 	public synchronized <T> void persist(T obj) throws CasketException {
 		Util.objectsNotNull(obj);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
 		try {
 			boolean local = this.localTransaction();
 			objFactory.persist(obj, this.transaction);
@@ -95,8 +88,7 @@ abstract class CoreSession implements Session {
 	@Override
 	public synchronized <T> void delete(T obj) throws CasketException {
 		Util.objectsNotNull(obj);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
 		if (objFactory.hasClients(obj) || objFactory.isClient(obj))
 			throw CasketError.OBJECT_IN_USE.build();
 		try {
@@ -112,8 +104,7 @@ abstract class CoreSession implements Session {
 
 	protected synchronized <T> void deleteByUpdate(T obj) throws CasketException {
 		Util.objectsNotNull(obj);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
 		objFactory.deleteByUpdate(obj);
 	}
 
@@ -134,8 +125,7 @@ abstract class CoreSession implements Session {
 	@Override
 	public synchronized <T> void resync(T obj) throws CasketException {
 		Util.objectsNotNull(obj);
-		@SuppressWarnings("unchecked")
-		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
+		@SuppressWarnings("unchecked") ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
 		try {
 			boolean local = this.localTransaction();
 			objFactory.resync(obj, this.transaction);

@@ -1,19 +1,15 @@
 package org.fuchss.objectcasket.sqlconnector.api;
 
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.SqlPort;
+import org.fuchss.objectcasket.sqlconnector.port.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.SqlPort;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectMaps;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 class TestObjectFactory {
 

@@ -1,35 +1,29 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The {@link PreCompiledStatement} to update a row inside the database table.
- *
  */
 public class PreCompiledUpdate extends PreCompiledStmtImpl {
 
 	/**
 	 * The constructor.
 	 *
-	 * @param prepStat
-	 *            - the used {@link PreparedStatement} to update a row.
-	 * @param table
-	 *            - the assigned table.
-	 * @param pkName
-	 *            - the name of the primary key column.
-	 * @param columnNames
-	 *            - all columns in the right order.
-	 * @param protoMap
-	 *            - the signatures.
+	 * @param prepStat    - the used {@link PreparedStatement} to update a row.
+	 * @param table       - the assigned table.
+	 * @param pkName      - the name of the primary key column.
+	 * @param columnNames - all columns in the right order.
+	 * @param protoMap    - the signatures.
 	 */
 	public PreCompiledUpdate(PreparedStatement prepStat, String table, String pkName, List<String> columnNames, Map<String, SqlColumnSignatureImpl> protoMap) {
 		super(prepStat, table, columnNames, protoMap);
@@ -40,12 +34,9 @@ public class PreCompiledUpdate extends PreCompiledStmtImpl {
 	/**
 	 * This operation applies the statement with the provided values.
 	 *
-	 * @param values
-	 *            - the values to use.
-	 * @param pk
-	 *            - the value of the primary key to identify the row.
-	 * @throws CasketException
-	 *             on error.
+	 * @param values - the values to use.
+	 * @param pk     - the value of the primary key to identify the row.
+	 * @throws CasketException on error.
 	 */
 	public void setValuesAndExecute(Map<String, SqlObject> values, SqlObject pk) throws CasketException {
 		Util.objectsNotNull(pk);

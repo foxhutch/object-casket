@@ -1,15 +1,15 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 class TestUpdateRow extends PrepareModule {
 
@@ -46,8 +46,7 @@ class TestUpdateRow extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < row.length; tIdx++) {
 			for (int rIdx = 0; rIdx < row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				this.table[tIdx].updateRow(row[tIdx][rIdx], map, voucher);
 			}
 		}
@@ -76,8 +75,7 @@ class TestUpdateRow extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < row.length; tIdx++) {
 			for (int rIdx = 0; rIdx < row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				this.table[tIdx].updateRow(row[tIdx][rIdx], map, voucher);
 			}
 		}
@@ -101,8 +99,7 @@ class TestUpdateRow extends PrepareModule {
 		Map<String, Serializable> singleMap = new HashMap<>();
 		for (int tIdx = 0; tIdx < row2.length; tIdx++) {
 			for (int rIdx = 0; rIdx < row2.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				for (String col : map.keySet()) {
 					singleMap.put(col, map.get(col));
 					voucher = this.tabMod.beginTransaction();
@@ -115,8 +112,7 @@ class TestUpdateRow extends PrepareModule {
 
 		for (int tIdx = 0; tIdx < row.length; tIdx++) {
 			for (int rIdx = 0; rIdx < row.length; rIdx++) {
-				@SuppressWarnings("unchecked")
-				Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
+				@SuppressWarnings("unchecked") Map<String, Serializable> map = (Map<String, Serializable>) values[tIdx][rIdx];
 				for (String col : map.keySet()) {
 					Assertions.assertEquals(row[tIdx][rIdx].getValue(col, this.columns.get(col)), row2[tIdx][rIdx].getValue(col, this.columns.get(col)));
 				}

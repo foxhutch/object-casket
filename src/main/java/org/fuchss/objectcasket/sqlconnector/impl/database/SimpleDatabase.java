@@ -1,19 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
@@ -26,12 +12,15 @@ import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
 
+import java.sql.*;
+import java.util.*;
+
 abstract class SimpleDatabase extends AcidDatabase {
 
 	protected boolean canCreateTable;
 	protected ConfigurationImpl configImpl;
 
-	protected SimpleDatabase(Connection connection, boolean canCreate, SqlObjectFatoryImpl objectFactory, SqlCmd sqlCmd) {
+	protected SimpleDatabase(Connection connection, boolean canCreate, SqlObjectFactoryImpl objectFactory, SqlCmd sqlCmd) {
 		super(connection, objectFactory, sqlCmd);
 		this.canCreateTable = canCreate;
 	}
@@ -231,7 +220,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 		this.checkColumns(values.keySet());
 		PreCompiledCreate preStatImpl = (PreCompiledCreate) preStat;
 
-		this.checkVoucherAndAcquier(obj);
+		this.checkVoucherAndAcquire(obj);
 
 		try {
 			String tableName = preStatImpl.tableName();
@@ -251,14 +240,14 @@ abstract class SimpleDatabase extends AcidDatabase {
 		this.checkColumns(values.keySet());
 		PreCompiledCreate preStatImpl = (PreCompiledCreate) preStat;
 
-		this.checkVoucherAndAcquier(obj);
+		this.checkVoucherAndAcquire(obj);
 
 		try {
 			String tableName = preStatImpl.tableName();
 			String pkName = preStatImpl.pkName();
 			preStatImpl.setValuesAndExecute(values);
 			Map<String, SqlObject> result = new HashMap<>();
-			if (!preStatImpl.pkIsAutoincremented()) {
+			if (!preStatImpl.pkIsAutoIncremented()) {
 				result.put(pkName, values.get(pkName));
 				this.transaction.add2Created(tableName, (SqlObj) (result.get(pkName)));
 				return result;
@@ -301,7 +290,8 @@ abstract class SimpleDatabase extends AcidDatabase {
 		}
 	}
 
-	private int checkAdjustment(DatabaseMetaData metaData, String tableName, String pkName, Map<String, SqlColumnSignatureImpl> columnsImpl, Set<String> missingColumns, Set<String> obsoleteColumns) throws SQLException, CasketException {
+	private int checkAdjustment(DatabaseMetaData metaData, String tableName, String pkName, Map<String, SqlColumnSignatureImpl> columnsImpl, Set<String> missingColumns, Set<String> obsoleteColumns)
+			throws SQLException, CasketException {
 		try (ResultSet resultSet = metaData.getColumns(null, null, tableName, null)) {
 			Set<String> tableColumns = new HashSet<>();
 			while (resultSet.next()) {

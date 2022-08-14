@@ -1,24 +1,23 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Date;
-
 import org.fuchss.objectcasket.common.CasketError;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Date;
+
 /**
  * This class represents SQL INTEGERs.
- *
  */
 public class SqlInteger extends SqlObj {
 
-	private Long val;
+	private final Long val;
 
 	private SqlInteger(Long obj) {
-		this.val = obj == null ? null : obj.longValue();
+		this.val = obj;
 	}
 
 	@Override
@@ -75,10 +74,9 @@ public class SqlInteger extends SqlObj {
 	/**
 	 * This operation generates an INTEGER-Object form a Java object.
 	 *
-	 * @see StorageClass#INTEGER
-	 * @param obj
-	 *            - the object to store as an INTEGER.
+	 * @param obj - the object to store as an INTEGER.
 	 * @return the {@link SqlObj}.
+	 * @see StorageClass#INTEGER
 	 */
 	public static SqlObj mkSqlObjectFromJava(Object obj) {
 		return SqlInteger.mkSqlObject(obj);
@@ -88,8 +86,7 @@ public class SqlInteger extends SqlObj {
 	 * This operation generates an INTEGER-Object from the stored value in the
 	 * database.
 	 *
-	 * @param obj
-	 *            - the read value.
+	 * @param obj - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {
