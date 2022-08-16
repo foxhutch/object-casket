@@ -39,7 +39,7 @@ class ClassInfo<T> {
 	}
 
 	private void calcAllFields(Class<?> clazz) {
-		this.allFields.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> !field.isAnnotationPresent(Transient.class) && !Modifier.isStatic(field.getModifiers())).toList());
+		this.allFields.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> !field.isAnnotationPresent(Transient.class) && !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())).toList());
 		Class<?> superClass = clazz.getSuperclass();
 		if ((superClass == null) || superClass.equals(Object.class)) {
 			return;
