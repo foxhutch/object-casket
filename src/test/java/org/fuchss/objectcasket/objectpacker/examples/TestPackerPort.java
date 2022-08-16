@@ -1,19 +1,28 @@
 package org.fuchss.objectcasket.objectpacker.examples;
 
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.objectpacker.PackerPort;
-import org.fuchss.objectcasket.objectpacker.port.*;
-import org.fuchss.objectcasket.testutils.Utility;
-import org.fuchss.objectcasket.testutils.Utility.DB;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.objectpacker.PackerPort;
+import org.fuchss.objectcasket.objectpacker.port.Configuration;
+import org.fuchss.objectcasket.objectpacker.port.Domain;
+import org.fuchss.objectcasket.objectpacker.port.Session;
+import org.fuchss.objectcasket.objectpacker.port.SessionManager;
+import org.fuchss.objectcasket.objectpacker.port.SessionObserver;
+import org.fuchss.objectcasket.testutils.Utility;
+import org.fuchss.objectcasket.testutils.Utility.DB;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class TestPackerPort {
 
@@ -29,11 +38,11 @@ class TestPackerPort {
 		this.dbFile = Utility.createFile(this);
 		Exception exc = null;
 		try {
-			// 1 Get the session manager
+			// 1st: Get the session manager!
 
 			SessionManager manager = PackerPort.PORT.sessionManager();
 
-			// 2 Create a configuration
+			// 2nd: Create a configuration!
 
 			Configuration config = manager.createConfiguration();
 			config.setDriver(Utility.dialectDriverMap.get(dialect), Utility.dialectUrlPrefixMap.get(dialect), Utility.dialectMap.get(dialect));
@@ -42,21 +51,21 @@ class TestPackerPort {
 			config.setPassword("");
 			config.setFlag(Configuration.Flag.ALTER, Configuration.Flag.CREATE, Configuration.Flag.SESSIONS, Configuration.Flag.WRITE);
 
-			// 3 Build a domain
+			// 3rd: Build a domain!
 
 			Domain dom = manager.mkDomain(config);
 			manager.addEntity(dom, Club.class, Member.class, Department.class);
 			manager.finalizeDomain(dom);
 
-			// 4 Open a session
+			// 4th: Open a session!
 
 			Session session = manager.session(config);
 
-			// 4.1 Declare the used classes
+			// 5th: Declare the used classes!
 
 			session.declareClass(Department.class, Club.class, Member.class);
 
-			// 4.2 Work with a domain
+			// 6th: Work with the domain!
 
 			Member[] members = { //
 					new Member("Mary"), new Member("Patricia"), new Member("Jennifer"), //
@@ -76,7 +85,7 @@ class TestPackerPort {
 			Club[] clubs = { new Club("Lions"), new Club("Tigers") };
 
 			/*
-			 * For complex operations use begin and end transaction
+			 * For complex operations use begin and end transaction!
 			 */
 			session.beginTransaction();
 
@@ -89,8 +98,8 @@ class TestPackerPort {
 			session.endTransaction();
 
 			/*
-			 * For simplicity one can omit begin-and-brackets. Without begin-and-brackets
-			 * each operation is run in its own transaction.
+			 * For simplicity, one can omit begin-end brackets. Without begin-end brackets,
+			 * each operation is executed in a separate transaction.
 			 */
 			session.persist(clubs[0]);
 			session.persist(clubs[1]);
@@ -109,9 +118,6 @@ class TestPackerPort {
 
 			clubs[1].president(members[6]);
 			clubs[1].vicePresident(members[7]);
-
-			// System.out.println(clubs[0]);
-			// System.out.println(clubs[1]);
 
 			session.persist(clubs[0]);
 			session.persist(clubs[1]);
@@ -136,15 +142,13 @@ class TestPackerPort {
 				}
 			}
 
-			// System.out.println(clubs[0]);
-			// System.out.println(clubs[1]);
-
 			session.beginTransaction();
 			session.persist(clubs[0]);
 			session.persist(clubs[1]);
 
-			// Attention: persist don't works in a deep manner. So departments are assigned
-			// to clubs. But each change inside a department must be persisted separately.
+			// Attention: "persist" does not works in a deep manner. So departments are
+			// assigned
+			// to clubs. But every change inside a department must be persisted separately.
 			for (int j = 0; j < 2; j++)
 				for (Department department : departments[j])
 					session.persist(department);
@@ -154,30 +158,24 @@ class TestPackerPort {
 			manager.terminateAll();
 
 			/*
-			 * Part II
+			 * Part II: More sessions and existing domains!
 			 */
-
-			// 5 More sessions and existing domains
 
 			Session session1 = manager.session(config);
 			Session session2 = manager.session(config);
 
-			// 5.1 Declare classes
-
 			session1.declareClass(Department.class, Club.class, Member.class);
 			session2.declareClass(Department.class, Club.class, Member.class);
 
-			// 5.2 Register an observer to stay up to date
+			// 7th: Register an observer to stay up to date!
+
 			Observer obs = new Observer();
 			session2.register(obs);
 
-			// 5.3 Work with the domain and keeping session2 up to date
-
 			Set<Club> allClubs = session1.getAllObjects(Club.class);
 
-			// for (Club club : allClubs) System.out.println(club);
+			// Now we change the president of the Lions.
 
-			// We change the president of the Lions.
 			Club club = null;
 			for (Club aClub : allClubs)
 				if (aClub.getName().equals("Lions"))
@@ -193,20 +191,18 @@ class TestPackerPort {
 
 			session1.persist(club);
 
-			// System.out.println(club);
-
 			Assertions.assertTrue(Utility.waitForChange());
+
 			// Nothing happened in session2!
+
 			Assertions.assertTrue(obs.getChanged().isEmpty());
 
-			// Now the session 2 also knows clubs and members.
+			// Now session 2 also knows clubs and members.
 
 			Set<Club> allClubs2 = session2.getAllObjects(Club.class);
 			Assertions.assertEquals(2, allClubs2.size());
 
-			// for (Club aClub : allClubs2) System.out.println(aClub);
-
-			// We now change the vice president of the Lions.
+			// Now we change the vice president of the Lions.
 
 			aMember = null;
 			for (Member member : club.allMembers())
@@ -218,25 +214,19 @@ class TestPackerPort {
 
 			session1.persist(club);
 
-			// System.out.println(club);
-
 			Assertions.assertTrue(Utility.waitForChange());
-
-			// nothing happened in session2!
 
 			Set<Object> changedObjs = obs.getChanged();
 			Assertions.assertFalse(changedObjs.isEmpty());
 
-			// Because entities are referenced by others, one also got some information
-			// about changed members, and not only about the changed club.
+			// Because entities also contain information about existing references, one also
+			// gets some changed members and not only the changed association.
 
-			// System.out.println("\nWe get some informations!");
-			// for (Object obj : changedObjs)System.out.println(obj);
+			// 8th: Close the session!
 
-			// 6 Close the session
 			manager.terminateAll();
 
-			// Thats all. Try also to delete members, departments, and clubs. To search for
+			// That's all. Also try to delete members, departments and clubs. Or search for
 			// specific departments...
 
 		} catch (Exception e) {
@@ -251,7 +241,7 @@ class TestPackerPort {
 }
 
 /**
- * A session observer, so one get informed if something happened.
+ * A session observer, so one gets informed if something happens.
  */
 class Observer implements SessionObserver {
 
@@ -329,8 +319,8 @@ final class Club {
 	}
 
 	/**
-	 * In a multi-session application the access to an entity should be
-	 * synchronized. Because object casket synchronizes entities in the background.
+	 * In a multi-session application, access to an entity should be synchronized.
+	 * Because the object casket synchronizes entities in the background.
 	 */
 	public synchronized String getName() {
 		return this.name;
