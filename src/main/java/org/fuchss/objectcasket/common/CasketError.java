@@ -19,6 +19,11 @@ public interface CasketError {
 	 */
 	String name();
 
+	/**
+	 *
+	 * Error codes without arguments.
+	 *
+	 */
 	enum CE0 implements CasketError {
 
 		/**
@@ -48,6 +53,11 @@ public interface CasketError {
 
 	}
 
+	/**
+	 *
+	 * Error codes with one argument.
+	 *
+	 */
 	enum CE1 implements CasketError {
 
 		/**
@@ -189,6 +199,11 @@ public interface CasketError {
 
 	}
 
+	/**
+	 *
+	 * Error codes with two arguments.
+	 *
+	 */
 	enum CE2 implements CasketError {
 
 		/**
@@ -281,6 +296,11 @@ public interface CasketError {
 
 	}
 
+	/**
+	 *
+	 * Error codes with three arguments.
+	 *
+	 */
 	enum CE3 implements CasketError {
 
 		/**
@@ -365,6 +385,11 @@ public interface CasketError {
 
 	}
 
+	/**
+	 *
+	 * Error codes with four arguments.
+	 *
+	 */
 	enum CE4 implements CasketError {
 
 		/**
