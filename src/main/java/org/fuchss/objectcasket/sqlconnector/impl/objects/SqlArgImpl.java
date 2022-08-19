@@ -6,6 +6,7 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 /**
  * The implementation of the {@link SqlArg}.
  */
+@SuppressWarnings("java:S6206") // identity not equality is needed!
 public class SqlArgImpl implements SqlArg {
 
 	private final String tableName;
@@ -16,10 +17,14 @@ public class SqlArgImpl implements SqlArg {
 	/**
 	 * The constructor.
 	 *
-	 * @param tableName  - the assigned table.
-	 * @param columnName - the assigned column.
-	 * @param proto      - the signature of the column.
-	 * @param cmp        - the comparator to use.
+	 * @param tableName
+	 *            - the assigned table.
+	 * @param columnName
+	 *            - the assigned column.
+	 * @param proto
+	 *            - the signature of the column.
+	 * @param cmp
+	 *            - the comparator to use.
 	 */
 	public SqlArgImpl(String tableName, String columnName, SqlColumnSignatureImpl proto, CMP cmp) {
 		this.tableName = tableName;

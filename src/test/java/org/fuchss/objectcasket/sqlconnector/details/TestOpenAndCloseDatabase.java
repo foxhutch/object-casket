@@ -1,6 +1,13 @@
 package org.fuchss.objectcasket.sqlconnector.details;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Driver;
+import java.util.Arrays;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.SqlPort;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
@@ -10,11 +17,6 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Driver;
-import java.util.Arrays;
 
 class TestOpenAndCloseDatabase {
 
@@ -52,7 +54,7 @@ class TestOpenAndCloseDatabase {
 				SqlPort.SQL_PORT.sqlDatabaseFactory().closeDatabase(db);
 			});
 
-			Assertions.assertEquals(exception.getMessage(), CasketError.UNKNOWN_DATABASE.build().getMessage());
+			Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exception.error());
 		} finally {
 			Utility.deleteFile(dbFile);
 		}
@@ -67,7 +69,7 @@ class TestOpenAndCloseDatabase {
 				CasketException exception = Assertions.assertThrows(CasketException.class, () -> {
 					SqlPort.SQL_PORT.sqlDatabaseFactory().openDatabase(config);
 				});
-				Assertions.assertEquals(exception.getMessage(), CasketError.INCOMPLETE_CONFIGURATION.build().getMessage());
+				Assertions.assertEquals(CE1.INCOMPLETE_CONFIGURATION, exception.error());
 			}
 		} finally {
 			Utility.deleteFile(dbFile);
@@ -85,25 +87,25 @@ class TestOpenAndCloseDatabase {
 			CasketException exception = Assertions.assertThrows(CasketException.class, () -> {
 				config.setDriver(Utility.dialectDriverMap.get(dialect), Utility.dialectUrlPrefixMap.get(dialect), Utility.dialectMap.get(dialect));
 			});
-			Assertions.assertEquals(exception.getMessage(), CasketError.CONFIGURATION_IN_USE.build().getMessage());
+			Assertions.assertEquals(CE2.CONFIGURATION_IN_USE, exception.error());
 
 			exception = Assertions.assertThrows(CasketException.class, () -> {
 				config.setUri("xyz.db");
 			});
-			Assertions.assertEquals(exception.getMessage(), CasketError.CONFIGURATION_IN_USE.build().getMessage());
+			Assertions.assertEquals(CE2.CONFIGURATION_IN_USE, exception.error());
 			exception = Assertions.assertThrows(CasketException.class, () -> {
 				config.setUser("user");
 			});
-			Assertions.assertEquals(exception.getMessage(), CasketError.CONFIGURATION_IN_USE.build().getMessage());
+			Assertions.assertEquals(CE2.CONFIGURATION_IN_USE, exception.error());
 
 			exception = Assertions.assertThrows(CasketException.class, () -> {
 				config.setPassword("pwd");
 			});
-			Assertions.assertEquals(exception.getMessage(), CasketError.CONFIGURATION_IN_USE.build().getMessage());
+			Assertions.assertEquals(CE2.CONFIGURATION_IN_USE, exception.error());
 			exception = Assertions.assertThrows(CasketException.class, () -> {
 				config.setFlag(DBConfiguration.Flag.CREATE);
 			});
-			Assertions.assertEquals(exception.getMessage(), CasketError.CONFIGURATION_IN_USE.build().getMessage());
+			Assertions.assertEquals(CE2.CONFIGURATION_IN_USE, exception.error());
 
 			SqlPort.SQL_PORT.sqlDatabaseFactory().closeDatabase(db);
 		} finally {

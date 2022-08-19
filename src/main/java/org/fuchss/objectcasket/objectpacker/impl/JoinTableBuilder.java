@@ -1,16 +1,20 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Session;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
 
 class JoinTableBuilder<C, S> implements TableObserver {
 
@@ -175,8 +179,7 @@ class JoinTableBuilder<C, S> implements TableObserver {
 
 	private void setMaps(Row row, C client, S supplier, Serializable supplierKey) throws CasketException {
 		if ((supplier == null) && (supplierKey == null))
-			throw CasketError.UNKNOWN_OBJECT.build();
-
+			throw CE3.MISSING_SUPPLIER.defaultBuild(client, row, this.info.getJoinTableName());
 		this.rowToClientMap.put(row, client);
 		if (supplier == null)
 			this.supplierKeyMap.put(supplierKey, row);

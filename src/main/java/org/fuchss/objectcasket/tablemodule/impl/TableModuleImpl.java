@@ -1,17 +1,24 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.*;
-import org.fuchss.objectcasket.tablemodule.port.Table;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+
+import org.fuchss.objectcasket.common.CasketError.CE0;
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE4;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
+import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
+import org.fuchss.objectcasket.tablemodule.port.Table;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
 
 class TableModuleImpl implements TableModule {
 
@@ -36,7 +43,7 @@ class TableModuleImpl implements TableModule {
 	public synchronized Table mkView(String tableName, String pkName, Map<String, Class<? extends Serializable>> signature, boolean autoIncrement) throws CasketException {
 		Util.objectsNotNull(tableName, pkName, signature);
 		if (this.allViews.containsKey(tableName))
-			throw CasketError.TABLE_OR_VIEW_EXISTS.build();
+			throw CE1.TABLE_OR_VIEW_EXISTS.defaultBuild(tableName);
 		TableImpl table = this.caa(CMD.ASSIGN, tableName, pkName, signature, autoIncrement);
 		this.allViews.put(tableName, table);
 		return table;
@@ -47,7 +54,7 @@ class TableModuleImpl implements TableModule {
 	public synchronized Table createTable(String tableName, String pkName, Map<String, Class<? extends Serializable>> signature, boolean autoIncrement) throws CasketException {
 		Util.objectsNotNull(tableName, pkName, signature);
 		if (this.allTables.containsKey(tableName) || this.allViews.containsKey(tableName))
-			throw CasketError.TABLE_OR_VIEW_EXISTS.build();
+			throw CE1.TABLE_OR_VIEW_EXISTS.defaultBuild(tableName);
 		TableImpl table = this.caa(CMD.CREATE, tableName, pkName, signature, autoIncrement);
 		this.allTables.put(tableName, table);
 		return table;
@@ -58,7 +65,7 @@ class TableModuleImpl implements TableModule {
 	public synchronized Table adjustTable(String tableName, String pkName, Map<String, Class<? extends Serializable>> signature, boolean autoIncrement) throws CasketException {
 		Util.objectsNotNull(tableName, pkName, signature);
 		if (this.allTables.containsKey(tableName) || this.allViews.containsKey(tableName))
-			throw CasketError.TABLE_IN_USE.build();
+			throw CE2.TABLE_IN_USE.defaultBuild(tableName, "altered");
 		TableImpl table = this.caa(CMD.ADJUST, tableName, pkName, signature, autoIncrement);
 		this.allTables.put(tableName, table);
 		return table;
@@ -85,9 +92,9 @@ class TableModuleImpl implements TableModule {
 		Map<String, SqlColumnSignature> colSig = this.mkColSig(signature, pkName, autoIncrement);
 		TableAssignment dbTab = null;
 		dbTab = switch (cmd) {
-			case CREATE -> this.database.createTable(tableName, colSig);
-			case ASSIGN -> this.database.createView(tableName, colSig);
-			case ADJUST -> this.database.adjustTable(tableName, colSig);
+		case CREATE -> this.database.createTable(tableName, colSig);
+		case ASSIGN -> this.database.createView(tableName, colSig);
+		case ADJUST -> this.database.adjustTable(tableName, colSig);
 		};
 		Map<String, Class<? extends Serializable>> pkSignature = new HashMap<>();
 		pkSignature.put(pkName, signature.get(pkName));
@@ -106,7 +113,7 @@ class TableModuleImpl implements TableModule {
 			String columnName = entry.getKey();
 			StorageClass sClass = this.getStorageClass(javaType);
 			if (sClass == null)
-				throw CasketError.NO_SUITABLE_STORAGE_CLASS.build();
+				throw CE1.NO_SUITABLE_STORAGE_CLASS.defaultBuild(javaType);
 			SqlColumnSignature colSig = this.objFac.mkColumnSignature(sClass, javaType, null);
 			if (columnName.equals(pkName)) {
 				colSig.setFlag(SqlColumnSignature.Flag.PRIMARY_KEY);
@@ -135,7 +142,7 @@ class TableModuleImpl implements TableModule {
 
 	protected void close() throws CasketException {
 		if (this.close)
-			throw CasketError.ALREADY_CLOSED.build();
+			throw CE2.ALREADY_CLOSED.defaultBuild("table module", this);
 		this.close = true;
 		for (TableImpl tab : this.allViews.values())
 			tab.close();
@@ -200,8 +207,12 @@ class TableModuleImpl implements TableModule {
 	}
 
 	protected void checkVoucher(Object voucher) throws CasketException {
-		if ((this.transaction == null) || (this.transaction.voucher != voucher))
-			throw CasketError.UNKNOWN_TRANSACTION.build();
+		if ((this.transaction == null) || (this.transaction.voucher != voucher)) {
+			if (this.transaction == null)
+				throw CE0.MISSING_TRANSACTION.defaultBuild();
+			else
+				throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Voucher", voucher, this.transaction.getClass(), this.transaction);
+		}
 	}
 
 	private enum CMD {

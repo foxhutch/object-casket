@@ -1,6 +1,22 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
@@ -11,9 +27,6 @@ import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
-
-import java.sql.*;
-import java.util.*;
 
 abstract class SimpleDatabase extends AcidDatabase {
 
@@ -78,7 +91,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 
 		try {
 			if (this.isAssigned(tableName))
-				throw CasketError.TABLE_IN_USE.build();
+				throw CE2.TABLE_IN_USE.defaultBuild(tableName, "modified");
 
 			Set<String> missingColumns = new HashSet<>();
 			Set<String> obsoleteColumns = new HashSet<>();
@@ -104,7 +117,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 			String pkName = this.pkColumnName(metaData, tableName);
 			int columnsLeft = this.checkAdjustment(metaData, tableName, pkName, columnsImpl, missingColumns, obsoleteColumns);
 			if (columnsLeft < 2)
-				throw CasketError.NOT_ENOUGH_COLUMNS.build();
+				throw CE2.NOT_ENOUGH_COLUMNS.defaultBuild(tableName, missingColumns);
 		} catch (CasketException e) {
 			this.connection.commit();
 			throw e;
@@ -137,11 +150,11 @@ abstract class SimpleDatabase extends AcidDatabase {
 	@Override
 	public void dropTable(String tableName) throws CasketException {
 		if (!this.canCreateTable)
-			throw CasketError.CREATION_OR_MODIFICATION_FAILED.build();
+			throw CE2.CREATION_OR_MODIFICATION_FAILED.defaultBuild(this.configImpl.flags, tableName);
 		this.preventTransaction();
 		try {
 			if (this.isAssigned(tableName))
-				throw CasketError.TABLE_IN_USE.build();
+				throw CE2.TABLE_IN_USE.defaultBuild(tableName, "droped");
 
 			try (Statement stmt = this.connection.createStatement()) {
 				stmt.execute(this.sqlCmd.dropTable(tableName));
@@ -178,16 +191,16 @@ abstract class SimpleDatabase extends AcidDatabase {
 
 	private void checkCreateTable(String tableName, Map<String, SqlColumnSignature> columns) throws CasketException {
 		if (!this.canCreateTable)
-			throw CasketError.CREATION_OR_MODIFICATION_FAILED.build();
+			throw CE2.CREATION_OR_MODIFICATION_FAILED.defaultBuild(this.configImpl.flags, tableName);
 		if (columns.size() < 2)
-			throw CasketError.NOT_ENOUGH_COLUMNS.build();
+			throw CE2.NOT_ENOUGH_COLUMNS.defaultBuild(tableName, "Two");
 		this.checkCreateView(tableName, columns);
 	}
 
 	private void checkCreateView(String tableName, Map<String, SqlColumnSignature> columns) throws CasketException {
 		Util.objectsNotNull(tableName, columns);
 		if (!Util.isWellformed(tableName))
-			throw CasketError.INVALID_NAME.build();
+			throw CE1.INVALID_NAME.defaultBuild(tableName);
 		this.checkColumns(columns.keySet());
 		this.checkPK(columns.values());
 	}
@@ -265,20 +278,20 @@ abstract class SimpleDatabase extends AcidDatabase {
 			return;
 		for (String columnName : columns) {
 			if (!Util.isWellformed(columnName))
-				throw CasketError.INVALID_NAME.build();
+				throw CE1.INVALID_NAME.defaultBuild(columnName);
 		}
 	}
 
-	protected void checkPK(Collection<SqlColumnSignature> prototyps) throws CasketException {
+	protected void checkPK(Collection<SqlColumnSignature> prototypes) throws CasketException {
 		int pk = 0;
-		if (prototyps.contains(null))
-			throw CasketError.INVALID_COLUMN_SIGNATURES.build();
+		if (prototypes.contains(null))
+			throw CE1.INVALID_COLUMN_SIGNATURES.defaultBuild(prototypes);
 
-		for (SqlColumnSignature proto : prototyps) {
+		for (SqlColumnSignature proto : prototypes) {
 			pk += (proto.isPrimaryKey() ? 1 : 0);
 		}
 		if (pk != 1)
-			throw CasketError.MISSING_PK.build();
+			throw CE1.MISSING_PK.defaultBuild(prototypes);
 	}
 
 	private SqlObject autoIncrement() throws CasketException {
@@ -290,8 +303,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 		}
 	}
 
-	private int checkAdjustment(DatabaseMetaData metaData, String tableName, String pkName, Map<String, SqlColumnSignatureImpl> columnsImpl, Set<String> missingColumns, Set<String> obsoleteColumns)
-			throws SQLException, CasketException {
+	private int checkAdjustment(DatabaseMetaData metaData, String tableName, String pkName, Map<String, SqlColumnSignatureImpl> columnsImpl, Set<String> missingColumns, Set<String> obsoleteColumns) throws SQLException, CasketException {
 		try (ResultSet resultSet = metaData.getColumns(null, null, tableName, null)) {
 			Set<String> tableColumns = new HashSet<>();
 			while (resultSet.next()) {
@@ -341,7 +353,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 			if (resultSet.next())
 				return;
 		}
-		throw CasketError.MISSING_TABLE.build();
+		throw CE1.MISSING_TABLE.defaultBuild(tableName);
 	}
 
 	private String pkColumnName(DatabaseMetaData metaData, String tableName) throws CasketException, SQLException {
@@ -351,7 +363,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 				pk.add(resultSet.getString(4));
 		}
 		if (pk.size() != 1)
-			throw CasketError.MISSING_PK.build();
+			throw CE1.MISSING_PK.defaultBuild(tableName);
 		return pk.get(0);
 	}
 
@@ -363,11 +375,11 @@ abstract class SimpleDatabase extends AcidDatabase {
 				String columnName = validator.getColumnName();
 				tableColumns.add(columnName);
 				if (!validator.validate(columnsImpl.get(columnName)))
-					throw CasketError.WRONG_COLUMN_DEFINITION.build();
+					throw CE3.UNKNOWN_COLUMN.defaultBuild(columnsImpl.get(columnName), columnName, tableName);
 			}
 			for (String prototypeColumn : columnsImpl.keySet()) {
 				if (!tableColumns.contains(prototypeColumn)) {
-					throw CasketError.WRONG_COLUMN_DEFINITION.build();
+					throw CE2.WRONG_COLUMN_DEFINITION.defaultBuild(prototypeColumn, tableName);
 				}
 			}
 		}

@@ -1,15 +1,21 @@
 package org.fuchss.objectcasket.sqlconnector.details;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.SqlPort;
-import org.fuchss.objectcasket.sqlconnector.port.*;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.SqlPort;
+import org.fuchss.objectcasket.sqlconnector.port.DialectSqlite;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class TestCreateProto {
 
@@ -56,21 +62,21 @@ class TestCreateProto {
 	void createWrongPK() throws CasketException {
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
 
-		this.createWrongPK(factory, StorageClass.INTEGER, Integer.TYPE, null, "Test", CasketError.MISPLACED_AUTO_INCREMENT.build(), true);
+		this.createWrongPK(factory, StorageClass.INTEGER, Integer.TYPE, null, "Test", CE1.MISPLACED_AUTO_INCREMENT, true);
 	}
 
 	@Test
 	void createWrongProtoType() throws CasketException {
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
 
-		this.createPrototype(factory, StorageClass.INTEGER, String.class, "X", CasketError.INCOMPATIBLE_TYPES.build(), false);
-		this.createPrototype(factory, StorageClass.INTEGER, String.class, null, CasketError.INVALID_PROTOTYPE.build(), false);
+		this.createPrototype(factory, StorageClass.INTEGER, String.class, "X", CE3.INCOMPATIBLE_SQL_TYPE, false);
+		this.createPrototype(factory, StorageClass.INTEGER, String.class, null, CE3.INVALID_PROTOTYPE, false);
 
-		this.createPrototype(factory, StorageClass.REAL, Boolean.class, Boolean.valueOf(false), CasketError.INCOMPATIBLE_TYPES.build(), false);
-		this.createPrototype(factory, StorageClass.REAL, Boolean.class, null, CasketError.INVALID_PROTOTYPE.build(), false);
+		this.createPrototype(factory, StorageClass.REAL, Boolean.class, Boolean.valueOf(false), CE3.INCOMPATIBLE_SQL_TYPE, false);
+		this.createPrototype(factory, StorageClass.REAL, Boolean.class, null, CE3.INVALID_PROTOTYPE, false);
 
-		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, Boolean.valueOf(false), CasketError.INCOMPATIBLE_TYPES.build(), false);
-		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, null, CasketError.INVALID_PROTOTYPE.build(), false);
+		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, Boolean.valueOf(false), CE3.INCOMPATIBLE_SQL_TYPE, false);
+		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, null, CE3.INVALID_PROTOTYPE, false);
 	}
 
 	@Test
@@ -108,29 +114,28 @@ class TestCreateProto {
 			Assertions.assertTrue(prototype.isAutoIncrementedPrimaryKey());
 	}
 
-	private <T extends Serializable> void createWrongPK(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, String name, CasketException error, boolean auto)
-			throws CasketException {
+	private <T extends Serializable> void createWrongPK(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, String name, CasketError error, boolean auto) throws CasketException {
 		SqlColumnSignature prototype = factory.mkColumnSignature(type, clazz, defaultValue);
 		Assertions.assertNotNull(prototype);
 
-		Exception exc = null;
+		CasketException exc = null;
 		try {
 			prototype.setFlag(Flag.PRIMARY_KEY);
 			if (auto)
 				prototype.setFlag(Flag.AUTOINCREMENT);
-		} catch (Exception e) {
+		} catch (CasketException e) {
 			exc = e;
 		}
 		Assertions.assertNotNull(exc);
-		Assertions.assertEquals(exc.getMessage(), error.getMessage());
+		Assertions.assertEquals(error, exc.error());
 	}
 
-	private <T extends Serializable> void createPrototype(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, CasketException error, boolean noError) {
+	private <T extends Serializable> void createPrototype(SqlObjectFactory factory, StorageClass type, Class<T> clazz, T defaultValue, CasketError error, boolean noError) {
 		try {
 			factory.mkColumnSignature(type, clazz, defaultValue);
 			Assertions.assertTrue(noError);
 		} catch (CasketException exception) {
-			Assertions.assertEquals(exception.getMessage(), error.getMessage());
+			Assertions.assertEquals(error, exception.error());
 		}
 	}
 

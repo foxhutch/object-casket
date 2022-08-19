@@ -1,17 +1,23 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Semaphore;
+
+import org.fuchss.objectcasket.common.CasketError.CE0;
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.DatabaseObserver;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.Semaphore;
 
 abstract class AcidDatabase implements SqlDatabase {
 
@@ -42,18 +48,18 @@ abstract class AcidDatabase implements SqlDatabase {
 		this.transactionAcquire();
 		if ((this.voucher != obj) || !obj.getClass().getName().startsWith(AcidDatabase.class.getName() + "$")) {
 			this.endTransaction.release();
-			throw CasketError.WRONG_TRANSACTION.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Voucher", obj, this.getClass(), this);
 		}
 	}
 
 	protected void transactionAcquire() throws CasketException {
 		if (!this.endTransaction.tryAcquire())
-			throw CasketError.MISSING_TRANSACTION.build();
+			throw CE0.MISSING_TRANSACTION.defaultBuild();
 	}
 
 	protected void preventTransaction() throws CasketException {
 		if (!this.beginTransaction.tryAcquire())
-			throw CasketError.TRANSACTION_RUNNING.build();
+			throw CE1.TRANSACTION_RUNNING.defaultBuild(this.transaction);
 	}
 
 	protected void permitTransaction() {
@@ -108,7 +114,7 @@ abstract class AcidDatabase implements SqlDatabase {
 		this.transactionAcquire();
 		if (this.voucher != obj) {
 			this.endTransaction.release();
-			throw CasketError.WRONG_TRANSACTION.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Voucher", obj, this.getClass(), this);
 		}
 		this.voucher = null;
 		this.transaction = null;
@@ -123,7 +129,7 @@ abstract class AcidDatabase implements SqlDatabase {
 
 	protected void close() throws CasketException {
 		if (!this.beginTransaction.tryAcquire()) {
-			throw CasketError.TRANSACTION_RUNNING.build();
+			throw CE1.TRANSACTION_RUNNING.defaultBuild(this.transaction);
 		}
 		try {
 			this.connection.close();
@@ -160,7 +166,7 @@ abstract class AcidDatabase implements SqlDatabase {
 		this.allObs.add(obs);
 		TableAssignmentImpl tabAssignImpl = this.assignedTables.get(tabAssignment);
 		if (tabAssignImpl == null)
-			throw CasketError.UNKNOWN_ASSIGNMENT.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Table assignment", tabAssignment, this.getClass(), this);
 
 		Set<TableAssignmentImpl> assignments = this.observedTables.computeIfAbsent(obs, k -> new HashSet<>());
 		assignments.add(tabAssignImpl);

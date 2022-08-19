@@ -9,14 +9,12 @@ import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
 
 class TabModImpl implements ModulePort, TableModuleFactory {
 
-	private final SqlPort sqlPort = SqlPort.SQL_PORT;
-
 	private ModuleFactoryImpl modFac;
 
 	@Override
 	public synchronized TableModuleFactory tableModuleFactory() {
 		if (this.modFac == null)
-			this.modFac = new ModuleFactoryImpl(this.sqlPort.sqlObjectFactory(), this.sqlPort.sqlDatabaseFactory());
+			this.modFac = new ModuleFactoryImpl(SqlPort.SQL_PORT.sqlObjectFactory(), SqlPort.SQL_PORT.sqlDatabaseFactory());
 		return this;
 	}
 

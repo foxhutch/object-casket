@@ -1,13 +1,13 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
 /**
  * This class represents SQL INTEGERs.
@@ -53,7 +53,7 @@ public class SqlInteger extends SqlObj {
 			y = aDate.getTime();
 		}
 		if ((y == null) && (obj != null)) {
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(StorageClass.INTEGER, obj, obj.getClass());
 		}
 		return Util.compare(this.val, y);
 	}
@@ -74,7 +74,8 @@ public class SqlInteger extends SqlObj {
 	/**
 	 * This operation generates an INTEGER-Object form a Java object.
 	 *
-	 * @param obj - the object to store as an INTEGER.
+	 * @param obj
+	 *            - the object to store as an INTEGER.
 	 * @return the {@link SqlObj}.
 	 * @see StorageClass#INTEGER
 	 */
@@ -86,7 +87,8 @@ public class SqlInteger extends SqlObj {
 	 * This operation generates an INTEGER-Object from the stored value in the
 	 * database.
 	 *
-	 * @param obj - the read value.
+	 * @param obj
+	 *            - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {

@@ -41,7 +41,7 @@ public class PreCompiledUpdate extends PreCompiledStmtImpl {
 	public void setValuesAndExecute(Map<String, SqlObject> values, SqlObject pk) throws CasketException {
 		Util.objectsNotNull(pk);
 		super.setValues(values);
-		this.updateProtoType(this.columns.get(this.pkColumnName), pk); // check if pk-object is correct
+		this.updatePrototype(this.columns.get(this.pkColumnName), pk); // check if pk-object is correct
 		this.execute();
 	}
 

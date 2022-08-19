@@ -1,26 +1,29 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.Driver;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE2;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Configuration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 
-import java.sql.Driver;
-import java.util.*;
-
 class ConfigurationImpl implements Configuration {
 
-	private final ModuleConfiguration config;
-	private final Set<Flag> flags = new HashSet<>();
-
 	private static final Map<Flag, ModuleConfiguration.Flag> flagMap = new EnumMap<>(Configuration.Flag.class);
-
 	static {
 		flagMap.put(Configuration.Flag.CREATE, ModuleConfiguration.Flag.CREATE);
 		flagMap.put(Configuration.Flag.ALTER, ModuleConfiguration.Flag.CREATE);
 		flagMap.put(Configuration.Flag.WRITE, ModuleConfiguration.Flag.MODIFY);
 	}
+
+	private final ModuleConfiguration config;
+	private final Set<Flag> flags = new HashSet<>();
 
 	ConfigurationImpl(ModuleConfiguration config) {
 		this.config = config;
@@ -52,7 +55,7 @@ class ConfigurationImpl implements Configuration {
 
 	@Override
 	public synchronized boolean setFlag(Configuration.Flag... flags) throws CasketException {
-		this.checkNotInUse();
+		this.checkNotInUse(String.format("set flags %s", Arrays.toString(flags)));
 		Set<Flag> newFlags = new HashSet<>(Arrays.asList(flags));
 		newFlags.removeAll(this.flags);
 		Set<ModuleConfiguration.Flag> newModFlags = new HashSet<>();
@@ -72,7 +75,7 @@ class ConfigurationImpl implements Configuration {
 
 	@Override
 	public synchronized boolean removeFlag(Configuration.Flag... flags) throws CasketException {
-		this.checkNotInUse();
+		this.checkNotInUse(String.format("remove flags %s", Arrays.toString(flags)));
 		Set<Flag> remainingFlags = new HashSet<>(this.flags);
 		boolean changed = remainingFlags.removeAll(Arrays.asList(flags));
 		if (!changed)
@@ -92,9 +95,9 @@ class ConfigurationImpl implements Configuration {
 		return flagsToCheck.isEmpty();
 	}
 
-	private void checkNotInUse() throws CasketException {
+	private void checkNotInUse(String action) throws CasketException {
 		if (this.config.inUse())
-			throw CasketError.CONFIGURATION_IN_USE.build();
+			throw CE2.CONFIGURATION_IN_USE.defaultBuild(action, this.config);
 	}
 
 }

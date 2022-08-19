@@ -1,24 +1,20 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectMaps;
-import org.fuchss.objectcasket.tablemodule.port.Row;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE4;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.common.Util;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectMaps;
+import org.fuchss.objectcasket.tablemodule.port.Row;
+
 class RowImpl implements Row {
 
-	private final TableImpl tab;
-	protected Map<String, Object> valueMap = new HashMap<>();
-	protected Map<String, Object> oldValueMap = new HashMap<>();
-
 	private static final Map<Class<?>, Object> NULL_MAP = new HashMap<>();
-
 	static {
 		RowImpl.NULL_MAP.put(Character.TYPE, (char) 0);
 		RowImpl.NULL_MAP.put(Double.TYPE, 0.0);
@@ -29,6 +25,10 @@ class RowImpl implements Row {
 		RowImpl.NULL_MAP.put(Byte.TYPE, (byte) 0);
 		RowImpl.NULL_MAP.put(Boolean.TYPE, false);
 	}
+
+	private final TableImpl tab;
+	protected Map<String, Object> valueMap = new HashMap<>();
+	protected Map<String, Object> oldValueMap = new HashMap<>();
 
 	private boolean isDirty;
 
@@ -50,7 +50,7 @@ class RowImpl implements Row {
 				return (T) (NULL_MAP.get(clazz));
 			return (val);
 		}
-		throw CasketError.INCOMPATIBLE_TYPES.build();
+		throw CE4.INCOMPATIBLE_TYPES.defaultBuild(clazz, this.tab.getColumnType(column), column, this.tab.getTableName());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -63,7 +63,7 @@ class RowImpl implements Row {
 				return (T) (NULL_MAP.get(clazz));
 			return val;
 		}
-		throw CasketError.INCOMPATIBLE_TYPES.build();
+		throw CE4.INCOMPATIBLE_TYPES.defaultBuild(clazz, this.tab.getColumnType(this.tab.pkName()), this.tab.pkName(), this.tab.getTableName());
 	}
 
 	protected synchronized void resetPK() { // roll back if key is auto incremented.
@@ -80,7 +80,7 @@ class RowImpl implements Row {
 		if ((val == null) || SqlObjectMaps.respectBoxing(colType).isAssignableFrom(val.getClass()))
 			this.switchValue(column, val);
 		else
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE4.INCOMPATIBLE_TYPES.defaultBuild(val.getClass(), colType, column, this.tab.getTableName());
 	}
 
 	protected synchronized void done() {
@@ -99,10 +99,10 @@ class RowImpl implements Row {
 	private Class<? extends Serializable> checkColumn(String column) throws CasketException {
 		Objects.requireNonNull(column);
 		if (this.tab.pkName().equals(column))
-			throw CasketError.DONT_CHANGE_PK.build();
+			throw CE2.DONT_CHANGE_PK.defaultBuild(column, this.tab.getTableName());
 		Class<? extends Serializable> colType = this.tab.getColumnType(column);
 		if (colType == null)
-			throw CasketError.WRONG_COLUMN_NAME.build();
+			throw CE2.WRONG_COLUMN_NAME.defaultBuild(column, this.tab.getTableName());
 		return colType;
 	}
 

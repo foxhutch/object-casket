@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE4;
+import org.fuchss.objectcasket.common.CasketException;
 
 class TransactionImpl {
 
@@ -46,7 +46,7 @@ class TransactionImpl {
 
 	protected void rollbackCreated(Object voucher) throws CasketException {
 		if (this.voucher != voucher)
-			throw CasketError.UNKNOWN_TRANSACTION.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Voucher", voucher, this.getClass(), this);
 		this.created.forEach((tab, rows) -> tab.rollback(rows));
 		this.voucher = null;
 	}

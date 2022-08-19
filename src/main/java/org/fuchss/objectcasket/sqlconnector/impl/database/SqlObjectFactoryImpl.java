@@ -1,17 +1,22 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.impl.objects.*;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
-import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlBlob;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlInteger;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlReal;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlText;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
 /**
  * The implementation of the {@link SqlObjectFactory}.
@@ -47,7 +52,7 @@ public class SqlObjectFactoryImpl implements SqlObjectFactory {
 		Function<Object, SqlObj> fctFromJava = SqlObjectFactoryImpl.fromJava.get(type);
 		SqlObj result = fctFromJava.apply(obj);
 		if (result == null)
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(type, obj, obj.getClass());
 		return result;
 	}
 
@@ -55,7 +60,7 @@ public class SqlObjectFactoryImpl implements SqlObjectFactory {
 		Function<Object, SqlObj> fctFromSql = SqlObjectFactoryImpl.fromSql.get(type);
 		SqlObj result = fctFromSql.apply(obj);
 		if (result == null)
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(type, obj, obj.getClass());
 		return result;
 
 	}

@@ -1,13 +1,18 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Base64;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
 /**
  * This class represents SQL BLOBs.
@@ -91,7 +96,7 @@ public class SqlBlob extends SqlObj {
 			y = serializableObject;
 		}
 		if ((y == null) && (obj != null)) {
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(StorageClass.BLOB, obj, obj.getClass());
 		}
 		if (this.val == null)
 			return (y == null ? 0 : -1);
@@ -103,7 +108,8 @@ public class SqlBlob extends SqlObj {
 	/**
 	 * This operation generates a BLOB-Object form a Java object.
 	 *
-	 * @param obj - the object to store as a BLOB.
+	 * @param obj
+	 *            - the object to store as a BLOB.
 	 * @return the {@link SqlObj}.
 	 * @see StorageClass#BLOB
 	 */
@@ -120,7 +126,8 @@ public class SqlBlob extends SqlObj {
 	/**
 	 * This operation generates a BLOB-Object from the stored value in the database.
 	 *
-	 * @param obj - the read value.
+	 * @param obj
+	 *            - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {

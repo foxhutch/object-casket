@@ -3,11 +3,16 @@ package org.fuchss.objectcasket.common;
 import java.io.Serial;
 import java.util.HashMap;
 
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE4;
+
 /**
  * The implementation of {@link IntolerantHashMap}.
  *
- * @param <K> -a type variable for keys.
- * @param <V> -a type variable for values.
+ * @param <K>
+ *            -a type variable for keys.
+ * @param <V>
+ *            -a type variable for values.
  */
 public class IntolerantHashMap<K, V> extends HashMap<K, V> implements IntolerantMap<K, V> {
 
@@ -18,7 +23,7 @@ public class IntolerantHashMap<K, V> extends HashMap<K, V> implements Intolerant
 	public V getIfExists(Object key) throws CasketException {
 		V val = this.get(key);
 		if (val == null) {
-			throw CasketError.UNKNOWN_OBJECT.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Key", key, this.getClass(), this);
 		}
 		return val;
 	}
@@ -27,7 +32,7 @@ public class IntolerantHashMap<K, V> extends HashMap<K, V> implements Intolerant
 	public void putIfNew(K key, V val) throws CasketException {
 		Util.objectsNotNull(key, val);
 		if (this.containsKey(key)) {
-			throw CasketError.UNKNOWN_OBJECT.build();
+			throw CE2.KEY_EXISTS.defaultBuild(key, this);
 		}
 		this.put(key, val);
 	}
@@ -37,7 +42,7 @@ public class IntolerantHashMap<K, V> extends HashMap<K, V> implements Intolerant
 	public K keyExists(Object key) throws CasketException {
 		if (this.containsKey(key))
 			return (K) key;
-		throw CasketError.UNKNOWN_OBJECT.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Key", key, this.getClass(), this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -45,7 +50,7 @@ public class IntolerantHashMap<K, V> extends HashMap<K, V> implements Intolerant
 	public V valueExists(Object value) throws CasketException {
 		if (this.containsValue(value))
 			return (V) value;
-		throw CasketError.UNKNOWN_OBJECT.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Value", value, this.getClass(), this);
 	}
 
 }

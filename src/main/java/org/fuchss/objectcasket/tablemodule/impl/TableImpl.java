@@ -1,16 +1,29 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
-import org.fuchss.objectcasket.sqlconnector.port.*;
+import org.fuchss.objectcasket.sqlconnector.port.DatabaseObserver;
+import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
+import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
 import org.fuchss.objectcasket.tablemodule.port.Row;
 import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
 
 class TableImpl implements Table, DatabaseObserver {
 
@@ -134,7 +147,7 @@ class TableImpl implements Table, DatabaseObserver {
 
 	protected void close() throws CasketException {
 		if (this.closed)
-			throw CasketError.ALREADY_CLOSED.build();
+			throw CE2.ALREADY_CLOSED.defaultBuild("table", this.getTableName());
 		this.closed = true;
 		this.db.detach(this, this.pkTab);
 		this.newRowStmt.close();
@@ -188,7 +201,7 @@ class TableImpl implements Table, DatabaseObserver {
 			args.put(this.pkArg, this.objFac.mkSqlObject(this.dbTab.storageClass(this.pkName), theRow.getPk(this.pkType)));
 			List<SqlObject> keys = this.db.delete(this.deleteRowStmt, args, voucher);
 			if ((keys == null) || (keys.size() != 1) || (this.pkRowMap.get(keys.get(0).get(this.pkType)) != theRow))
-				throw CasketError.UNEXPECTED_DELETE.build();
+				throw CE3.UNEXPECTED_DELETE.defaultBuild(this.getTableName(), row, theRow.getPk(this.pkType));
 			theRow.delete();
 			this.myModule.add2deleted(this, theRow);
 		} catch (CasketException e) {
@@ -313,7 +326,7 @@ class TableImpl implements Table, DatabaseObserver {
 
 	private void checkArgs(Object... args) throws CasketException {
 		if (this.closed)
-			throw CasketError.TABLE_CLOSED.build();
+			throw CE2.ALREADY_CLOSED.defaultBuild("table", this.getTableName());
 		Util.objectsNotNull(args);
 	}
 
@@ -343,6 +356,10 @@ class TableImpl implements Table, DatabaseObserver {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	String getTableName() {
+		return this.dbTab.tableName();
 	}
 
 }

@@ -1,14 +1,19 @@
 package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE2;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.*;
 
 abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 
@@ -34,9 +39,11 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 	 * This operation is used to execute a pre-compiled statement which needs
 	 * arguments.
 	 *
-	 * @param values - {@link SqlArg arguments} and their values.
+	 * @param values
+	 *            - {@link SqlArg arguments} and their values.
 	 * @return the {@link ResultSet}.
-	 * @throws CasketException on error.
+	 * @throws CasketException
+	 *             on error.
 	 */
 	public ResultSet setValuesAndExecute(Map<SqlArg, SqlObject> values) throws CasketException {
 		this.setArgs(values);
@@ -47,7 +54,8 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 	 * This operation is used to execute a pre-compiled statement without arguments.
 	 *
 	 * @return the {@link ResultSet}.
-	 * @throws CasketException on error.
+	 * @throws CasketException
+	 *             on error.
 	 */
 	protected abstract ResultSet execute() throws CasketException;
 
@@ -55,8 +63,8 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 		this.checkArgs(values);
 		this.columnArgs.values().forEach(SqlColumnSignatureImpl::clear);
 		this.exc = null;
-		values.forEach((arg, obj) -> this.updateProtoType(this.columnArgs.get(arg), obj));
-		if (this.exc != null) { // exc maybe set during upDateProtoType
+		values.forEach((arg, obj) -> this.updatePrototype(this.columnArgs.get(arg), obj));
+		if (this.exc != null) { // exc maybe set during upDatePrototype
 			this.columnArgs.values().forEach(SqlColumnSignatureImpl::clear);
 			throw this.exc;
 		}
@@ -69,7 +77,7 @@ abstract class PreCompiledArgStmt extends PreCompiledStmtImpl {
 		neededArgs.removeIf(values::containsKey);
 		if (missingArgs.isEmpty() && neededArgs.isEmpty())
 			return;
-		throw CasketError.INVALID_ARGUMENTS.build();
+		throw CE2.MISSED_ARGUMENTS.defaultBuild(missingArgs, neededArgs);
 	}
 
 }

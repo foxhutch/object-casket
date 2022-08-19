@@ -1,6 +1,13 @@
 package org.fuchss.objectcasket.sqlconnector.api;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
@@ -11,9 +18,6 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.*;
 
 class TestDeleteRow extends PrepareTable {
 
@@ -55,7 +59,7 @@ class TestDeleteRow extends PrepareTable {
 		} catch (CasketException e) {
 			exc = e;
 		}
-		Assertions.assertEquals(CasketError.WRONG_TRANSACTION, exc.error());
+		Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exc.error());
 		Assertions.assertNull(pks);
 
 		exc = null;
@@ -64,7 +68,7 @@ class TestDeleteRow extends PrepareTable {
 		} catch (CasketException e) {
 			exc = e;
 		}
-		Assertions.assertEquals(CasketError.WRONG_TRANSACTION, exc.error());
+		Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exc.error());
 		Assertions.assertNull(pks);
 
 		pks = this.db.delete(delete, args, voucher);

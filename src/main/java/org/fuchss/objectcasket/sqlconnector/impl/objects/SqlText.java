@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 /**
  * This class represents SQL TEXTs.
@@ -44,7 +44,7 @@ public class SqlText extends SqlObj {
 			y = "" + (obj);
 		}
 		if ((y == null) && (obj != null)) {
-			throw CasketError.INCOMPATIBLE_TYPES.build();
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(StorageClass.TEXT, obj, obj.getClass());
 		}
 		return Util.compare(this.val, y);
 	}
@@ -70,7 +70,8 @@ public class SqlText extends SqlObj {
 	/**
 	 * This operation generates TEXT form a Java object.
 	 *
-	 * @param obj - the object to store as TEXT.
+	 * @param obj
+	 *            - the object to store as TEXT.
 	 * @return the {@link SqlObj}.
 	 * @see StorageClass#TEXT
 	 */
@@ -81,7 +82,8 @@ public class SqlText extends SqlObj {
 	/**
 	 * his operation generates a TEXT-Object from the stored value in the database.
 	 *
-	 * @param obj - the read value.
+	 * @param obj
+	 *            - the read value.
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {

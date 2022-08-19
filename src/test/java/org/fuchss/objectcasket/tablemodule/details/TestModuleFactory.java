@@ -1,6 +1,10 @@
 package org.fuchss.objectcasket.tablemodule.details;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import org.fuchss.objectcasket.common.CasketError.CE2;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.tablemodule.ModulePort;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
@@ -10,10 +14,6 @@ import org.fuchss.objectcasket.testutils.Utility;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 class TestModuleFactory {
 
@@ -108,7 +108,7 @@ class TestModuleFactory {
 		try {
 			this.tabFac.closeModule(tabMods[0]);
 		} catch (CasketException exc) {
-			Assertions.assertEquals(exc.getMessage(), CasketError.TABLE_MODULE_ALREADY_CLOSED.build().getMessage());
+			Assertions.assertEquals(CE2.ALREADY_CLOSED, exc.error());
 		}
 
 		Files.deleteIfExists(dbFile.toPath());

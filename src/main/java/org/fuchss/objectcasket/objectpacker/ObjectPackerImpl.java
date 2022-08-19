@@ -10,14 +10,12 @@ import org.fuchss.objectcasket.tablemodule.ModulePort;
 
 class ObjectPackerImpl implements PackerPort, SessionManager {
 
-	private final ModulePort modulePort = ModulePort.PORT;
-
 	private SessionManagerImpl sessionManager;
 
 	@Override
 	public synchronized SessionManager sessionManager() {
 		if (this.sessionManager == null)
-			this.sessionManager = new SessionManagerImpl(this.modulePort.tableModuleFactory());
+			this.sessionManager = new SessionManagerImpl(ModulePort.PORT.tableModuleFactory());
 		return this;
 	}
 

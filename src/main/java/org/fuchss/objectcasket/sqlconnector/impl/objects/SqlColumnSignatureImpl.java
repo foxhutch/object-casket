@@ -1,15 +1,18 @@
 package org.fuchss.objectcasket.sqlconnector.impl.objects;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The implementation of {@link SqlColumnSignature}.
@@ -27,7 +30,8 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 	/**
 	 * This constructor creates a signature from a prototype.
 	 *
-	 * @param ref - the prototype.
+	 * @param ref
+	 *            - the prototype.
 	 */
 	public SqlColumnSignatureImpl(SqlColumnSignatureImpl ref) {
 		this.type = ref.type;
@@ -39,10 +43,14 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 	/**
 	 * This constructor creates a signature from scratch.
 	 *
-	 * @param type         - the referenced SQL type.
-	 * @param javaType     - the target Java type.
-	 * @param defaultValue - the default value as an {@link SqlObj}.
-	 * @throws CasketException on error.
+	 * @param type
+	 *            - the referenced SQL type.
+	 * @param javaType
+	 *            - the target Java type.
+	 * @param defaultValue
+	 *            - the default value as an {@link SqlObj}.
+	 * @throws CasketException
+	 *             on error.
 	 */
 	public SqlColumnSignatureImpl(StorageClass type, Class<? extends Serializable> javaType, SqlObj defaultValue) throws CasketException {
 		Util.objectsNotNull(type, javaType, defaultValue);
@@ -56,7 +64,7 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 	public void setValue(SqlObject value) throws CasketException {
 		Util.objectsNotNull(value);
 		if (value.getStorageClass() != this.type)
-			throw CasketError.INCOMPATIBLE_STORAGE_CLASSES.build();
+			throw CE4.INCOMPATIBLE_STORAGE_CLASSES.defaultBuild(value.getStorageClass(), value.get(Serializable.class), this.type, this);
 		this.value = (SqlObj) value;
 	}
 
@@ -119,7 +127,7 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 			if (clazz.isAssignableFrom(this.javaType))
 				return;
 		}
-		throw CasketError.INVALID_PROTOTYPE.build();
+		throw CE3.INVALID_PROTOTYPE.defaultBuild(StorageClass.POSSIBLE_CLASS_MAP.get(this.type.name()), this.type, this.javaType);
 	}
 
 	private void checkFlags() throws CasketException {
@@ -128,7 +136,7 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 		if (this.flags.contains(Flag.AUTOINCREMENT))
 			this.checkAutoIncrementedPrimaryKey();
 		if (this.flags.contains(Flag.NOT_NULL) && this.defaultValue.isNull() && (!this.flags.contains(Flag.PRIMARY_KEY)))
-			throw CasketError.MISSING_DEFAULT_VALUE.build();
+			throw CE2.MISSING_DEFAULT_VALUE.defaultBuild(this, this.flags);
 	}
 
 	private void checkPrimaryKey() throws CasketException {
@@ -139,7 +147,7 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 		res &= StorageClass.PK_JAVA_TYPES.contains(this.javaType);
 		if (res)
 			return;
-		throw CasketError.WRONG_PK_TYPE.build();
+		throw CE1.WRONG_PK_TYPE.defaultBuild(this);
 	}
 
 	private void checkAutoIncrementedPrimaryKey() throws CasketException {
@@ -150,7 +158,7 @@ public class SqlColumnSignatureImpl implements SqlColumnSignature {
 		res &= StorageClass.AUTO_INCREMENTED_JAVA_TYPES.contains(this.javaType);
 		if (res)
 			return;
-		throw CasketError.MISPLACED_AUTO_INCREMENT.build();
+		throw CE1.MISPLACED_AUTO_INCREMENT.defaultBuild(this);
 	}
 
 	@Override

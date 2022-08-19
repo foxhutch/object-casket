@@ -1,23 +1,36 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
-import org.fuchss.objectcasket.tablemodule.port.TableModule;
-
-import javax.persistence.Column;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
+import org.fuchss.objectcasket.tablemodule.port.TableModule;
 
 @SuppressWarnings("java:S3011")
 class ObjectBuilderCore<T> {
+
+	protected static final String REF_COUNTER = "ref@counter";
+	protected static final String SUPPLIER_COUNTER = "supplier@counter";
+	protected static final String DEFAULT_FK_COLUMN = "id@_%s_%s"; // table name followed by column name
+	protected static final String DEFAULT_JOIN_TABLE = "table@_%s_%s_%s"; // client tab. name followed by client col. name followed by supplier tab. name
 
 	protected SessionImpl session;
 	protected TableModule tabMod;
@@ -38,11 +51,6 @@ class ObjectBuilderCore<T> {
 	protected Map<Field, M2MInfo<T, ?>> m2mFieldInfoMap = new HashMap<>();
 	private final Map<Field, M2OInfo> many2OneFieldInfoMap = new HashMap<>();
 
-	protected static final String REF_COUNTER = "ref@counter";
-	protected static final String SUPPLIER_COUNTER = "supplier@counter";
-	protected static final String DEFAULT_FK_COLUMN = "id@_%s_%s"; // table name followed by column name
-	protected static final String DEFAULT_JOIN_TABLE = "table@_%s_%s_%s"; // client tab. name followed by client col. name followed by supplier tab. name
-
 	protected ObjectBuilderCore(SessionImpl session, TableModule tabMod, ClassInfo<T> info) throws CasketException {
 		try {
 			this.session = session;
@@ -51,7 +59,7 @@ class ObjectBuilderCore<T> {
 			this.myClass = info.myClass;
 			this.init();
 		} catch (NoSuchMethodException | SecurityException exc) {
-			throw CasketError.MISSING_DEFAULT_CONSTRUCTOR.build();
+			throw CE1.MISSING_DEFAULT_CONSTRUCTOR.defaultBuild(info.myClass);
 		}
 	}
 
@@ -91,7 +99,7 @@ class ObjectBuilderCore<T> {
 	private void mkValueField(Field field) throws CasketException {
 		String columnName = ClassInfo.mkColumnName(field, REF_COUNTER, SUPPLIER_COUNTER);
 		if (!this.allColumnNames.add(columnName))
-			throw CasketError.COLUMN_EXISTS.build();
+			throw CE3.COLUMN_EXISTS.defaultBuild(columnName, field, this.myClass);
 		this.valueFields.add(field);
 		this.fieldColumnMap.put(field, columnName);
 		this.fieldTypeMap.put(field, ClassInfo.mkValueType(field));
@@ -102,7 +110,7 @@ class ObjectBuilderCore<T> {
 		ClassInfo<?> theClassInfo = this.session.classInfoMap.getIfExists(field.getType());
 		String columnName = mkFkColumnName(this.session, this.myClass, field, REF_COUNTER, SUPPLIER_COUNTER);
 		if (!this.allColumnNames.add(columnName))
-			throw CasketError.COLUMN_EXISTS.build();
+			throw CE3.COLUMN_EXISTS.defaultBuild(columnName, field, this.myClass);
 		M2OInfo info = this.updateMany2OneInfo(columnName, theClassInfo.getTableName());
 		this.many2OneFields.add(field);
 		this.many2OneFieldInfoMap.put(field, info);
@@ -126,7 +134,7 @@ class ObjectBuilderCore<T> {
 		M2OInfo info = null;
 		Set<M2OInfo> relevantInfos = this.session.getObjects(M2OInfo.class, args);
 		if (!relevantInfos.isEmpty() && !(info = relevantInfos.iterator().next()).getSupplierTableName().equals(fkTableName))
-			throw CasketError.WRONG_CLASS_IN_MANY_TO_ONE_DECLARATION.build();
+			throw CE3.WRONG_CLASS_IN_MANY_TO_X_DECLARATION.defaultBuild(info.getSupplierTableName(), columnName, this.myClass);
 		if (relevantInfos.isEmpty()) {
 			this.session.persist(info = new M2OInfo(this.tableName, columnName, fkTableName));
 		}
@@ -137,7 +145,7 @@ class ObjectBuilderCore<T> {
 	private <S> void mkM2MField(Field field) throws CasketException {
 		Type fieldType = field.getGenericType();
 		if (!fieldType.getTypeName().startsWith(Set.class.getTypeName()))
-			throw CasketError.WRONG_CONTAINER_IN_MANY_TO_MANY_DECLARATION.build();
+			throw CE3.WRONG_CONTAINER_IN_MANY_TO_MANY_DECLARATION.defaultBuild(fieldType.getTypeName(), field, this.myClass);
 		Class<S> remoteClass = (Class<S>) ((ParameterizedType) fieldType).getActualTypeArguments()[0];
 		ClassInfo<S> remoteClassInfo = (ClassInfo<S>) this.session.classInfoMap.getIfExists(remoteClass);
 		M2MInfo<T, ?> info = this.updateMany2ManyInfo(field, remoteClassInfo);
@@ -162,15 +170,17 @@ class ObjectBuilderCore<T> {
 	@SuppressWarnings("unchecked")
 	private <S> M2MInfo<T, S> loadOrPersist(ClassInfo<S> classInfo, String columnName, String joinTableName, Set<Exp> args) throws CasketException {
 		M2MInfo<T, S> info = null;
-		@SuppressWarnings("rawtypes") Set<M2MInfo> relevantInfos = this.session.getObjects(M2MInfo.class, args);
+		@SuppressWarnings("rawtypes")
+		Set<M2MInfo> relevantInfos = this.session.getObjects(M2MInfo.class, args);
 		if (!relevantInfos.isEmpty() && !(info = relevantInfos.iterator().next()).getSupplierTableName().equals(classInfo.getTableName()) && !info.getJoinTableName().equals(joinTableName))
-			throw CasketError.WRONG_CLASS_IN_MANY_TO_MANY_DECLARATION.build();
+			throw CE3.WRONG_CLASS_IN_MANY_TO_X_DECLARATION.defaultBuild(info.getSupplierTableName(), columnName, this.myClass);
 
 		args.clear();
 		args.add(new Exp(M2MInfo.FIELD_JOIN_TABLE_NAME, "==", joinTableName));
-		@SuppressWarnings("rawtypes") Set<M2MInfo> controlInfos = this.session.getObjects(M2MInfo.class, args);
+		@SuppressWarnings("rawtypes")
+		Set<M2MInfo> controlInfos = this.session.getObjects(M2MInfo.class, args);
 		if (relevantInfos.size() != controlInfos.size())
-			throw CasketError.WRONG_JOIN_TABLE_IN_MANY_TO_ONE_DECLARATION.build();
+			throw CE3.WRONG_CLASS_IN_MANY_TO_X_DECLARATION.defaultBuild(joinTableName, columnName, this.myClass);
 
 		if (relevantInfos.isEmpty()) {
 			this.session.persist(info = new M2MInfo<>(this.tableName, columnName, classInfo.getTableName(), joinTableName));
@@ -187,7 +197,7 @@ class ObjectBuilderCore<T> {
 		String fkColumnName = null;
 		fkColumnName = ((column == null) || (fkColumnName = column.name()).isEmpty()) ? defaultName : fkColumnName;
 		if (Arrays.asList(prohibited).contains(fkColumnName))
-			throw CasketError.INVALID_NAME.build();
+			throw CE1.INVALID_NAME.defaultBuild(fkColumnName);
 		return fkColumnName;
 	}
 
@@ -203,7 +213,7 @@ class ObjectBuilderCore<T> {
 		String joinTableName = null;
 		joinTableName = ((joinTable == null) || (joinTableName = joinTable.name()).isEmpty()) ? defaultName : joinTableName;
 		if (Arrays.asList(prohibited).contains(joinTableName))
-			throw CasketError.INVALID_NAME.build();
+			throw CE1.INVALID_NAME.defaultBuild(joinTableName);
 		return joinTableName;
 	}
 

@@ -4,6 +4,8 @@ import java.io.Serial;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.fuchss.objectcasket.common.CasketError.CE0;
+
 /**
  * The common Exception class for the object-casket system.
  *
@@ -17,15 +19,15 @@ public class CasketException extends Exception {
 	/**
 	 * The underlying error code.
 	 */
-	private final CasketError error;
+	private final transient CasketError error;
 
 	private CasketException(Throwable cause) {
 		super(cause);
-		this.error = CasketError.EXTERNAL_ERROR;
+		this.error = CE0.EXTERNAL_ERROR;
 	}
 
 	CasketException(CasketError error, String msg) {
-		super(msg);
+		super(String.format("Object Casket Error: %s%n\tReason: %s)", error.name(), msg));
 		this.error = error;
 		StackTraceElement[] stack = this.getStackTrace();
 		this.setStackTrace(Arrays.copyOfRange(stack, 1, stack.length));
@@ -34,7 +36,8 @@ public class CasketException extends Exception {
 	/**
 	 * Converts an arbitrary Exception into an CasketException.
 	 *
-	 * @param exc - the exception to convert.
+	 * @param exc
+	 *            - the exception to convert.
 	 * @return the CasketException.
 	 */
 	public static CasketException build(Exception exc) {

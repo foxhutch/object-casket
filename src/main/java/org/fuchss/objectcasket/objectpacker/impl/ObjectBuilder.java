@@ -1,6 +1,20 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.port.Session.Exp;
 import org.fuchss.objectcasket.tablemodule.port.Row;
@@ -8,23 +22,17 @@ import org.fuchss.objectcasket.tablemodule.port.Table;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableObserver;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.Map.Entry;
-
 @SuppressWarnings("java:S3011")
 class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
+
+	private static final Class<? extends Serializable> REF_COUNTER_TYPE = Integer.TYPE;
+	private static final Class<? extends Serializable> SUPPLIER_COUNTER_TYPE = Integer.TYPE;
 
 	private Table objectTable;
 
 	Map<T, Row> objectRowMap = new HashMap<>();
 	private final Map<Row, T> rowObjectMap = new HashMap<>();
 	private final Map<Serializable, T> pkToObjectMap = new HashMap<>();
-
-	private static final Class<? extends Serializable> REF_COUNTER_TYPE = Integer.TYPE;
-	private static final Class<? extends Serializable> SUPPLIER_COUNTER_TYPE = Integer.TYPE;
 
 	synchronized T getObjectByPk(Serializable pk) {
 		return this.pkToObjectMap.get(pk);
@@ -107,7 +115,7 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 		Map<String, List<Exp>> attrExpSetMap = new HashMap<>();
 		for (Exp exp : args) {
 			if ((exp.fieldName() == null) || (exp.op() == null) || exp.fieldName().isBlank() || exp.op().isBlank())
-				throw CasketError.EMPTY_EXPRESSION.build();
+				throw CE1.EMPTY_EXPRESSION.defaultBuild(exp);
 			String attr = exp.fieldName().trim();
 			List<Exp> attrSet = attrExpSetMap.computeIfAbsent(attr, k -> new ArrayList<>());
 			attrSet.add(exp);
@@ -121,8 +129,9 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 			for (Exp exp : expList)
 				filter.add(new Table.Exp(column, str2CMP(exp.op().trim()), exp.value()));
 		}
-		if (filter.size() != args.size())
-			throw CasketError.MISSING_OPERATOR.build();
+		if (filter.size() != args.size()) {
+			throw CE3.MISSING_OPERATOR.defaultBuild(args, this.valueFields, this.classInfo.myClass);
+		}
 		return filter;
 	}
 
@@ -359,7 +368,7 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 
 	private Row getRowIfExists(T obj) throws CasketException {
 		if (!this.objectRowMap.containsKey(obj))
-			throw CasketError.UNKNOWN_OBJECT.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Object", obj, this.getClass(), this);
 		return this.objectRowMap.get(obj);
 	}
 
@@ -407,13 +416,13 @@ class ObjectBuilder<T> extends ObjectBuilderCore<T> implements TableObserver {
 
 	private static Table.TabCMP str2CMP(String sCmp) throws CasketException {
 		return switch (sCmp) {
-			case "<" -> Table.TabCMP.LESS;
-			case ">" -> Table.TabCMP.GREATER;
-			case "==", "=" -> Table.TabCMP.EQUAL;
-			case "<=", "=<" -> Table.TabCMP.LESSEQ;
-			case ">=", "=>" -> Table.TabCMP.GREATEREQ;
-			case "!=", "<>" -> Table.TabCMP.UNEQUAL;
-			default -> throw CasketError.UNKNOWN_OPERATOR.build();
+		case "<" -> Table.TabCMP.LESS;
+		case ">" -> Table.TabCMP.GREATER;
+		case "==", "=" -> Table.TabCMP.EQUAL;
+		case "<=", "=<" -> Table.TabCMP.LESSEQ;
+		case ">=", "=>" -> Table.TabCMP.GREATEREQ;
+		case "!=", "<>" -> Table.TabCMP.UNEQUAL;
+		default -> throw CE1.UNKNOWN_OPERATOR.defaultBuild(sCmp);
 		};
 	}
 

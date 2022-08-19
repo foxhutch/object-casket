@@ -1,6 +1,19 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE3;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlArgImpl;
@@ -9,15 +22,13 @@ import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledDelete;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledSelect;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledUpdate;
-import org.fuchss.objectcasket.sqlconnector.port.*;
+import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.Map.Entry;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
+import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
+import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
+import org.fuchss.objectcasket.sqlconnector.port.TableAssignment;
 
 class SqlDatabaseImpl extends SimpleDatabase {
 
@@ -28,12 +39,10 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	@Override
 	public SqlArg mkSqlArg(TableAssignment tabAssignment, String columnName, CMP cmp) throws CasketException {
 		Util.objectsNotNull(tabAssignment, columnName, cmp);
-		TableAssignmentImpl assignImpl = this.assignedTables.get(tabAssignment);
-		if (assignImpl == null)
-			throw CasketError.UNKNOWN_ASSIGNMENT.build();
+		TableAssignmentImpl assignImpl = this.getTableAssignment(tabAssignment);
 		SqlColumnSignatureImpl proto = assignImpl.getColSigMap().get(columnName);
 		if (proto == null)
-			throw CasketError.UNKNOWN_COLUMN.build();
+			throw CE3.UNKNOWN_COLUMN.defaultBuild(proto, columnName, assignImpl.tableName());
 		return new SqlArgImpl(tabAssignment.tableName(), columnName, proto, cmp);
 	}
 
@@ -75,9 +84,7 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	public PreCompiledStatement mkSelectStmt(TableAssignment tabAssignment, Set<SqlArg> args, SqlArg.OP op) throws CasketException {
 		Util.objectsNotNull(tabAssignment, args, op);
 
-		TableAssignmentImpl assignImpl = this.assignedTables.get(tabAssignment);
-		if (assignImpl == null)
-			throw CasketError.UNKNOWN_ASSIGNMENT.build();
+		TableAssignmentImpl assignImpl = this.getTableAssignment(tabAssignment);
 		this.checkArgs(assignImpl, args);
 		String tableName = assignImpl.tableName();
 		try {
@@ -124,9 +131,7 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	public PreCompiledStatement mkDeleteStmt(TableAssignment tabAssignment, Set<SqlArg> args, SqlArg.OP op) throws CasketException {
 		Util.objectsNotNull(tabAssignment, args, op);
 
-		TableAssignmentImpl assignImpl = this.assignedTables.get(tabAssignment);
-		if (assignImpl == null)
-			throw CasketError.UNKNOWN_ASSIGNMENT.build();
+		TableAssignmentImpl assignImpl = this.getTableAssignment(tabAssignment);
 		this.checkArgs(assignImpl, args);
 		String tableName = assignImpl.tableName();
 		try {
@@ -158,10 +163,7 @@ class SqlDatabaseImpl extends SimpleDatabase {
 	@Override
 	public PreCompiledStatement mkUpdateRowStmt(TableAssignment tabAssignment, Set<String> columns) throws CasketException {
 		Util.objectsNotNull(tabAssignment);
-		TableAssignmentImpl tabAssignImpl = this.assignedTables.get(tabAssignment);
-		if (tabAssignImpl == null)
-			throw CasketError.UNKNOWN_ASSIGNMENT.build();
-
+		TableAssignmentImpl tabAssignImpl = this.getTableAssignment(tabAssignment);
 		String tableName = tabAssignImpl.tableName();
 		String pkName = tabAssignImpl.pkName();
 
@@ -169,7 +171,7 @@ class SqlDatabaseImpl extends SimpleDatabase {
 		columnNames.remove(pkName);
 
 		if (columnNames.isEmpty() || !tabAssignImpl.getColSigMap().keySet().containsAll(columnNames))
-			throw CasketError.MISSING_COLUMN.build();
+			throw CE3.MISSING_COLUMN.defaultBuild(columnNames, tabAssignment, tabAssignImpl.getColSigMap().keySet());
 		try {
 			PreparedStatement prepStmt = this.connection.prepareStatement(this.sqlCmd.update(tableName, columnNames, pkName));
 			return new PreCompiledUpdate(prepStmt, tableName, pkName, columnNames, tabAssignImpl.getColSigMap());
@@ -182,13 +184,21 @@ class SqlDatabaseImpl extends SimpleDatabase {
 		for (SqlArg arg : args) {
 			SqlColumnSignatureImpl proto = ((SqlArgImpl) arg).proto();
 			if (!assignImpl.getColSigMap().get(arg.columnName()).equals(proto))
-				throw CasketError.INVALID_ARGUMENTS.build();
+				throw CE4.INVALID_ARGUMENTS.defaultBuild(assignImpl.getColSigMap().get(arg.columnName()), proto, arg.columnName(), assignImpl);
 		}
 	}
 
 	@Override
 	protected SqlDatabase getSqlDatabase() {
 		return this;
+	}
+
+	private TableAssignmentImpl getTableAssignment(TableAssignment tabAssignment) throws CasketException {
+		TableAssignmentImpl assignImpl = this.assignedTables.get(tabAssignment);
+		if (assignImpl == null)
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Table assignment", tabAssignment, this.getClass(), this);
+		return assignImpl;
+
 	}
 
 }

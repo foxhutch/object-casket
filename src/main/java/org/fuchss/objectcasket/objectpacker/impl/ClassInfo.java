@@ -13,7 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import org.fuchss.objectcasket.common.CasketError;
+import org.fuchss.objectcasket.common.CasketError.CE1;
 import org.fuchss.objectcasket.common.CasketException;
 
 @SuppressWarnings("java:S3011")
@@ -58,7 +58,7 @@ class ClassInfo<T> {
 				return;
 			}
 		}
-		throw CasketError.MISSING_PK.build();
+		throw CE1.MISSING_PK.defaultBuild(this.myClass);
 
 	}
 
@@ -66,7 +66,7 @@ class ClassInfo<T> {
 	static Class<Serializable> mkValueType(Field field) throws CasketException {
 		Class<?> type = field.getType();
 		if (!type.isPrimitive() && !Serializable.class.isAssignableFrom(type))
-			throw CasketError.NON_SERIALIZABLE_FIELD.build();
+			throw CE1.NON_SERIALIZABLE_FIELD.defaultBuild(field);
 		return (Class<Serializable>) type;
 	}
 
@@ -76,7 +76,7 @@ class ClassInfo<T> {
 		String name = null;
 		name = ((column == null) || (name = column.name()).isEmpty()) ? field.getName() : name;
 		if (Arrays.asList(prohibited).contains(name))
-			throw CasketError.INVALID_NAME.build();
+			throw CE1.INVALID_NAME.defaultBuild(name);
 		return name;
 	}
 

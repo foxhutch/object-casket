@@ -1,6 +1,12 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE2;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
@@ -9,11 +15,6 @@ import org.fuchss.objectcasket.sqlconnector.port.SqlObjectFactory;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 import org.fuchss.objectcasket.tablemodule.port.TableModule;
 import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The implementation of the {@link TableModuleFactory}.
@@ -30,8 +31,10 @@ public class ModuleFactoryImpl implements TableModuleFactory {
 	/**
 	 * The constructor.
 	 *
-	 * @param objFac - the assigned {@link SqlObjectFactory}.
-	 * @param dbFac  - the assigned {@link SqlDatabaseFactory}.
+	 * @param objFac
+	 *            - the assigned {@link SqlObjectFactory}.
+	 * @param dbFac
+	 *            - the assigned {@link SqlDatabaseFactory}.
 	 */
 	public ModuleFactoryImpl(SqlObjectFactory objFac, SqlDatabaseFactory dbFac) {
 		this.objFac = objFac;
@@ -42,7 +45,7 @@ public class ModuleFactoryImpl implements TableModuleFactory {
 	public synchronized void closeModule(TableModule tabMod) throws CasketException {
 		TableModuleImpl tabModImpl = this.getTabMod(tabMod);
 		if (tabModImpl.isClosed())
-			throw CasketError.TABLE_MODULE_ALREADY_CLOSED.build();
+			throw CE2.ALREADY_CLOSED.defaultBuild("table module", tabModImpl);
 		ModuleConfiguration config = tabModImpl.config();
 		Set<TableModuleImpl> allTabMods = this.configModuleMap.get(config);
 		boolean changed = allTabMods.remove(tabModImpl);
@@ -99,13 +102,13 @@ public class ModuleFactoryImpl implements TableModuleFactory {
 	private ModuleConfigurationImpl getConfig(ModuleConfiguration config) throws CasketException {
 		if (config instanceof ModuleConfigurationImpl configImpl)
 			return configImpl;
-		throw CasketError.UNKNOWN_CONFIGURATION.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Configuration", config, this.getClass(), this);
 	}
 
 	private TableModuleImpl getTabMod(TableModule tabMod) throws CasketException {
 		if (tabMod instanceof TableModuleImpl tabModImpl)
 			return tabModImpl;
-		throw CasketError.UNKNOWN_TABLE_MODULE.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Table module", tabMod, this.getClass(), this);
 	}
 
 }

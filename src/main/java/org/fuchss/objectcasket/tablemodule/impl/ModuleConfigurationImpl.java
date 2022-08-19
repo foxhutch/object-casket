@@ -1,14 +1,15 @@
 package org.fuchss.objectcasket.tablemodule.impl;
 
+import java.sql.Driver;
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.tablemodule.port.ModuleConfiguration;
 
-import java.sql.Driver;
-import java.util.EnumMap;
-import java.util.Map;
-
+@SuppressWarnings("java:S6206") // identity not equality is needed!
 class ModuleConfigurationImpl implements ModuleConfiguration {
 
 	private final DBConfiguration config;

@@ -1,11 +1,5 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
-import org.fuchss.objectcasket.common.CasketError;
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
-import org.fuchss.objectcasket.sqlconnector.port.SqlDatabaseFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -13,6 +7,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE4;
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.sqlconnector.port.DBConfiguration;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabase;
+import org.fuchss.objectcasket.sqlconnector.port.SqlDatabaseFactory;
 
 /**
  * The implementation of the {@link SqlDatabaseFactory}.
@@ -29,7 +30,8 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 	/**
 	 * The constructor.
 	 *
-	 * @param sqlObjectFactory - the {@link SqlObjectFactoryImpl object factory} to use.
+	 * @param sqlObjectFactory
+	 *            - the {@link SqlObjectFactoryImpl object factory} to use.
 	 */
 	public SqlDatabaseFactoryImpl(SqlObjectFactoryImpl sqlObjectFactory) {
 		this.sqlObjectFactory = sqlObjectFactory;
@@ -45,7 +47,7 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 		SqlDatabaseImpl db = null;
 		ConfigurationImpl configImpl = this.getConfig(config);
 		if (!configImpl.isComplete())
-			throw CasketError.INCOMPLETE_CONFIGURATION.build();
+			throw CE1.INCOMPLETE_CONFIGURATION.defaultBuild(config);
 		if (configImpl.isInUse())
 			db = this.configDbMap.get(configImpl);
 		else {
@@ -62,7 +64,7 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 	public void closeDatabase(SqlDatabase db) throws CasketException {
 		SqlDatabaseImpl dbImpl = this.dbMap.get(db);
 		if (dbImpl == null)
-			throw CasketError.UNKNOWN_DATABASE.build();
+			throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Database", db, this.getClass(), this);
 		dbImpl.close();
 		ConfigurationImpl configImpl = this.dbConfigMap.get(dbImpl);
 		this.dbMap.remove(db, dbImpl);
@@ -93,7 +95,7 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 			try {
 				file.getParentFile().mkdirs();
 				if (!file.createNewFile())
-					throw CasketError.CREATION_OR_MODIFICATION_FAILED.build();
+					throw CE1.FILE_ALREADY_EXISTS.defaultBuild(file);
 			} catch (IOException exc) {
 				throw CasketException.build(exc);
 			}
@@ -105,7 +107,7 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 			return true;
 		}
 		if (file.exists()) {
-			throw CasketError.UNKNOWN_URI.build();
+			throw CE1.UNSUPPORTED_URI.defaultBuild(file);
 		}
 		return false;
 	}
@@ -113,7 +115,7 @@ public class SqlDatabaseFactoryImpl implements SqlDatabaseFactory {
 	private ConfigurationImpl getConfig(DBConfiguration config) throws CasketException {
 		if (config instanceof ConfigurationImpl configImpl)
 			return configImpl;
-		throw CasketError.UNKNOWN_CONFIGURATION.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Configuration", config, this.getClass(), this);
 	}
 
 }

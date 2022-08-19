@@ -1,11 +1,16 @@
 package org.fuchss.objectcasket.objectpacker.port;
 
-import org.fuchss.objectcasket.common.CasketException;
-import org.fuchss.objectcasket.objectpacker.PackerPort;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
+import org.fuchss.objectcasket.common.CasketException;
+import org.fuchss.objectcasket.objectpacker.PackerPort;
 
 /**
  * The session manager is the central object to work with the Object Casket
@@ -38,9 +43,11 @@ public interface SessionManager {
 	 * This process creates a new and empty domain as well as an empty database
 	 * according to the{@link Configuration}.
 	 *
-	 * @param config - the configuration.
+	 * @param config
+	 *            - the configuration.
 	 * @return the domain.
-	 * @throws CasketException if configuration is invalid or the database already exists.
+	 * @throws CasketException
+	 *             if configuration is invalid or the database already exists.
 	 */
 	Domain mkDomain(Configuration config) throws CasketException;
 
@@ -48,9 +55,11 @@ public interface SessionManager {
 	 * This operation opens an existing domain (database). So the domain can be
 	 * modified.
 	 *
-	 * @param config - the configuration.
+	 * @param config
+	 *            - the configuration.
 	 * @return the domain.
-	 * @throws CasketException if configuration is invalid or the database is already in use.
+	 * @throws CasketException
+	 *             if configuration is invalid or the database is already in use.
 	 */
 	Domain editDomain(Configuration config) throws CasketException;
 
@@ -102,7 +111,8 @@ public interface SessionManager {
 	 * stored objects, objects from associated classes.
 	 *
 	 * <p>
-	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a non-navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
+	 * {@link ManyToOne @ManyToOne} to access a single object. This represents a
+	 * non-navigable UML-like many-to-one association. <code> A n-x--->1 B </code>
 	 *
 	 * <p>
 	 * {@link ManyToMany @ManyToMany} to access multiple objects. This represents a
@@ -151,11 +161,15 @@ public interface SessionManager {
 	 * }
 	 * </pre>
 	 *
-	 * @param domain - the domain.
-	 * @param clazz  - the classes.
-	 * @throws CasketException      if a class is invalid, a session is running or the configuration
-	 *                              has not enough rights.
-	 * @throws InterruptedException if interrupted.
+	 * @param domain
+	 *            - the domain.
+	 * @param clazz
+	 *            - the classes.
+	 * @throws CasketException
+	 *             if a class is invalid, a session is running or the configuration
+	 *             has not enough rights.
+	 * @throws InterruptedException
+	 *             if interrupted.
 	 * @see SessionManager#editDomain(Configuration)
 	 * @see SessionManager#mkDomain(Configuration)
 	 */
@@ -168,10 +182,13 @@ public interface SessionManager {
 	 * class definition were adopted. Be careful this operation cannot be undone.
 	 * Maybe you are lucky if you get an exception maybe not.
 	 *
-	 * @param domain - the domain.
-	 * @param clazz  - the classes to modify.
-	 * @throws CasketException if class is invalid, did not exist, is in use, or the session
-	 *                         has not enough rights.
+	 * @param domain
+	 *            - the domain.
+	 * @param clazz
+	 *            - the classes to modify.
+	 * @throws CasketException
+	 *             if class is invalid, did not exist, is in use, or the session has
+	 *             not enough rights.
 	 */
 	default void alterEntity(Domain domain, Class<?>... clazz) throws CasketException {
 		throw new UnsupportedOperationException("alterEntity not yet realized");
@@ -181,9 +198,12 @@ public interface SessionManager {
 	 * This finalizes the building or modification process of the domain. The
 	 * assigned database can now be use in a {@link Session}.
 	 *
-	 * @param domain - the domain to finalize.
-	 * @throws CasketException      if the domain is invalid or already finalized.
-	 * @throws InterruptedException if interrupted.
+	 * @param domain
+	 *            - the domain to finalize.
+	 * @throws CasketException
+	 *             if the domain is invalid or already finalized.
+	 * @throws InterruptedException
+	 *             if interrupted.
 	 */
 	void finalizeDomain(Domain domain) throws CasketException, InterruptedException;
 
@@ -193,35 +213,45 @@ public interface SessionManager {
 	 * session} if the flag {@link Configuration.Flag#SESSIONS} is set, otherwise
 	 * one will get the same session (object identity).
 	 *
-	 * @param config - the configuration.
+	 * @param config
+	 *            - the configuration.
 	 * @return the session.
-	 * @throws CasketException if configuration is invalid.
+	 * @throws CasketException
+	 *             if configuration is invalid.
 	 */
 	Session session(Configuration config) throws CasketException;
 
 	/**
 	 * Terminate a session.
 	 *
-	 * @param session - the session.
-	 * @throws CasketException      on error.
-	 * @throws InterruptedException if interrupted.
+	 * @param session
+	 *            - the session.
+	 * @throws CasketException
+	 *             on error.
+	 * @throws InterruptedException
+	 *             if interrupted.
 	 */
 	void terminate(Session session) throws CasketException, InterruptedException;
 
 	/**
 	 * Terminate all sessions based on the specific configuration.
 	 *
-	 * @param config - the configuration.
-	 * @throws CasketException      on error.
-	 * @throws InterruptedException if interrupted.
+	 * @param config
+	 *            - the configuration.
+	 * @throws CasketException
+	 *             on error.
+	 * @throws InterruptedException
+	 *             if interrupted.
 	 */
 	void terminateAll(Configuration config) throws CasketException, InterruptedException;
 
 	/**
 	 * Terminate all sessions independently.
 	 *
-	 * @throws CasketException      on error.
-	 * @throws InterruptedException if interrupted.
+	 * @throws CasketException
+	 *             on error.
+	 * @throws InterruptedException
+	 *             if interrupted.
 	 */
 	void terminateAll() throws CasketException, InterruptedException;
 }

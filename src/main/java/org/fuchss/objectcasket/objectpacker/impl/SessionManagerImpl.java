@@ -1,6 +1,10 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE1;
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.IntolerantHashMap;
 import org.fuchss.objectcasket.common.IntolerantMap;
@@ -9,9 +13,6 @@ import org.fuchss.objectcasket.objectpacker.port.Domain;
 import org.fuchss.objectcasket.objectpacker.port.Session;
 import org.fuchss.objectcasket.objectpacker.port.SessionManager;
 import org.fuchss.objectcasket.tablemodule.port.TableModuleFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The implementation of the {@link SessionManager}.
@@ -29,7 +30,8 @@ public class SessionManagerImpl implements SessionManager {
 	/**
 	 * The constructor.
 	 *
-	 * @param tableModuleFactory - the assigned {@link TableModuleFactory}.
+	 * @param tableModuleFactory
+	 *            - the assigned {@link TableModuleFactory}.
 	 */
 	public SessionManagerImpl(TableModuleFactory tableModuleFactory) {
 		this.modFac = tableModuleFactory;
@@ -54,9 +56,8 @@ public class SessionManagerImpl implements SessionManager {
 
 	private Domain mkOrEditDomain(boolean edit, Configuration config) throws CasketException {
 		ConfigurationImpl configImpl = this.sessionMap.keyExists(config);
-		if (!this.sessionMap.getIfExists(configImpl).isEmpty() || this.domainConfigMap.containsValue(configImpl)) {
-			throw CasketError.OTHER_SESSION_EXISTS.build();
-		}
+		if (!this.sessionMap.getIfExists(configImpl).isEmpty() || this.domainConfigMap.containsValue(configImpl))
+			throw CE1.OTHER_SESSION_EXISTS.defaultBuild(config);
 		SessionImpl domainBuilder = (edit) //
 				? SessionImpl.editDomainBuilder(this.modFac, configImpl) //
 				: SessionImpl.mkDomainBuilder(this.modFac, configImpl);
@@ -91,7 +92,7 @@ public class SessionManagerImpl implements SessionManager {
 	public Session session(Configuration config) throws CasketException {
 		Set<SessionImpl> sessions = this.sessionMap.getIfExists(config);
 		if (this.domainConfigMap.containsValue(config)) {
-			throw CasketError.DOMAIN_BUILDING_IN_PROGRESS.build();
+			throw CE1.DOMAIN_BUILDING_IN_PROGRESS.defaultBuild(config);
 		}
 		if (sessions.isEmpty() || config.containsAll(Configuration.Flag.SESSIONS)) {
 			SessionImpl session = SessionImpl.createSession(this.modFac, (ConfigurationImpl) config);
@@ -128,7 +129,7 @@ public class SessionManagerImpl implements SessionManager {
 	private SessionImpl getSession(Session session) throws CasketException {
 		if ((session instanceof SessionImpl sessionImpl) && this.sessionMap.getIfExists(sessionImpl.config).contains(session))
 			return sessionImpl;
-		throw CasketError.UNKNOWN_SESSION.build();
+		throw CE4.UNKNOWN_MANAGED_OBJECT.defaultBuild("Session", session, this.getClass(), this);
 	}
 
 	private static class DomainImpl implements Domain {

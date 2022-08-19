@@ -1,6 +1,13 @@
 package org.fuchss.objectcasket.sqlconnector.api;
 
-import org.fuchss.objectcasket.common.CasketError;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.fuchss.objectcasket.common.CasketError.CE4;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
@@ -11,9 +18,6 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.*;
 
 class TestRollback extends PrepareTable {
 
@@ -54,7 +58,7 @@ class TestRollback extends PrepareTable {
 		} catch (CasketException e) {
 			exc = e;
 		}
-		Assertions.assertEquals(CasketError.WRONG_TRANSACTION, exc.error());
+		Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exc.error());
 
 		this.db.delete(delete, args, voucher);
 		result = this.db.select(select, args, voucher);
@@ -102,7 +106,7 @@ class TestRollback extends PrepareTable {
 			exc = e;
 			this.db.rollback(voucher);
 		}
-		Assertions.assertEquals(CasketError.WRONG_TRANSACTION, exc.error());
+		Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exc.error());
 
 		exc = null;
 		voucher = this.db.beginTransaction(false);
@@ -111,7 +115,7 @@ class TestRollback extends PrepareTable {
 		} catch (CasketException e) {
 			exc = e;
 		}
-		Assertions.assertEquals(CasketError.WRONG_TRANSACTION, exc.error());
+		Assertions.assertEquals(CE4.UNKNOWN_MANAGED_OBJECT, exc.error());
 
 		result = this.db.select(select, args, voucher);
 		this.db.endTransaction(voucher);
