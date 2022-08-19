@@ -13,7 +13,7 @@ import org.fuchss.objectcasket.tablemodule.port.Table;
 public interface CasketError {
 
 	/**
-	 * Returns the name of the error colde.
+	 * Returns the name of the error code.
 	 *
 	 * @return the name of this error code.
 	 */
@@ -68,7 +68,7 @@ public interface CasketError {
 		/**
 		 * The process of building a domain is not yet finished.
 		 */
-		DOMAIN_BUILDING_IN_PROGRESS("There is a non finalized open domain for configuration (%s). This should be finalized first!"),
+		DOMAIN_BUILDING_IN_PROGRESS("There is a non-finalized open domain for configuration (%s). This should be finalized first!"),
 
 		/**
 		 * There is no expression to evaluate.
@@ -76,14 +76,14 @@ public interface CasketError {
 		EMPTY_EXPRESSION("The expression (%s) has either no operand or no assigned field!"),
 
 		/**
-		 * The named file already exists an cannot be created.
+		 * The named file already exists and cannot be created.
 		 */
 		FILE_ALREADY_EXISTS("The file (%s) already exists!"),
 
 		/**
 		 * Some mandatory parameters are missed in the configuration.
 		 */
-		INCOMPLETE_CONFIGURATION("The configuration (%s) is missing either some driver information, the URI, an user name or a password!"),
+		INCOMPLETE_CONFIGURATION("The configuration (%s) is missing either some driver information, the URI, a username or a password!"),
 
 		/**
 		 * The set of column signatures contains unexpected objects.
@@ -165,7 +165,7 @@ public interface CasketError {
 		TRANSACTION_RUNNING("Impossible to initiate a new transaction. Another transaction (%s) is already running!"),
 
 		/**
-		 * Some literals used cannot be mapped to an {@link Table.TabCMP operator}.
+		 * Some used literals cannot be mapped to an {@link Table.TabCMP operator}.
 		 */
 		UNKNOWN_OPERATOR("Unknown operator (%s)!"),
 
@@ -227,7 +227,7 @@ public interface CasketError {
 		DONT_CHANGE_PK("Object Casket does not allow to change a primary key value - related column is (%s) in table (%s)!"),
 
 		/**
-		 * The key exist so the value cannot stored in this map.
+		 * The key exists so the value cannot be stored in this map.
 		 */
 		KEY_EXISTS("Key (%s) is already stored in map (%s)!"),
 
