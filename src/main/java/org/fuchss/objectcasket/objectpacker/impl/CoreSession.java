@@ -99,10 +99,11 @@ abstract class CoreSession implements Session {
 		Util.objectsNotNull(obj);
 		@SuppressWarnings("unchecked")
 		ObjectBuilder<T> objFactory = (ObjectBuilder<T>) this.objectFactoryMap.getIfExists(obj.getClass());
-		if (objFactory.hasClients(obj) || objFactory.isClient(obj))
-			throw CE1.OBJECT_IN_USE.defaultBuild(obj);
 		try {
 			boolean local = this.localTransaction();
+			objFactory.persist(obj, this.transaction);
+			if (objFactory.hasClients(obj) || objFactory.isClient(obj))
+				throw CE1.OBJECT_IN_USE.defaultBuild(obj);
 			objFactory.delete(obj, this.transaction);
 			if (local)
 				this.endTransaction();
