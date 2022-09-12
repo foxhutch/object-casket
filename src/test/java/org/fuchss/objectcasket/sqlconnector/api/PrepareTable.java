@@ -78,7 +78,7 @@ class PrepareTable {
 
 		Map<String, SqlColumnSignature> columns = new HashMap<>();
 
-		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		pkCol.setFlag(Flag.PRIMARY_KEY);
 		pkCol.setFlag(Flag.AUTOINCREMENT);
 		// pkCol.setFlag(Flag.NOT_NULL);

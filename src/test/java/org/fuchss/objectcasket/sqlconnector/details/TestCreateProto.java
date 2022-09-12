@@ -26,31 +26,31 @@ class TestCreateProto {
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
 
 		// INTEGER AUTO
-		this.createCorrectPK(factory, StorageClass.INTEGER, Long.class, null, "INTEGER", true);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Integer.class, null, "INTEGER", true);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Short.class, null, "INTEGER", true);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Byte.class, null, "INTEGER", true);
+		this.createCorrectPK(factory, StorageClass.LONG, Long.class, null, "INTEGER", true);
+		this.createCorrectPK(factory, StorageClass.LONG, Integer.class, null, "INTEGER", true);
+		this.createCorrectPK(factory, StorageClass.LONG, Short.class, null, "INTEGER", true);
+		this.createCorrectPK(factory, StorageClass.LONG, Byte.class, null, "INTEGER", true);
 
 		// INTEGER
-		this.createCorrectPK(factory, StorageClass.INTEGER, Long.class, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Long.TYPE, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Integer.class, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Integer.TYPE, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Short.class, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Short.TYPE, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Byte.class, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Byte.TYPE, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Boolean.class, null, "INTEGER", false);
-		this.createCorrectPK(factory, StorageClass.INTEGER, Boolean.TYPE, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Long.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Long.TYPE, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Integer.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Integer.TYPE, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Short.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Short.TYPE, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Byte.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Byte.TYPE, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Boolean.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Boolean.TYPE, null, "INTEGER", false);
 
 		// DATE
-		this.createCorrectPK(factory, StorageClass.INTEGER, Date.class, null, "INTEGER", false);
+		this.createCorrectPK(factory, StorageClass.LONG, Date.class, null, "INTEGER", false);
 
 		// REAL
-		this.createCorrectPK(factory, StorageClass.REAL, Double.class, null, "REAL", false);
-		this.createCorrectPK(factory, StorageClass.REAL, Double.TYPE, null, "REAL", false);
-		this.createCorrectPK(factory, StorageClass.REAL, Float.class, null, "REAL", false);
-		this.createCorrectPK(factory, StorageClass.REAL, Float.TYPE, null, "REAL", false);
+		this.createCorrectPK(factory, StorageClass.DOUBLE, Double.class, null, "REAL", false);
+		this.createCorrectPK(factory, StorageClass.DOUBLE, Double.TYPE, null, "REAL", false);
+		this.createCorrectPK(factory, StorageClass.DOUBLE, Float.class, null, "REAL", false);
+		this.createCorrectPK(factory, StorageClass.DOUBLE, Float.TYPE, null, "REAL", false);
 
 		// TEXT
 		this.createCorrectPK(factory, StorageClass.TEXT, Character.class, null, "TEXT", false);
@@ -62,18 +62,18 @@ class TestCreateProto {
 	void createWrongPK() throws CasketException {
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
 
-		this.createWrongPK(factory, StorageClass.INTEGER, Integer.TYPE, null, "Test", CE1.MISPLACED_AUTO_INCREMENT, true);
+		this.createWrongPK(factory, StorageClass.LONG, Integer.TYPE, null, "Test", CE1.MISPLACED_AUTO_INCREMENT, true);
 	}
 
 	@Test
 	void createWrongProtoType() throws CasketException {
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
 
-		this.createPrototype(factory, StorageClass.INTEGER, String.class, "X", CE3.INCOMPATIBLE_SQL_TYPE, false);
-		this.createPrototype(factory, StorageClass.INTEGER, String.class, null, CE3.INVALID_PROTOTYPE, false);
+		this.createPrototype(factory, StorageClass.LONG, String.class, "X", CE3.INCOMPATIBLE_SQL_TYPE, false);
+		this.createPrototype(factory, StorageClass.LONG, String.class, null, CE3.INVALID_PROTOTYPE, false);
 
-		this.createPrototype(factory, StorageClass.REAL, Boolean.class, Boolean.valueOf(false), CE3.INCOMPATIBLE_SQL_TYPE, false);
-		this.createPrototype(factory, StorageClass.REAL, Boolean.class, null, CE3.INVALID_PROTOTYPE, false);
+		this.createPrototype(factory, StorageClass.DOUBLE, Boolean.class, Boolean.valueOf(false), CE3.INCOMPATIBLE_SQL_TYPE, false);
+		this.createPrototype(factory, StorageClass.DOUBLE, Boolean.class, null, CE3.INVALID_PROTOTYPE, false);
 
 		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, Boolean.valueOf(false), CE3.INCOMPATIBLE_SQL_TYPE, false);
 		this.createPrototype(factory, StorageClass.TEXT, Boolean.class, null, CE3.INVALID_PROTOTYPE, false);

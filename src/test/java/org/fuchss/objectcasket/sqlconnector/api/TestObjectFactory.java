@@ -46,55 +46,55 @@ class TestObjectFactory {
 
 		SqlColumnSignature colSig = null;
 
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Long.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Long.class, null);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Long.class, Long.valueOf(1L));
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Long.class, Long.valueOf(1L));
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Long.class, 1L);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Long.class, 1L);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Long.TYPE, 1L);
-		Assertions.assertNotNull(colSig);
-
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, Integer.valueOf(1));
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, 1);
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.TYPE, 1);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Long.TYPE, 1L);
 		Assertions.assertNotNull(colSig);
 
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Short.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Short.class, Short.valueOf((short) 1));
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, Integer.valueOf(1));
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Short.class, (short) 1);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, 1);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Short.TYPE, (short) 1);
-		Assertions.assertNotNull(colSig);
-
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Byte.class, null);
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Byte.class, Byte.valueOf((byte) 1));
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Byte.class, (byte) 1);
-		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Byte.TYPE, (byte) 1);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Integer.TYPE, 1);
 		Assertions.assertNotNull(colSig);
 
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Boolean.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Short.class, null);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Boolean.class, Boolean.valueOf(true));
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Short.class, Short.valueOf((short) 1));
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Boolean.class, true);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Short.class, (short) 1);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Boolean.TYPE, false);
-		Assertions.assertNotNull(colSig);
-
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Date.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Short.TYPE, (short) 1);
 		Assertions.assertNotNull(colSig);
 
-		colSig = this.factory.mkColumnSignature(StorageClass.INTEGER, Date.class, new Date(1));
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Byte.class, null);
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Byte.class, Byte.valueOf((byte) 1));
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Byte.class, (byte) 1);
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Byte.TYPE, (byte) 1);
+		Assertions.assertNotNull(colSig);
+
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Boolean.class, null);
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Boolean.class, Boolean.valueOf(true));
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Boolean.class, true);
+		Assertions.assertNotNull(colSig);
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Boolean.TYPE, false);
+		Assertions.assertNotNull(colSig);
+
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Date.class, null);
+		Assertions.assertNotNull(colSig);
+
+		colSig = this.factory.mkColumnSignature(StorageClass.LONG, Date.class, new Date(1));
 		Assertions.assertNotNull(colSig);
 
 	}
@@ -104,22 +104,22 @@ class TestObjectFactory {
 
 		SqlColumnSignature colSig = null;
 
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Double.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Double.class, null);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Double.class, Double.valueOf(1.1));
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Double.class, Double.valueOf(1.1));
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Double.class, 1.1);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Double.class, 1.1);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Double.TYPE, 1.1);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Double.TYPE, 1.1);
 		Assertions.assertNotNull(colSig);
 
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Float.class, null);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Float.class, null);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Float.class, Float.valueOf((float) 1.1));
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Float.class, Float.valueOf((float) 1.1));
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Float.class, (float) 1.1);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Float.class, (float) 1.1);
 		Assertions.assertNotNull(colSig);
-		colSig = this.factory.mkColumnSignature(StorageClass.REAL, Float.TYPE, (float) 1.1);
+		colSig = this.factory.mkColumnSignature(StorageClass.DOUBLE, Float.TYPE, (float) 1.1);
 		Assertions.assertNotNull(colSig);
 
 	}
@@ -161,43 +161,43 @@ class TestObjectFactory {
 	void integerSqlObjects() throws CasketException {
 
 		SqlObject obj = null;
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, null);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, null);
 		this.checkConversionOfNullToInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Long.valueOf(1L));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Long.valueOf(1L));
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, 1L);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, 1L);
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Integer.valueOf(1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Integer.valueOf(1));
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, 1);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, 1);
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Short.valueOf((short) 1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Short.valueOf((short) 1));
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, (short) 1);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, (short) 1);
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Byte.valueOf((byte) 1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Byte.valueOf((byte) 1));
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, (byte) 1);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, (byte) 1);
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Boolean.valueOf(true));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Boolean.valueOf(true));
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, true);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, true);
 		this.checkConversionOfInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, false);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, false);
 		this.checkConversionOfFalseToInt(obj);
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, new Date(1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, new Date(1));
 		this.checkConversionOfInt(obj);
 	}
 
@@ -335,23 +335,23 @@ class TestObjectFactory {
 
 		SqlObject obj = null;
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, null);
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, null);
 		Assertions.assertNotNull(obj);
 		this.checkConversionOfReal(obj, true, false);
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, Double.valueOf(1.1));
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, Double.valueOf(1.1));
 		Assertions.assertNotNull(obj);
 		this.checkConversionOfReal(obj, false, false);
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, 1.1);
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, 1.1);
 		Assertions.assertNotNull(obj);
 		this.checkConversionOfReal(obj, false, false);
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, Float.valueOf((float) 1.1));
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, Float.valueOf((float) 1.1));
 		Assertions.assertNotNull(obj);
 		this.checkConversionOfReal(obj, false, true);
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, (float) 1.1);
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, (float) 1.1);
 		Assertions.assertNotNull(obj);
 		this.checkConversionOfReal(obj, false, true);
 	}
@@ -465,35 +465,35 @@ class TestObjectFactory {
 		SqlObject obj1 = null;
 		ArrayList<Integer> l = new ArrayList<>(Arrays.asList(1, 2, 3));
 
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, null);
+		obj = this.factory.mkSqlObject(StorageClass.LONG, null);
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Long.valueOf(1L));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Long.valueOf(1L));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Integer.valueOf(1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Integer.valueOf(1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Short.valueOf((short) 1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Short.valueOf((short) 1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Byte.valueOf((byte) 1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Byte.valueOf((byte) 1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, Boolean.valueOf(true));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, Boolean.valueOf(true));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.INTEGER, new Date(1));
+		obj = this.factory.mkSqlObject(StorageClass.LONG, new Date(1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
 
-		obj = this.factory.mkSqlObject(StorageClass.REAL, null);
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, null);
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.REAL, Double.valueOf(1.1));
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, Double.valueOf(1.1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
-		obj = this.factory.mkSqlObject(StorageClass.REAL, Float.valueOf((float) 1.1));
+		obj = this.factory.mkSqlObject(StorageClass.DOUBLE, Float.valueOf((float) 1.1));
 		obj1 = this.factory.duplicate(obj);
 		Assertions.assertNotNull(obj1);
 

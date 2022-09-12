@@ -21,8 +21,8 @@ class SqlValidator {
 	private static final Map<StorageClass, DefaultValueExtractor> extractorMap = new EnumMap<>(StorageClass.class);
 
 	static {
-		SqlValidator.extractorMap.put(StorageClass.INTEGER, (r -> r.getObject(13) == null ? null : (Long) r.getLong(13)));
-		SqlValidator.extractorMap.put(StorageClass.REAL, (r -> r.getObject(13) == null ? null : (Double) r.getDouble(13)));
+		SqlValidator.extractorMap.put(StorageClass.LONG, (r -> r.getObject(13) == null ? null : (Long) r.getLong(13)));
+		SqlValidator.extractorMap.put(StorageClass.DOUBLE, (r -> r.getObject(13) == null ? null : (Double) r.getDouble(13)));
 		SqlValidator.extractorMap.put(StorageClass.TEXT, (r -> r.getObject(13) == null ? null : (String) r.getString(13)));
 		SqlValidator.extractorMap.put(StorageClass.BLOB, (r -> r.getObject(13) == null ? null : (String) r.getString(13)));
 	}

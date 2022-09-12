@@ -32,7 +32,7 @@ class TestAlterTable extends PrepareTable {
 		this.dbFac.closeDatabase(this.db);
 		this.db = this.dbFac.openDatabase(this.config);
 
-		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		SqlColumnSignature textCol = this.factory.mkColumnSignature(StorageClass.TEXT, String.class, null);
 
 		Map<String, SqlColumnSignature> columns = new HashMap<>();
@@ -101,7 +101,7 @@ class TestAlterTable extends PrepareTable {
 		this.dbFac.closeDatabase(this.db);
 		this.db = this.dbFac.openDatabase(this.config);
 
-		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		pkCol.setFlag(Flag.PRIMARY_KEY);
 		pkCol.setFlag(Flag.AUTOINCREMENT);
 		// pkCol.setFlag(Flag.NOT_NULL);

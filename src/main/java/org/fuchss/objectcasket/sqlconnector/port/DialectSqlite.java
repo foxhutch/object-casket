@@ -17,8 +17,8 @@ public class DialectSqlite implements SqlDialect {
 	private static final Map<StorageClass, String> stClassMap = new EnumMap<>(StorageClass.class);
 
 	static {
-		DialectSqlite.stClassMap.put(StorageClass.INTEGER, "INTEGER");
-		DialectSqlite.stClassMap.put(StorageClass.REAL, "REAL");
+		DialectSqlite.stClassMap.put(StorageClass.LONG, "INTEGER");
+		DialectSqlite.stClassMap.put(StorageClass.DOUBLE, "REAL");
 		DialectSqlite.stClassMap.put(StorageClass.TEXT, "TEXT");
 		DialectSqlite.stClassMap.put(StorageClass.BLOB, "BLOB");
 	}
@@ -26,8 +26,8 @@ public class DialectSqlite implements SqlDialect {
 	private static final Map<String, StorageClass> baseType2StClassMap = new HashMap<>();
 
 	static {
-		DialectSqlite.baseType2StClassMap.put("INTEGER", StorageClass.INTEGER);
-		DialectSqlite.baseType2StClassMap.put("REAL", StorageClass.REAL);
+		DialectSqlite.baseType2StClassMap.put("INTEGER", StorageClass.LONG);
+		DialectSqlite.baseType2StClassMap.put("REAL", StorageClass.DOUBLE);
 		DialectSqlite.baseType2StClassMap.put("TEXT", StorageClass.TEXT);
 		DialectSqlite.baseType2StClassMap.put("BLOB", StorageClass.BLOB);
 	}

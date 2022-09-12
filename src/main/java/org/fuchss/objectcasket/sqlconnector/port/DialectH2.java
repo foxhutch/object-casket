@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg.OP;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg.OP;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
 
 /**
  * An implementation of the {@link SqlDialect} interface that works with H2
@@ -17,8 +17,8 @@ public class DialectH2 implements SqlDialect {
 	private static final Map<StorageClass, String> stClassMap = new EnumMap<>(StorageClass.class);
 
 	static {
-		DialectH2.stClassMap.put(StorageClass.INTEGER, "INTEGER");
-		DialectH2.stClassMap.put(StorageClass.REAL, "REAL");
+		DialectH2.stClassMap.put(StorageClass.LONG, "BIGINT");
+		DialectH2.stClassMap.put(StorageClass.DOUBLE, "DOUBLE PRECISION");
 		DialectH2.stClassMap.put(StorageClass.TEXT, "VARCHAR(1000000000)");
 		DialectH2.stClassMap.put(StorageClass.BLOB, "VARBINARY(1000000000)");
 	}
@@ -26,8 +26,8 @@ public class DialectH2 implements SqlDialect {
 	private static final Map<String, StorageClass> baseType2StClassMap = new HashMap<>();
 
 	static {
-		DialectH2.baseType2StClassMap.put("INTEGER", StorageClass.INTEGER);
-		DialectH2.baseType2StClassMap.put("REAL", StorageClass.REAL);
+		DialectH2.baseType2StClassMap.put("BIGINT", StorageClass.LONG);
+		DialectH2.baseType2StClassMap.put("DOUBLE PRECISION", StorageClass.DOUBLE);
 		DialectH2.baseType2StClassMap.put("CHARACTER VARYING", StorageClass.TEXT);
 		DialectH2.baseType2StClassMap.put("BINARY VARYING", StorageClass.BLOB);
 	}

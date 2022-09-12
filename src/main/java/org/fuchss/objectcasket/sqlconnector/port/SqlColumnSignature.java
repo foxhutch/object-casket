@@ -87,7 +87,7 @@ public interface SqlColumnSignature {
 	/**
 	 * This operation checks whether the column is a primary key column with an
 	 * automatically generated value. This is only possible if the SQL type of the
-	 * column is {@link StorageClass#INTEGER}.
+	 * column is {@link StorageClass#LONG}.
 	 *
 	 * @return true if this column is a primary key, with an automatically created
 	 * value.

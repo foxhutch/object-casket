@@ -2,7 +2,7 @@ package org.fuchss.objectcasket.sqlconnector.impl.prepstat;
 
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlInteger;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlLong;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
@@ -63,7 +63,7 @@ public class PreCompiledCreate extends PreCompiledStmtImpl {
 			this.prepStat.executeUpdate();
 			if (this.isAutoIncrement)
 				try (ResultSet generatedKeys = this.prepStat.getGeneratedKeys()) {
-					return SqlInteger.mkSqlObjectFromJava(generatedKeys.next() ? Long.valueOf(generatedKeys.getInt(1)) : 0L);
+					return SqlLong.mkSqlObjectFromJava(generatedKeys.next() ? Long.valueOf(generatedKeys.getInt(1)) : 0L);
 				}
 			return null;
 		} catch (SQLException exc) {

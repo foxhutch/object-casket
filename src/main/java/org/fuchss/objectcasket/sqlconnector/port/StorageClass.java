@@ -13,12 +13,12 @@ public enum StorageClass {
 	 * The Java types long, int, short, byte, boolean and also the class Date are
 	 * mapped to SQL INTEGER.
 	 */
-	INTEGER(Long.class, Long.TYPE, Integer.class, Integer.TYPE, Short.class, Short.TYPE, Byte.class, Byte.TYPE, Boolean.class, Boolean.TYPE, Date.class),
+	LONG(Long.class, Long.TYPE, Integer.class, Integer.TYPE, Short.class, Short.TYPE, Byte.class, Byte.TYPE, Boolean.class, Boolean.TYPE, Date.class),
 
 	/**
 	 * The Java types double and float are mapped to SQL REAL.
 	 */
-	REAL(Double.class, Double.TYPE, Float.class, Float.TYPE),
+	DOUBLE(Double.class, Double.TYPE, Float.class, Float.TYPE),
 
 	/**
 	 * The Java type char and also the class String are mapped to SQL TEXT.
@@ -33,8 +33,8 @@ public enum StorageClass {
 	private static final Set<StorageClass> thePkSqlTypes = new HashSet<>();
 
 	static {
-		StorageClass.thePkSqlTypes.add(INTEGER);
-		StorageClass.thePkSqlTypes.add(REAL);
+		StorageClass.thePkSqlTypes.add(LONG);
+		StorageClass.thePkSqlTypes.add(DOUBLE);
 		StorageClass.thePkSqlTypes.add(TEXT);
 	}
 
@@ -58,7 +58,7 @@ public enum StorageClass {
 	private static final Set<StorageClass> theAutoIncrementedSqlTypes = new HashSet<>();
 
 	static {
-		StorageClass.theAutoIncrementedSqlTypes.add(INTEGER);
+		StorageClass.theAutoIncrementedSqlTypes.add(LONG);
 	}
 
 	/**

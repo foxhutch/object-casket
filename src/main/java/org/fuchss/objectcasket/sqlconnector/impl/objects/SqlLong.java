@@ -12,22 +12,22 @@ import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 /**
  * This class represents SQL INTEGERs.
  */
-public class SqlInteger extends SqlObj {
+public class SqlLong extends SqlObj {
 
 	private final Long val;
 
-	private SqlInteger(Long obj) {
+	private SqlLong(Long obj) {
 		this.val = obj;
 	}
 
 	@Override
-	public SqlInteger duplicate() {
-		return new SqlInteger(this.val);
+	public SqlLong duplicate() {
+		return new SqlLong(this.val);
 	}
 
 	@Override
 	public StorageClass getStorageClass() {
-		return StorageClass.INTEGER;
+		return StorageClass.LONG;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SqlInteger extends SqlObj {
 			y = aDate.getTime();
 		}
 		if ((y == null) && (obj != null)) {
-			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(StorageClass.INTEGER, obj, obj.getClass());
+			throw CE3.INCOMPATIBLE_SQL_TYPE.defaultBuild(StorageClass.LONG, obj, obj.getClass());
 		}
 		return Util.compare(this.val, y);
 	}
@@ -62,9 +62,9 @@ public class SqlInteger extends SqlObj {
 	public void prepareStatement(int pos, PreparedStatement preparedStatement) throws CasketException {
 		try {
 			if (this.val == null) {
-				preparedStatement.setNull(pos, java.sql.Types.INTEGER);
+				preparedStatement.setNull(pos, java.sql.Types.BIGINT);
 			} else {
-				preparedStatement.setObject(pos, this.val, java.sql.Types.INTEGER);
+				preparedStatement.setObject(pos, this.val, java.sql.Types.BIGINT);
 			}
 		} catch (SQLException exc) {
 			throw CasketException.build(exc);
@@ -77,10 +77,10 @@ public class SqlInteger extends SqlObj {
 	 * @param obj
 	 *            - the object to store as an INTEGER.
 	 * @return the {@link SqlObj}.
-	 * @see StorageClass#INTEGER
+	 * @see StorageClass#LONG
 	 */
 	public static SqlObj mkSqlObjectFromJava(Object obj) {
-		return SqlInteger.mkSqlObject(obj);
+		return SqlLong.mkSqlObject(obj);
 	}
 
 	/**
@@ -92,21 +92,21 @@ public class SqlInteger extends SqlObj {
 	 * @return the {@link SqlObj}.
 	 */
 	public static SqlObj mkSqlObjectFromSQL(Object obj) {
-		return SqlInteger.mkSqlObject(obj);
+		return SqlLong.mkSqlObject(obj);
 	}
 
 	private static SqlObj mkSqlObject(Object obj) {
 		if (obj == null) {
-			return new SqlInteger(null);
+			return new SqlLong(null);
 		}
 		if ((obj instanceof Long) || (obj instanceof Integer) || (obj instanceof Short) || (obj instanceof Byte)) {
-			return new SqlInteger(((Number) obj).longValue());
+			return new SqlLong(((Number) obj).longValue());
 		}
 		if (obj instanceof Boolean aBoolean) {
-			return new SqlInteger(Boolean.TRUE.equals(aBoolean) ? 1L : 0L);
+			return new SqlLong(Boolean.TRUE.equals(aBoolean) ? 1L : 0L);
 		}
 		if (obj instanceof Date aDate) {
-			return new SqlInteger(aDate.getTime());
+			return new SqlLong(aDate.getTime());
 		}
 		return null;
 	}

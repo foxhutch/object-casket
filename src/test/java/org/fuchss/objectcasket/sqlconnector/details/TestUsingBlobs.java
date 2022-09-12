@@ -55,7 +55,7 @@ class TestUsingBlobs {
 			PreCompiledStatement select = this.db.mkSelectStmt(this.table, argSet, OP.AND);
 
 			Map<SqlArg, SqlObject> args = new HashMap<>();
-			args.put(arg, this.factory.mkSqlObject(StorageClass.INTEGER, this.pks[0]));
+			args.put(arg, this.factory.mkSqlObject(StorageClass.LONG, this.pks[0]));
 
 			Object voucher = this.db.beginTransaction(true);
 			List<Map<String, SqlObject>> result = this.db.select(select, args, voucher);
@@ -85,7 +85,7 @@ class TestUsingBlobs {
 			PreCompiledStatement select = this.db.mkSelectStmt(this.table, argSet, OP.AND);
 
 			Map<SqlArg, SqlObject> args = new HashMap<>();
-			args.put(arg, this.factory.mkSqlObject(StorageClass.INTEGER, this.pks[0]));
+			args.put(arg, this.factory.mkSqlObject(StorageClass.LONG, this.pks[0]));
 
 			Object voucher = this.db.beginTransaction(false);
 			List<Map<String, SqlObject>> result = this.db.select(select, args, voucher);
@@ -111,7 +111,7 @@ class TestUsingBlobs {
 
 		Map<String, SqlColumnSignature> columns = new HashMap<>();
 
-		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+		SqlColumnSignature pkCol = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		pkCol.setFlag(Flag.PRIMARY_KEY);
 		pkCol.setFlag(Flag.AUTOINCREMENT);
 		columns.put(PKname, pkCol);

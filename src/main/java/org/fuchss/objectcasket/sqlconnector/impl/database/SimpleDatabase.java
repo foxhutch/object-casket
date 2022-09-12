@@ -20,7 +20,7 @@ import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.common.Util;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlInteger;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlLong;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
 import org.fuchss.objectcasket.sqlconnector.impl.prepstat.PreCompiledCreate;
 import org.fuchss.objectcasket.sqlconnector.port.PreCompiledStatement;
@@ -297,7 +297,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 	private SqlObject autoIncrement() throws CasketException {
 
 		try (ResultSet generatedKeys = this.connection.createStatement().executeQuery("SELECT last_insert_rowid()")) {
-			return SqlInteger.mkSqlObjectFromJava(generatedKeys.next() ? Long.valueOf(generatedKeys.getInt(1)) : 0L);
+			return SqlLong.mkSqlObjectFromJava(generatedKeys.next() ? Long.valueOf(generatedKeys.getInt(1)) : 0L);
 		} catch (SQLException exc) {
 			throw CasketException.build(exc);
 		}

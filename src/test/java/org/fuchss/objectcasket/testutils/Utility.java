@@ -59,13 +59,10 @@ public class Utility {
 	}
 
 	public static File createFile(Object test) throws IOException {
-		File dbFile = null;
-		try {
-			dbFile = File.createTempFile(Utility.DB_NAME + test.getClass().getSimpleName(), Utility.DB_SUFIX);
-			return dbFile;
-		} finally {
-			Files.deleteIfExists(dbFile.toPath());
-		}
+		File tmp = new File("target/test-data");
+		tmp.mkdirs();
+		String name = Utility.DB_NAME + test.getClass().getSimpleName()+Math.random()+ Utility.DB_SUFIX;
+		return new File(tmp.getAbsolutePath()+"/"+name);
 	}
 
 	public static void deleteFile(File dbFile) throws IOException {
@@ -93,7 +90,7 @@ public class Utility {
 		Map<String, SqlColumnSignature> columns = new HashMap<>();
 
 		SqlObjectFactory factory = SqlPort.SQL_PORT.sqlObjectFactory();
-		SqlColumnSignature proto = factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+		SqlColumnSignature proto = factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 		proto.setFlag(SqlColumnSignature.Flag.PRIMARY_KEY);
 		proto.setFlag(SqlColumnSignature.Flag.AUTOINCREMENT);
 		columns.put(pkColumnName, proto);

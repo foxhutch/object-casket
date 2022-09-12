@@ -9,9 +9,9 @@ import org.fuchss.objectcasket.common.CasketError.CE3;
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlBlob;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlInteger;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlLong;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlObj;
-import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlReal;
+import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlDouble;
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlText;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
 import org.fuchss.objectcasket.sqlconnector.port.SqlObject;
@@ -26,8 +26,8 @@ public class SqlObjectFactoryImpl implements SqlObjectFactory {
 	private static final Map<StorageClass, Function<Object, SqlObj>> fromJava = new EnumMap<>(StorageClass.class);
 
 	static {
-		SqlObjectFactoryImpl.fromJava.put(StorageClass.INTEGER, SqlInteger::mkSqlObjectFromJava);
-		SqlObjectFactoryImpl.fromJava.put(StorageClass.REAL, SqlReal::mkSqlObjectFromJava);
+		SqlObjectFactoryImpl.fromJava.put(StorageClass.LONG, SqlLong::mkSqlObjectFromJava);
+		SqlObjectFactoryImpl.fromJava.put(StorageClass.DOUBLE, SqlDouble::mkSqlObjectFromJava);
 		SqlObjectFactoryImpl.fromJava.put(StorageClass.TEXT, SqlText::mkSqlObjectFromJava);
 		SqlObjectFactoryImpl.fromJava.put(StorageClass.BLOB, SqlBlob::mkSqlObjectFromJava);
 	}
@@ -35,8 +35,8 @@ public class SqlObjectFactoryImpl implements SqlObjectFactory {
 	private static final Map<StorageClass, Function<Object, SqlObj>> fromSql = new EnumMap<>(StorageClass.class);
 
 	static {
-		SqlObjectFactoryImpl.fromSql.put(StorageClass.INTEGER, SqlInteger::mkSqlObjectFromSQL);
-		SqlObjectFactoryImpl.fromSql.put(StorageClass.REAL, SqlReal::mkSqlObjectFromSQL);
+		SqlObjectFactoryImpl.fromSql.put(StorageClass.LONG, SqlLong::mkSqlObjectFromSQL);
+		SqlObjectFactoryImpl.fromSql.put(StorageClass.DOUBLE, SqlDouble::mkSqlObjectFromSQL);
 		SqlObjectFactoryImpl.fromSql.put(StorageClass.TEXT, SqlText::mkSqlObjectFromSQL);
 		SqlObjectFactoryImpl.fromSql.put(StorageClass.BLOB, SqlBlob::mkSqlObjectFromSQL);
 	}

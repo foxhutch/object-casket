@@ -34,11 +34,11 @@ class TestCreateAndAssignTables {
 			DBConfiguration config = Utility.createDBConfig(dbFile, driver);
 
 			db = this.dbFac.openDatabase(config);
-			SqlColumnSignature proto = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+			SqlColumnSignature proto = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 			proto.setFlag(SqlColumnSignature.Flag.PRIMARY_KEY);
 			proto.setFlag(SqlColumnSignature.Flag.AUTOINCREMENT);
 
-			SqlColumnSignature proto1 = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+			SqlColumnSignature proto1 = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 
 			Map<String, SqlColumnSignature> columns = new HashMap<>();
 			columns.put(Utility.PK_NAME, proto);
@@ -48,11 +48,11 @@ class TestCreateAndAssignTables {
 			this.dbFac.closeDatabase(db);
 
 			db = this.dbFac.openDatabase(config);
-			proto = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+			proto = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 			proto.setFlag(SqlColumnSignature.Flag.PRIMARY_KEY);
 			proto.setFlag(SqlColumnSignature.Flag.AUTOINCREMENT);
 
-			proto1 = this.factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+			proto1 = this.factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 
 			columns = new HashMap<>();
 			columns.put(Utility.PK_NAME, proto);

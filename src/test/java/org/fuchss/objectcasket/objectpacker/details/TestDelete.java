@@ -30,7 +30,7 @@ class TestDelete {
 	@Test
 	void deleteTest() throws IOException, CasketException, InterruptedException {
 		this.deleteTest(DB.SQLITE);
-		// this.deleteTest(DB.H2);
+		this.deleteTest(DB.H2);
 	}
 
 	private void deleteTest(DB dialect) throws IOException, CasketException, InterruptedException {

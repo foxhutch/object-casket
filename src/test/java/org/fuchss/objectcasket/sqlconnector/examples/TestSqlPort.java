@@ -64,7 +64,7 @@ class TestSqlPort {
 			Map<String, SqlColumnSignature> columns = new HashMap<>();
 
 			// define a primary key column,
-			SqlColumnSignature pkCol = factory.mkColumnSignature(StorageClass.INTEGER, Integer.class, null);
+			SqlColumnSignature pkCol = factory.mkColumnSignature(StorageClass.LONG, Integer.class, null);
 			pkCol.setFlag(Flag.PRIMARY_KEY);
 			pkCol.setFlag(Flag.AUTOINCREMENT);
 
@@ -113,8 +113,8 @@ class TestSqlPort {
 			preStat = db.mkSelectStmt(table, argSet, OP.AND);
 
 			Map<SqlArg, SqlObject> argMap = new HashMap<>();
-			argMap.put(arg1, factory.mkSqlObject(StorageClass.INTEGER, 1)); // PK should be greater than 1
-			argMap.put(arg2, factory.mkSqlObject(StorageClass.INTEGER, 3)); // PK should be less than 3
+			argMap.put(arg1, factory.mkSqlObject(StorageClass.LONG, 1)); // PK should be greater than 1
+			argMap.put(arg2, factory.mkSqlObject(StorageClass.LONG, 3)); // PK should be less than 3
 
 			// Open a transaction or return "null" if other transactions are running
 			// already.
