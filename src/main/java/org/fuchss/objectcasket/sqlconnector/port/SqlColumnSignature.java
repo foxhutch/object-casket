@@ -117,7 +117,7 @@ public interface SqlColumnSignature {
 		/**
 		 * The flag is used to annotate a primary key column as automatically generated.
 		 * This is only possible if the type of the column is
-		 * {@link StorageClass#INTEGER}.
+		 * {@link StorageClass#LONG}.
 		 */
 		AUTOINCREMENT,
 		/**
