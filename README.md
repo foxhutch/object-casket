@@ -10,18 +10,11 @@ experimental and still work in progress. So use at your own risk.
 # Maven & Co.
 If you want to use maven or some similar tool add the following code to your pom:
 ```xml
-<repositories>
-    <repository>
-        <id>maven-snapshots</id>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-</repositories>
-
 <dependencies>
-<dependency>
-    <groupId>org.fuchss</groupId>
-    <artifactId>object-casket</artifactId>
-    <version>develop-SNAPSHOT</version>
-</dependency>
+    <dependency>
+        <groupId>org.fuchss</groupId>
+        <artifactId>object-casket</artifactId>
+        <version>X.Y.Z</version>
+    </dependency>
 </dependencies>
 ```
