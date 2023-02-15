@@ -3,14 +3,14 @@ package org.fuchss.objectcasket.objectpacker.port;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.PackerPort;
@@ -110,7 +110,7 @@ public interface SessionManager {
 	 *
 	 * <p>
 	 * Beside these kind of attributes, which are simply stored in columns one can
-	 * also use two <code> javax.persistence </code> annotations to access other
+	 * also use two <code> jakarta.persistence </code> annotations to access other
 	 * stored objects, objects from associated classes.
 	 *
 	 * <p>

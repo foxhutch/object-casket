@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Table;
+import jakarta.persistence.Table;
 
 import org.fuchss.objectcasket.common.CasketError.CE1;
 import org.fuchss.objectcasket.common.CasketException;
@@ -123,7 +123,7 @@ class SessionImpl extends SyncedSession implements Session {
 	private String computeTableName(Class<?> clazz) throws CasketException {
 		if (!Modifier.isFinal(clazz.getModifiers()))
 			throw CE1.NON_FINAL_CLASS.defaultBuild(clazz);
-		if (clazz.getAnnotation(javax.persistence.Entity.class) == null)
+		if (clazz.getAnnotation(jakarta.persistence.Entity.class) == null)
 			throw CE1.MISSING_ENTITY_ANNOTATION.defaultBuild(clazz);
 
 		Table table = clazz.getAnnotation(Table.class);

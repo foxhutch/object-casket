@@ -6,9 +6,9 @@ import java.nio.file.Files;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import org.fuchss.objectcasket.common.CasketException;
 import org.fuchss.objectcasket.objectpacker.PackerPort;

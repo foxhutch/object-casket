@@ -1,7 +1,7 @@
 package org.fuchss.objectcasket.common;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature;
 import org.fuchss.objectcasket.tablemodule.port.Table;

@@ -1,6 +1,6 @@
 package org.fuchss.objectcasket.objectpacker.impl;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity()
 @Table(name = "Many@One")

@@ -11,7 +11,7 @@ import org.fuchss.objectcasket.testutils.Utility.DB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
