@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fuchss</groupId>
 	<artifactId>object-casket</artifactId>
-	<version>0.11.4-SNAPSHOT</version>
+	<version>0.11.4</version>
 	<name>Object Casket</name>
 	<description>Object Casket is a simple O/R mapper that can be used together with the Java Persistence API (JPA). The aim is to provide a simple solution for small projects to store multi-related
         entities in a simple manner.
@@ -34,7 +34,7 @@
 		<connection>scm:git:git://github.com/foxhutch/object-casket.git</connection>
 		<developerConnection>scm:git:ssh://github.com:foxhutch/object-casket.git</developerConnection>
 		<url>https://github.com/foxhutch/object-casket/tree/main</url>
-		<tag>HEAD</tag>
+		<tag>v0.11.4</tag>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
