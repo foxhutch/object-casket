@@ -1,12 +1,12 @@
 package org.fuchss.objectcasket.sqlconnector.port;
 
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
-import org.fuchss.objectcasket.sqlconnector.port.SqlArg.OP;
-import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg.CMP;
+import org.fuchss.objectcasket.sqlconnector.port.SqlArg.OP;
+import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
 
 /**
  * An implementation of the {@link SqlDialect} interface that works with SQLite
@@ -58,6 +58,12 @@ public class DialectSqlite implements SqlDialect {
 		DialectSqlite.flagMap.put(Flag.NOT_NULL, "NOT NULL");
 	}
 
+	private static final Map<MetaTag, String> metaMap = new EnumMap<>(MetaTag.class);
+
+	static {
+		DialectSqlite.metaMap.put(MetaTag.LAST_INSERT_ID, "select last_insert_rowid();");
+	}
+
 	@Override
 	public String cmpString(CMP cmp) {
 		return DialectSqlite.cmpMap.get(cmp);
@@ -81,6 +87,11 @@ public class DialectSqlite implements SqlDialect {
 	@Override
 	public StorageClass baseTypeStorageClass(String typeName) {
 		return DialectSqlite.baseType2StClassMap.get(typeName);
+	}
+
+	@Override
+	public String getMetaQuery(MetaTag metaTag) {
+		return DialectSqlite.metaMap.get(metaTag);
 	}
 
 }

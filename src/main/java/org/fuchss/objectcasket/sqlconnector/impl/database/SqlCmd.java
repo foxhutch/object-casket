@@ -1,18 +1,22 @@
 package org.fuchss.objectcasket.sqlconnector.impl.database;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.fuchss.objectcasket.sqlconnector.impl.objects.SqlColumnSignatureImpl;
 import org.fuchss.objectcasket.sqlconnector.port.SqlArg;
 import org.fuchss.objectcasket.sqlconnector.port.SqlColumnSignature.Flag;
 import org.fuchss.objectcasket.sqlconnector.port.SqlDialect;
 import org.fuchss.objectcasket.sqlconnector.port.StorageClass;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
 class SqlCmd {
 
-	private final SqlDialect dialect;
+	protected final SqlDialect dialect;
 
 	SqlCmd(SqlDialect dialect) {
 		this.dialect = dialect;

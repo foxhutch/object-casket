@@ -221,7 +221,7 @@ abstract class SimpleDatabase extends AcidDatabase {
 				prepStmt = this.connection.prepareStatement(this.sqlCmd.insertValues(tableName, columnNames, tabAssignImpl.pkName(), isAutoIncrement), Statement.RETURN_GENERATED_KEYS);
 			else
 				prepStmt = this.connection.prepareStatement(this.sqlCmd.insertValues(tableName, columnNames, tabAssignImpl.pkName(), isAutoIncrement));
-			return new PreCompiledCreate(prepStmt, tableName, columnNames, tabAssignImpl.getColSigMap(), isAutoIncrement);
+			return new PreCompiledCreate(prepStmt, tableName, columnNames, tabAssignImpl.getColSigMap(), isAutoIncrement, this.sqlCmd.dialect);
 		} catch (SQLException exc) {
 			throw CasketException.build(exc);
 		}

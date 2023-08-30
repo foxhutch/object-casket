@@ -83,4 +83,10 @@ public class DialectH2 implements SqlDialect {
 		return DialectH2.baseType2StClassMap.get(typeName);
 	}
 
+	@Override
+	public String getMetaQuery(MetaTag metaTag) {
+		/* No meta tags supported yet. */
+		return null;
+	}
+
 }
