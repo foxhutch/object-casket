@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.2.0-M2</version>
+			<version>3.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.11.0-M1</version>
+			<version>5.11.0-M2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
