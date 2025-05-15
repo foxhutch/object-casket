@@ -87,6 +87,7 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
+					<deploymentName>object-casket</deploymentName>
                 </configuration>
             </plugin>
 			<plugin>
